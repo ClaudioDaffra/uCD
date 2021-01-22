@@ -6,32 +6,6 @@
 
 console_stream_t std_stream = console_stream_ansi; 
 
-// .................................................................... convert string to wide char
-
-static
-wchar_t*  cdConvertFromStringToWString ( const char* _ansi_string )
-{
-    wchar_t  ws[128];
-
-    ws[0] = L'\0';
-    
-    if (_ansi_string != NULL )
-    {
-        if ( strlen(_ansi_string) > 127 )
-        {
-            fwprintf ( stdout,L"\n## Internal Error :: cdConvertFromStringToWString -> ( strlen(_ansi_string) > 127 )." );
-            exit(-1);
-        }
-        #if defined(__MINGW32__) || defined(__MINGW64__)
-        swprintf(ws, L"%hs", _ansi_string);
-        #else
-        swprintf(ws, 128, L"%hs", _ansi_string);
-        #endif    
-    }
-
-    return gcWcsDup ( ws ) ;
-}
-
 // .................................................................... setUTF8
 
 #if defined(_WIN32) || defined(_WIN64) 
@@ -136,11 +110,11 @@ int cdFileWOpen(
 {
     wchar_t buffer[128] ;
     buffer[0]=L'\0';
-    
-    wchar_t* _fileName  = cdConvertFromStringToWString ( fileName  ) ;
-    wchar_t* _flag      = cdConvertFromStringToWString ( flag  ) ;
-    wchar_t* _ccs       = cdConvertFromStringToWString ( ccs  ) ;
 
+    wchar_t* _fileName  = cnvS8toWS ( fileName  ) ;
+    wchar_t* _flag      = cnvS8toWS ( (char*)flag  ) ;
+    wchar_t* _ccs       = cnvS8toWS ( (char*)ccs  ) ;
+    
     if (_fileName==NULL) return 3 ;
 
     if ( wcslen(_flag)+wcslen(_ccs) > 14 )
