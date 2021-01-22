@@ -49,4 +49,5 @@ clean:
 		-rm *.asm ; rm tst/*.asm ;
 		-rm *.vm ; rm tst/*.vm ;
 		-rm *.symTable ; rm tst/*.symTable ;
-
+		-rm *.out ; rm tst/*.out ;
+		

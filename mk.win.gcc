@@ -48,3 +48,5 @@ clean:
 		del *.asm & del tst\*.asm
 		del *.vm & del tst\*.vm
 		del *.symTable & del tst\*.symTable
+		del *.out & del tst\*.out
+		

@@ -5,9 +5,9 @@ SOURCES = \
 	lib\argParse.c	\
 	lib\stdio.c		\
 	lib\gc.c		\
-	lib\hmap.c 		\
+	lib\hashMap.c	\
 	lib\string.c	\
-	src\lexer.c     \	
+	src\lexer.c     \
 	src\error.c		\
 	src\main.c		\
 	
@@ -17,13 +17,15 @@ $(TARGET):$(SOURCES)
 	cl $(FLAG) /Febin\$(TARGET) $(SOURCES)
 	
 clean:
-		del bin\*.exe & del obj\*.obj & del lib\*.obj
-		del *.exe & del *.obj     
-		del *.lexer & del tst\*.lexer
-		del *.parser & del tst\*.parser        
-		del *.output & del tst\*.output
-		del *.ast & del tst\*.ast
-		del *.node & del tst\*.node    
-		del *.asm & del tst\*.asm        
-		del *.vm & del tst\*.vm 
- 		  
+		del bin\*.exe >nul 2>&1 	& del obj\*.obj >nul 2>&1 	& del lib\*.obj >nul 2>&1
+		del *.exe >nul 2>&1 		& del *.obj >nul 2>&1
+		del *.lexer >nul 2>&1 		& del tst\*.lexer >nul 2>&1
+		del *.parser >nul 2>&1 		& del tst\*.parser  >nul 2>&1
+		del *.output >nul 2>&1 		& del tst\*.output >nul 2>&1
+		del *.ast >nul 2>&1 		& del tst\*.ast >nul 2>&1
+		del *.node >nul 2>&1 		& del tst\*.node >nul 2>&1
+		del *.asm >nul 2>&1 		& del tst\*.asm >nul 2>&1
+		del *.vm >nul 2>&1		& del tst\*.vm >nul 2>&1
+		del *.symTable >nul 2>&1 	& del tst\*.symTable >nul 2>&1
+		del *.out >nul 2>&1 		& del tst\*.out >nul 2>&1
+
