@@ -33,18 +33,18 @@
 
 
 #if defined(_WIN32) || defined(_WIN64)
-	#include <windows.h>
-	#include <io.h>
-	#include <fcntl.h>
+    #include <windows.h>
+    #include <io.h>
+    #include <fcntl.h>
 #endif
 
 #ifdef __linux__
-	#include <wchar.h>
+    #include <wchar.h>
 #endif
 
 #ifdef __APPLE__
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Wdollar-in-identifier-extension"
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdollar-in-identifier-extension"
 #endif
 
 // ................................................ header cxx
@@ -92,11 +92,11 @@
 
 // ................................................ new
 
-#define new(ID)		gcMalloc(sizeof(ID));
+#define new(ID)        gcMalloc(sizeof(ID));
 
 // ................................................ delete
 
-#define delete(ID)	if((ID)!=NULL){gcFree(ID);(ID)=NULL;}
+#define delete(ID)    if((ID)!=NULL){gcFree(ID);(ID)=NULL;}
 
 // ................................................ maxStringBuffer
 

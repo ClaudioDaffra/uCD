@@ -9,37 +9,37 @@
 
 /*
  
-    wstring_ID_d			:	TYPE
-    ID_d				:   TYPE
-	wstring_ID_s			:	struct wstring_ID_s
-	wstring_ID_t			:	wstring_ID_s
-	wstring_ID_p			:	wstring_ID_t*
+    wstring_ID_d            :    TYPE
+    ID_d                    :    TYPE
+    wstring_ID_s            :    struct wstring_ID_s
+    wstring_ID_t            :    wstring_ID_s
+    wstring_ID_p            :    wstring_ID_t*
 */
 
-#define wstringTypeDef(TYPE,ID)                         	\
-typedef TYPE MERGE ( MERGE ( wstring_ , ID )  , _d );  	\
-typedef TYPE MERGE ( ID  , _d );  						\
-typedef struct MERGE ( MERGE ( wstring_ , ID )  , _s )	\
-{                                                   	\
+#define wstringTypeDef(TYPE,ID)                         \
+typedef TYPE MERGE ( MERGE ( wstring_ , ID )  , _d );   \
+typedef TYPE MERGE ( ID  , _d );                        \
+typedef struct MERGE ( MERGE ( wstring_ , ID )  , _s )  \
+{                                                       \
     union {                                             \
-    TYPE*   data ;                                  	\
-    TYPE*   text ;                                  	\
+    TYPE*   data ;                                      \
+    TYPE*   text ;                                      \
     } ;                                                 \
-    size_t  size        ;                           	\
-    size_t  capacity    ;                           	\
-}  MERGE ( MERGE ( wstring_ , ID )  , _t ) ;				\
+    size_t  size        ;                               \
+    size_t  capacity    ;                               \
+}  MERGE ( MERGE ( wstring_ , ID )  , _t ) ;                \
 typedef MERGE ( MERGE ( wstring_ , ID )  , _t ) * MERGE ( MERGE ( wstring_ , ID )  , _p );
 
 // wstringType(TYPE,ID) :  generic wstring
 
-#define wstringType(TYPE)	wstringTypeDef(TYPE,TYPE)
+#define wstringType(TYPE)    wstringTypeDef(TYPE,TYPE)
 
 // ........................................................... [] wstringAlloc(ID,N) 
  
-#define wstringAlloc(ID,N)                        			\
-(ID).data = (void*) gcMalloc ( sizeof((ID).data) * N ); 	\
-assert((ID).data!=NULL);									\
-(ID).size      = 0;                                    		\
+#define wstringAlloc(ID,N)                                  \
+(ID).data = (void*) gcMalloc ( sizeof((ID).data) * N );     \
+assert((ID).data!=NULL);                                    \
+(ID).size      = 0;                                         \
 (ID).capacity  = N;    
   
 // ........................................................... [] SIZE
@@ -56,16 +56,16 @@ assert((ID).data!=NULL);									\
 
 // ........................................................... [] PUSH_BACK
 
-#define wstringPushBack(ID, VAL) do {                                   	\
-    if ((ID).size + 1 >= (ID).capacity) {                                	\
-        size_t N = ((ID).capacity += (ID).capacity);                     	\
-        (ID).data = gcRealloc  ( (ID).data   , (N) * sizeof((ID).data)  );	\
-        (ID).capacity = (N);                                             	\
+#define wstringPushBack(ID, VAL) do {                                       \
+    if ((ID).size + 1 >= (ID).capacity) {                                   \
+        size_t N = ((ID).capacity += (ID).capacity);                        \
+        (ID).data = gcRealloc  ( (ID).data   , (N) * sizeof((ID).data)  );  \
+        (ID).capacity = (N);                                                \
     } ;                                                                     \
     size_t len=wstringSize(ID);                                             \
-    (ID).data[len]   = (VAL);                                    	        \
-    (ID).data[len+1] = 0    ;                                    	        \
-    ++(ID).size ;                                                       	\
+    (ID).data[len]   = (VAL);                                               \
+    (ID).data[len+1] = 0    ;                                               \
+    ++(ID).size ;                                                           \
 } while (0)
 
 // ........................................................... [] POP_BACK
@@ -135,7 +135,7 @@ assert((ID).data!=NULL);									\
 
 // ........................................................... [] stringInsertAtVal     
         
-#define wstringInsertAtVal(ID, POS, VAL) do {                                                \
+#define wstringInsertAtVal(ID, POS, VAL) do {                                               \
     while ((ID).size + 1 > (ID).capacity) {                                                 \
         (ID).capacity *= 2;                                                                 \
         (ID).data = gcRealloc  ( (ID).data   , (ID).capacity * sizeof((ID).data)  );        \
@@ -147,7 +147,7 @@ assert((ID).data!=NULL);									\
 
 // ........................................................... [] ERASE at
 
-#define wstringEraseAt(ID, POS) do {                                                             \
+#define wstringEraseAt(ID, POS) do {                                                            \
     if ( (ID).size ) {                                                                          \
     memmove((ID).data + POS, (ID).data + POS + 1, ((ID).size - POS +1) * sizeof *(ID).data);    \
     (ID).size -= 1;                                                                             \
@@ -156,7 +156,7 @@ assert((ID).data!=NULL);									\
 
 // ........................................................... [] ERASE N
         
-#define wstringEraseAtN(ID, POS, N) do {                                                         \
+#define wstringEraseAtN(ID, POS, N) do {                                                        \
     if ( ((ID).size-(N))>0 ) {                                                                  \
     memmove((ID).data + POS, (ID).data + POS + (N)  , ((ID).size - POS+N) * sizeof *(ID).data );\
     (ID).size -= (N);                                                                           \
@@ -165,7 +165,7 @@ assert((ID).data!=NULL);									\
 
 // ........................................................... [] RESIZE
     
-#define wstringResize(ID, N, VAL) do {                                       \
+#define wstringResize(ID, N, VAL) do {                                      \
     if ((N) > (ID).capacity)                                                \
         (ID).data = gcRealloc ( (ID).data ,  (N) * sizeof((ID).data)   );   \
     if ( (ID).size<(N) )                                                    \
@@ -187,9 +187,9 @@ assert((ID).data!=NULL);									\
 
 // ........................................................... [] APPEND 
  
-#define wstringAppend(ID, V2 ) do {                                                      \
-    size_t V1z = (ID).size ;                                                          	\
-    size_t V2z = (V2).size ;                                                          	\
+#define wstringAppend(ID, V2 ) do {                                                     \
+    size_t V1z = (ID).size ;                                                            \
+    size_t V2z = (V2).size ;                                                            \
     if ((ID).capacity < (V1z+V2z)) {                                                    \
         (ID).data = gcRealloc ( (ID).data , (V1z+V2z+1 ) *  sizeof((ID).data) ) ;       \
         (ID).capacity = V1z + V2z +1;                                                   \
@@ -200,13 +200,13 @@ assert((ID).data!=NULL);									\
 
 // ........................................................... [] insert string at
 
-#define wstringInsertAtWString(ID, POS, PTR ) do {                                                        \
+#define wstringInsertAtWString(ID, POS, PTR ) do {                                                      \
     while ((ID).size + (PTR).size > (ID).capacity) {                                                    \
         (ID).capacity *= 2;                                                                             \
         (ID).data = gcRealloc ( (ID).data , (ID).capacity *  sizeof((ID).data)   );                     \
     }                                                                                                   \
     memmove((ID).data + POS + (PTR).size , (ID).data + POS, ((ID).size - POS + 1) * sizeof *(ID).data); \
-    for (size_t i = 0; i < (PTR).size; i++)                                                       	    \
+    for (size_t i = 0; i < (PTR).size; i++)                                                             \
         (ID).data[POS + i] = (PTR).data[0 + i];                                                         \
     (ID).size += (PTR).size;                                                                            \
 } while (0)
@@ -219,26 +219,26 @@ assert((ID).data!=NULL);									\
         (ID).data = gcRealloc ( (ID).data , (ID).capacity *  sizeof((ID).data)  );                  \
     } ;                                                                                             \
     memmove((ID).data + POS + (N), (ID).data + POS, ((ID).size - POS) * sizeof *(ID).data);         \
-    for (size_t i = 0; i < (N); i++)                                                              	\
+    for (size_t i = 0; i < (N); i++)                                                                \
         (ID).data[POS + i] = (PTR).data[POS2 + i];                                                  \
     (ID).size += (N);                                                                               \
     (ID).data[(ID).size]=0;\
 } while (0)
 // ........................................................... [] FREE 
 
-#define wstringDealloc(ID) do {                        						\
-    if ( (ID).data != NULL ) { gcFree( (ID).data );   (ID).data=NULL;  }	\
+#define wstringDealloc(ID) do {                                             \
+    if ( (ID).data != NULL ) { gcFree( (ID).data );   (ID).data=NULL;  }    \
 } while(0)
 
 /*   
 
 // ........................................................... [] wstring ALLLOC wstring 
 
-#define wstringAllocwstring(TYPE,ID,N)                  	\
-(ID).data = (void*) gcMalloc ( sizeof(TYPE) * N ); 			\
-assert((ID).data!=NULL);									\
-(ID).size      = 0;                                    		\
-(ID).capacity  = N;	
+#define wstringAllocwstring(TYPE,ID,N)                      \
+(ID).data = (void*) gcMalloc ( sizeof(TYPE) * N );          \
+assert((ID).data!=NULL);                                    \
+(ID).size      = 0;                                         \
+(ID).capacity  = N;    
 */
 
 #define wstringCheckCapacity(TYPE,ID,LEN)\
@@ -279,4 +279,5 @@ wcscpy((ID).data,strTemp);\
  
  
 /**/
+
 

@@ -9,37 +9,37 @@
 
 /*
  
-    string_ID_d			:	TYPE
-    ID_d				:   TYPE
-	string_ID_s			:	struct string_ID_s
-	string_ID_t			:	string_ID_s
-	string_ID_p			:	string_ID_t*
+    string_ID_d            :    TYPE
+    ID_d                   :   TYPE
+    string_ID_s            :    struct string_ID_s
+    string_ID_t            :    string_ID_s
+    string_ID_p            :    string_ID_t*
 */
 
-#define stringTypeDef(TYPE,ID)                         	\
-typedef TYPE MERGE ( MERGE ( string_ , ID )  , _d );  	\
-typedef TYPE MERGE ( ID  , _d );  						\
-typedef struct MERGE ( MERGE ( string_ , ID )  , _s )	\
-{                                                   	\
+#define stringTypeDef(TYPE,ID)                          \
+typedef TYPE MERGE ( MERGE ( string_ , ID )  , _d );    \
+typedef TYPE MERGE ( ID  , _d );                        \
+typedef struct MERGE ( MERGE ( string_ , ID )  , _s )   \
+{                                                       \
     union {                                             \
-    TYPE*   data ;                                  	\
-    TYPE*   text ;                                  	\
+    TYPE*   data ;                                      \
+    TYPE*   text ;                                      \
     } ;                                                 \
-    size_t  size        ;                           	\
-    size_t  capacity    ;                           	\
-}  MERGE ( MERGE ( string_ , ID )  , _t ) ;				\
+    size_t  size        ;                               \
+    size_t  capacity    ;                               \
+}  MERGE ( MERGE ( string_ , ID )  , _t ) ;             \
 typedef MERGE ( MERGE ( string_ , ID )  , _t ) * MERGE ( MERGE ( string_ , ID )  , _p );
 
 // stringType(TYPE,ID) :  generic string
 
-#define stringType(TYPE)	stringTypeDef(TYPE,TYPE)
+#define stringType(TYPE)    stringTypeDef(TYPE,TYPE)
 
 // ........................................................... [] stringAlloc(ID,N) 
  
-#define stringAlloc(ID,N)                        			\
-(ID).data = (void*) gcMalloc ( sizeof((ID).data) * N ); 	\
-assert((ID).data!=NULL);									\
-(ID).size      = 0;                                    		\
+#define stringAlloc(ID,N)                                   \
+(ID).data = (void*) gcMalloc ( sizeof((ID).data) * N );     \
+assert((ID).data!=NULL);                                    \
+(ID).size      = 0;                                         \
 (ID).capacity  = N;    
   
 // ........................................................... [] SIZE
@@ -56,16 +56,16 @@ assert((ID).data!=NULL);									\
 
 // ........................................................... [] PUSH_BACK
 
-#define stringPushBack(ID, VAL) do {                                   		\
-    if ((ID).size + 1 >= (ID).capacity) {                                	\
-        size_t N = ((ID).capacity += (ID).capacity);                     	\
-        (ID).data = gcRealloc  ( (ID).data   , (N) * sizeof((ID).data)  );	\
-        (ID).capacity = (N);                                             	\
-    } ;                                                                     \
-    size_t len=stringSize(ID);                                              \
-    (ID).data[len]   = (VAL);                                    	        \
-    (ID).data[len+1] = 0    ;                                    	        \
-    ++(ID).size ;                                                       	\
+#define stringPushBack(ID, VAL) do {                                         \
+    if ((ID).size + 1 >= (ID).capacity) {                                    \
+        size_t N = ((ID).capacity += (ID).capacity);                         \
+        (ID).data = gcRealloc  ( (ID).data   , (N) * sizeof((ID).data)  );   \
+        (ID).capacity = (N);                                                 \
+    } ;                                                                      \
+    size_t len=stringSize(ID);                                               \
+    (ID).data[len]   = (VAL);                                                \
+    (ID).data[len+1] = 0    ;                                                \
+    ++(ID).size ;                                                            \
 } while (0)
 
 // ........................................................... [] POP_BACK
@@ -189,8 +189,8 @@ assert((ID).data!=NULL);									\
 // ........................................................... [] APPEND 
  
 #define stringAppend(ID, V2 ) do {                                                      \
-    size_t V1z = (ID).size ;                                                          	\
-    size_t V2z = (V2).size ;                                                          	\
+    size_t V1z = (ID).size ;                                                            \
+    size_t V2z = (V2).size ;                                                            \
     if ((ID).capacity < (V1z+V2z)) {                                                    \
         (ID).data = gcRealloc ( (ID).data , (V1z+V2z+1 ) *  sizeof((ID).data) ) ;       \
         (ID).capacity = V1z + V2z +1;                                                   \
@@ -207,7 +207,7 @@ assert((ID).data!=NULL);									\
         (ID).data = gcRealloc ( (ID).data , (ID).capacity *  sizeof((ID).data)   );                     \
     }                                                                                                   \
     memmove((ID).data + POS + (PTR).size , (ID).data + POS, ((ID).size - POS + 1) * sizeof *(ID).data); \
-    for (size_t i = 0; i < (PTR).size; i++)                                                       	    \
+    for (size_t i = 0; i < (PTR).size; i++)                                                             \
         (ID).data[POS + i] = (PTR).data[0 + i];                                                         \
     (ID).size += (PTR).size;                                                                            \
 } while (0)
@@ -220,7 +220,7 @@ assert((ID).data!=NULL);									\
         (ID).data = gcRealloc ( (ID).data , (ID).capacity *  sizeof((ID).data)  );                  \
     } ;                                                                                             \
     memmove((ID).data + POS + (N), (ID).data + POS, ((ID).size - POS) * sizeof *(ID).data);         \
-    for (size_t i = 0; i < (N); i++)                                                              	\
+    for (size_t i = 0; i < (N); i++)                                                                \
         (ID).data[POS + i] = (PTR).data[POS2 + i];                                                  \
     (ID).size += (N);                                                                               \
     (ID).data[(ID).size]=0;\
@@ -228,19 +228,19 @@ assert((ID).data!=NULL);									\
 
 // ........................................................... [] FREE 
 
-#define stringDealloc(ID) do {                        						\
-    if ( (ID).data != NULL ) { gcFree( (ID).data );   (ID).data=NULL;  }	\
+#define stringDealloc(ID) do {                                              \
+    if ( (ID).data != NULL ) { gcFree( (ID).data );   (ID).data=NULL;  }    \
 } while(0)
 
 /*   
 
 // ........................................................... [] string ALLLOC string 
 
-#define stringAllocstring(TYPE,ID,N)                  		\
-(ID).data = (void*) gcMalloc ( sizeof(TYPE) * N ); 			\
-assert((ID).data!=NULL);									\
-(ID).size      = 0;                                    		\
-(ID).capacity  = N;	
+#define stringAllocstring(TYPE,ID,N)                        \
+(ID).data = (void*) gcMalloc ( sizeof(TYPE) * N );          \
+assert((ID).data!=NULL);                                    \
+(ID).size      = 0;                                         \
+(ID).capacity  = N;    
 */
 
 #define stringCheckCapacity(TYPE,ID,LEN)\
@@ -291,4 +291,5 @@ strcpy((ID).data,strTemp);\
  
  
 /**/
+
 

@@ -9,34 +9,34 @@
 // vectorTypeDef(TYPE,ID)
 
 /*
-    vector_ID_d			:	TYPE
-    ID_d				:   TYPE
-	vector_ID_s			:	struct vector_ID_s
-	vector_ID_t			:	vector_ID_s
-	vector_ID_p			:	vector_ID_t*
+    vector_ID_d            :   TYPE
+    ID_d                   :   TYPE
+    vector_ID_s            :   struct vector_ID_s
+    vector_ID_t            :   vector_ID_s
+    vector_ID_p            :   vector_ID_t*
 */
 
-#define vectorTypeDef(TYPE,ID)                         	\
-typedef TYPE MERGE ( MERGE ( vector_ , ID )  , _d );  	\
-typedef TYPE MERGE ( ID  , _d );  						\
-typedef struct MERGE ( MERGE ( vector_ , ID )  , _s )	\
-{                                                   	\
-    TYPE*   data ;                                  	\
-    size_t  size        ;                           	\
-    size_t  capacity    ;                           	\
-}  MERGE ( MERGE ( vector_ , ID )  , _t ) ;				\
+#define vectorTypeDef(TYPE,ID)                          \
+typedef TYPE MERGE ( MERGE ( vector_ , ID )  , _d );    \
+typedef TYPE MERGE ( ID  , _d );                        \
+typedef struct MERGE ( MERGE ( vector_ , ID )  , _s )   \
+{                                                       \
+    TYPE*   data ;                                      \
+    size_t  size        ;                               \
+    size_t  capacity    ;                               \
+}  MERGE ( MERGE ( vector_ , ID )  , _t ) ;                \
 typedef MERGE ( MERGE ( vector_ , ID )  , _t ) * MERGE ( MERGE ( vector_ , ID )  , _p )
 
 // vectorType(TYPE,ID) :  generic vector
 
-#define vectorType(TYPE)	vectorTypeDef(TYPE,TYPE)
+#define vectorType(TYPE)    vectorTypeDef(TYPE,TYPE)
 
 // ........................................................... [] vectorAlloc(ID,N) 
  
-#define vectorAlloc(ID,N)                        			\
-(ID).data = (void*) gcMalloc ( sizeof((ID).data) * N ); 	\
-assert((ID).data!=NULL);									\
-(ID).size      = 0;                                    		\
+#define vectorAlloc(ID,N)                                   \
+(ID).data = (void*) gcMalloc ( sizeof((ID).data) * N );     \
+assert((ID).data!=NULL);                                    \
+(ID).size      = 0;                                         \
 (ID).capacity  = N;    
   
 // ........................................................... [] SIZE
@@ -53,14 +53,14 @@ assert((ID).data!=NULL);									\
 
 // ........................................................... [] PUSH_BACK
 
-#define vectorPushBack(ID, VAL) do {                                   		\
-    if ((ID).size + 1 > (ID).capacity) {                                	\
-        size_t N = ((ID).capacity += (ID).capacity);                     	\
-        (ID).data = gcRealloc  ( (ID).data   , (N) * sizeof((ID).data)  );	\
-        (ID).capacity = (N);                                             	\
-    } ;                                                                 	\
-    (ID).data[vectorSize(ID)] = (VAL);                                    	\
-    ++(ID).size ;                                                       	\
+#define vectorPushBack(ID, VAL) do {                                        \
+    if ((ID).size + 1 > (ID).capacity) {                                    \
+        size_t N = ((ID).capacity += (ID).capacity);                        \
+        (ID).data = gcRealloc  ( (ID).data   , (N) * sizeof((ID).data)  );  \
+        (ID).capacity = (N);                                                \
+    } ;                                                                     \
+    (ID).data[vectorSize(ID)] = (VAL);                                      \
+    ++(ID).size ;                                                           \
 } while (0)
 
 // ........................................................... [] POP_BACK
@@ -171,7 +171,7 @@ assert((ID).data!=NULL);									\
         (ID).data = gcRealloc ( (ID).data , (ID).capacity * sizeof((ID).data)   );              \
     } ;                                                                                         \
     memmove((ID).data + 0 + (PTR).size, (ID).data + 0, ((ID).size - 0) * sizeof *(ID).data);    \
-    for (size_t i = 0; i < (PTR).size; i++)                                                   	\
+    for (size_t i = 0; i < (PTR).size; i++)                                                     \
         (ID).data[0 + i] = (PTR).data[0 + i];                                                   \
     (ID).size = (PTR).size;                                                                     \
 } while (0)
@@ -180,8 +180,8 @@ assert((ID).data!=NULL);									\
 // ........................................................... [] APPEND 
  
 #define vectorAppend(ID, V2 ) do {                                                      \
-    size_t V1z = (ID).size ;                                                          	\
-    size_t V2z = (V2).size ;                                                          	\
+    size_t V1z = (ID).size ;                                                            \
+    size_t V2z = (V2).size ;                                                            \
     if ((ID).capacity < (V1z+V2z)) {                                                    \
         (ID).data = gcRealloc ( (ID).data , (V1z + V2z ) *  sizeof((ID).data) ) ;       \
     }                                                                                   \
@@ -201,7 +201,7 @@ assert((ID).data!=NULL);									\
         (ID).data = gcRealloc ( (ID).data , (ID).capacity *  sizeof((ID).data)   );                 \
     }                                                                                               \
     memmove((ID).data + POS + (PTR).size, (ID).data + POS, ((ID).size - POS) * sizeof *(ID).data);  \
-    for (size_t i = 0; i < (PTR).size; i++)                                                       	\
+    for (size_t i = 0; i < (PTR).size; i++)                                                         \
         (ID).data[POS + i] = (PTR).data[0 + i];                                                     \
     (ID).size += (PTR).size;                                                                        \
 } while (0)
@@ -214,15 +214,15 @@ assert((ID).data!=NULL);									\
         (ID).data = gcRealloc ( (ID).data , (ID).capacity *  sizeof((ID).data)  );                  \
     } ;                                                                                             \
     memmove((ID).data + POS + (N), (ID).data + POS, ((ID).size - POS) * sizeof *(ID).data);         \
-    for (size_t i = 0; i < (N); i++)                                                              	\
+    for (size_t i = 0; i < (N); i++)                                                                \
         (ID).data[POS + i] = (PTR).data[POS2 + i];                                                  \
     (ID).size += (N);                                                                               \
 } while (0)
 
 // ........................................................... [] PRINTF
 
-#define vectorPrintf(FORMAT,ID) do { 												\
-for ( size_t i = 0 ; i < (ID).size ; i++)  printf ( FORMAT , (ID).data[i] ) ;		\
+#define vectorPrintf(FORMAT,ID) do {                                                 \
+for ( size_t i = 0 ; i < (ID).size ; i++)  printf ( FORMAT , (ID).data[i] ) ;        \
 }while(0);
 
 // ........................................................... [] FREE 
@@ -241,11 +241,11 @@ for ( size_t i = 0 ; i < (ID).size ; i++)  printf ( FORMAT , (ID).data[i] ) ;		\
 
 // ........................................................... [] VECTOR ALLLOC VECTOR 
 
-#define vectorAllocVector(TYPE,ID,N)                  		\
-(ID).data = (void*) gcMalloc ( sizeof(TYPE) * N ); 			\
-assert((ID).data!=NULL);									\
-(ID).size      = 0;                                    		\
-(ID).capacity  = N;	
+#define vectorAllocVector(TYPE,ID,N)                        \
+(ID).data = (void*) gcMalloc ( sizeof(TYPE) * N );          \
+assert((ID).data!=NULL);                                    \
+(ID).size      = 0;                                         \
+(ID).capacity  = N;    
 
 #endif
 

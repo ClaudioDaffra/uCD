@@ -8,7 +8,7 @@
 #define free    gcFree
 #define malloc  gcMalloc
 #define realloc gcRealloc
-#define calloc	gcCalloc
+#define calloc  gcCalloc
 #define strdup  gcStrDup
 #define wcsdup  gcWcsDup
 

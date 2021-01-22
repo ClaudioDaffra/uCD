@@ -93,7 +93,7 @@ void consoleSetMBS(void)
 #else
 
     setlocale(LC_ALL,"");
-    setlocale(LC_NUMERIC , "C" ) ;	
+    setlocale(LC_NUMERIC , "C" ) ;    
     
 #endif
 }

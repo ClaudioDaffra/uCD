@@ -20,14 +20,14 @@ typedef enum console_stream_e
 extern console_stream_t std_stream;
 
 extern void cdConsolesetUTF8    ( void ) ;
-#define 	consoleSetUTF8  	cdConsolesetUTF8
-#define 	stdConsoleSetUTF8   cdConsolesetUTF8
+#define     consoleSetUTF8      cdConsolesetUTF8
+#define     stdConsoleSetUTF8   cdConsolesetUTF8
 
-void 		consoleSetMBS		(void) ;
-#define 	stdConsoleSetMBS     consoleSetMBS
+void         consoleSetMBS      (void) ;
+#define     stdConsoleSetMBS    consoleSetMBS
 
-int       	cdFileWOpen     	( FILE** pf, char* fileName, const char* flag , const char* ccs ) ;
-#define 	stdFileWOpen        cdFileWOpen
+int           cdFileWOpen       ( FILE** pf, char* fileName, const char* flag , const char* ccs ) ;
+#define     stdFileWOpen        cdFileWOpen
 
 #endif 
 

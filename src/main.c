@@ -48,6 +48,7 @@ wchar_t    outputSpecialCharInChar( wchar_t _wchar )
     
     switch ( _wchar ) 
     {
+        case L'\a'     : wchar = L'A'; break ;		
         case L'\n'     : wchar = L'N'; break ;
         case L'\t'     : wchar = L'T'; break ;
         case L'\v'     : wchar = L'V'; break ;
@@ -76,8 +77,10 @@ wchar_t*    outputSpecialCharInString( wchar_t* token )
 //  MAIN
 // *********
 
-#define $CD "CD"
-#define $DATE "(2021)"
+#define $PRG  "CD"
+#define $DATE "(1/2021)"
+#define $REV  "alpha 0.0"
+
 int main (int argc , const char** argv )
 {
     gcStart();
@@ -87,8 +90,8 @@ int main (int argc , const char** argv )
     // *********
  
     argParseUsage ( usages ,
-        $CD" [options] [[-,/,--] args]",
-        $CD" [options]"
+        $PRG" [options] [[-,/,--] args]",
+        $PRG" [options]"
     ) ;
  
     argParseOption ( options ) 
@@ -106,7 +109,7 @@ int main (int argc , const char** argv )
     argParseInit( &argparse, options, usages, 0);
 
     argParseDescribe ( &argparse, 
-        "\n"$CD" intepreter.", 
+        "\n"$PRG" intepreter "$REV, 
         "\nby Claudio Daffra "$DATE"."
     );
 
@@ -134,8 +137,8 @@ int main (int argc , const char** argv )
 
         if ( g.fDebug )
         {
-            fwprintf ( stdout , L"\n%-20ls : [%018p] -> [%-20hs]" ,L"file input name"    ,g.pFileInput  	,g.fileInputName        ) ;
-            fwprintf ( stdout , L"\n%-20ls : [%018p] -> [%-20hs]" ,L"file output name"   ,g.pFileOutput  	,g.fileOutputName      ) ;                                                    
+            fwprintf ( stdout , L"\n%-20ls : [%018p] -> [%-20hs]" ,L"file input name"    ,g.pFileInput  	,g.fileInputName 	) ;
+            fwprintf ( stdout , L"\n%-20ls : [%018p] -> [%-20hs]" ,L"file output name"   ,g.pFileOutput  	,g.fileOutputName 	) ;                                                    
         }
 
         stdConsoleSetUTF8();
@@ -143,7 +146,11 @@ int main (int argc , const char** argv )
         if (g.fDebug) fwprintf ( stdout,L"\n\nConsole set to UTF-8\n") ;
 
     }
-   
+    
+    // *********
+    //  LEXER
+    // *********
+      
     // *********
     //  END
     // *********

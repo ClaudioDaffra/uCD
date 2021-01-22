@@ -233,36 +233,36 @@ char* cnvWStoS8( wchar_t* vIn )
 
 char* cnvR32toS8(float vIn)
 {
-	char vOutChar [17];
-	
-	#if defined(_MSC_VER)
-	_gcvt_s(vOutChar,sizeof(vOutChar),vIn,8);
-	#else
-	gcvt(vIn,8,vOutChar);
-	#endif
+    char vOutChar [17];
+    
+    #if defined(_MSC_VER)
+    _gcvt_s(vOutChar,sizeof(vOutChar),vIn,8);
+    #else
+    gcvt(vIn,8,vOutChar);
+    #endif
 
-	return strdup(vOutChar);
+    return strdup(vOutChar);
 }
 
 wchar_t* cnvR32toWS(float vIn)
 {
-	char vOutChar [17];
-	
-	#if defined(_MSC_VER)
-	_gcvt_s(vOutChar,sizeof(vOutChar),vIn,8);
-	#else
-	gcvt(vIn,8,vOutChar);
-	#endif
+    char vOutChar [17];
+    
+    #if defined(_MSC_VER)
+    _gcvt_s(vOutChar,sizeof(vOutChar),vIn,8);
+    #else
+    gcvt(vIn,8,vOutChar);
+    #endif
 
-	wchar_t vOut[17];
+    wchar_t vOut[17];
 
-	#if defined (_MSC_VER)
-	mbstowcs_s(NULL,vOut,sizeof(vOut)/2,vOutChar,sizeof(vOutChar));
-	#else
-	mbstowcs (vOut, vOutChar, sizeof(vOut)/2 );
-	#endif
+    #if defined (_MSC_VER)
+    mbstowcs_s(NULL,vOut,sizeof(vOut)/2,vOutChar,sizeof(vOutChar));
+    #else
+    mbstowcs (vOut, vOutChar, sizeof(vOut)/2 );
+    #endif
 
-	return wcsdup(vOut);
+    return wcsdup(vOut);
 }
 
 // ........................................................... convert real64 to S8 vIn
@@ -284,22 +284,22 @@ char* cnvR64toS8(double vIn)
 
 wchar_t* cnvR64toWS(double vIn)
 {
-	char vOutChar [26];
-	#if defined (_MSC_VER)
-	_gcvt_s(vOutChar,sizeof(vOutChar),vIn,17);
-	#else
-	gcvt(vIn,17,vOutChar);
-	#endif	
-	
-	wchar_t vOut[26];
-	
-	#if defined (_MSC_VER)
-	mbstowcs_s(NULL,vOut,sizeof(vOut)/2,vOutChar,sizeof(vOutChar));
-	#else
-	mbstowcs (vOut, vOutChar, sizeof(vOut)/2 );
-	#endif
-	
-	return wcsdup(vOut);
+    char vOutChar [26];
+    #if defined (_MSC_VER)
+    _gcvt_s(vOutChar,sizeof(vOutChar),vIn,17);
+    #else
+    gcvt(vIn,17,vOutChar);
+    #endif    
+    
+    wchar_t vOut[26];
+    
+    #if defined (_MSC_VER)
+    mbstowcs_s(NULL,vOut,sizeof(vOut)/2,vOutChar,sizeof(vOutChar));
+    #else
+    mbstowcs (vOut, vOutChar, sizeof(vOut)/2 );
+    #endif
+    
+    return wcsdup(vOut);
 }
 
 // ........................................................... convert I80 to S8 --
@@ -327,13 +327,13 @@ wchar_t* cnvI80toWS(long long vIn)
 
 char* cnvI32toS8(int vIn)
 {
-	char vOut [12];
-	
-	#if defined (_MSC_VER)
-	_itoa_s(vIn,vOut,sizeof(vOut),10);
-	#else
-	sprintf( vOut, "%d", vIn);
-	#endif
+    char vOut [12];
+    
+    #if defined (_MSC_VER)
+    _itoa_s(vIn,vOut,sizeof(vOut),10);
+    #else
+    sprintf( vOut, "%d", vIn);
+    #endif
 
     return strdup(vOut) ;
 }
@@ -341,9 +341,9 @@ char* cnvI32toS8(int vIn)
 wchar_t* cnvI32toWS(int vIn)
 {
 #if defined (_MSC_VER)
-    wchar_t vOut [12];	
+    wchar_t vOut [12];    
     _itow_s(vIn,vOut,sizeof(vOut)/2,10);
-    return wcsdup(vOut);	
+    return wcsdup(vOut);    
 #else
     const unsigned char maxBufferLen=32;
     wchar_t* vOut=gcCalloc(sizeof(wchar_t),maxBufferLen);
@@ -367,9 +367,9 @@ char* cnvI64toS8(long vIn)
 wchar_t* cnvI64toWS(long vIn)
 {
 #if defined (_MSC_VER)
-    wchar_t vOut [12];	
+    wchar_t vOut [12];    
     _itow_s(vIn,vOut,sizeof(vOut)/2,10);
-    return wcsdup(vOut);	
+    return wcsdup(vOut);    
 #else
     const unsigned char maxBufferLen=32;
     wchar_t* vOut=gcCalloc(sizeof(wchar_t),maxBufferLen);
@@ -412,229 +412,229 @@ wchar_t* cnvPTRtoWS(void* vIn)
 
 char *repl_str(const char *str, const char *from, const char *to) 
 {
-	/* Adjust each of the below values to suit your needs. */
+    /* Adjust each of the below values to suit your needs. */
 
-	/* Increment positions cache size initially by this number. */
-	size_t cache_sz_inc = 16;
-	/* Thereafter, each time capacity needs to be increased,
-	 * multiply the increment by this factor. */
-	const size_t cache_sz_inc_factor = 3;
-	/* But never increment capacity by more than this number. */
-	const size_t cache_sz_inc_max = 1048576;
+    /* Increment positions cache size initially by this number. */
+    size_t cache_sz_inc = 16;
+    /* Thereafter, each time capacity needs to be increased,
+     * multiply the increment by this factor. */
+    const size_t cache_sz_inc_factor = 3;
+    /* But never increment capacity by more than this number. */
+    const size_t cache_sz_inc_max = 1048576;
 
-	char *pret, *ret = NULL;
-	const char *pstr2, *pstr = str;
-	size_t i, count = 0;
-	#if (__STDC_VERSION__ >= 199901L)
-	uintptr_t *pos_cache_tmp, *pos_cache = NULL;
-	#else
-	ptrdiff_t *pos_cache_tmp, *pos_cache = NULL;
-	#endif
-	size_t cache_sz = 0;
-	size_t cpylen, orglen, retlen, tolen, fromlen = strlen(from);
+    char *pret, *ret = NULL;
+    const char *pstr2, *pstr = str;
+    size_t i, count = 0;
+    #if (__STDC_VERSION__ >= 199901L)
+    uintptr_t *pos_cache_tmp, *pos_cache = NULL;
+    #else
+    ptrdiff_t *pos_cache_tmp, *pos_cache = NULL;
+    #endif
+    size_t cache_sz = 0;
+    size_t cpylen, orglen, retlen, tolen, fromlen = strlen(from);
 
-	/* Find all matches and cache their positions. */
-	
-	pos_cache = gcMalloc(sizeof(*pos_cache) * cache_sz); // FIX MEMORY LEAK
-	
-	while ((pstr2 = strstr(pstr, from)) != NULL) {
-		count++;
+    /* Find all matches and cache their positions. */
+    
+    pos_cache = gcMalloc(sizeof(*pos_cache) * cache_sz); // FIX MEMORY LEAK
+    
+    while ((pstr2 = strstr(pstr, from)) != NULL) {
+        count++;
 
-		/* Increase the cache size when necessary. */
-		if (cache_sz < count) {
-			cache_sz += cache_sz_inc;
-			pos_cache_tmp = gcRealloc(pos_cache, sizeof(*pos_cache) * cache_sz);
-			if (pos_cache_tmp == NULL) {
-				goto end_repl_str;
-			} else pos_cache = pos_cache_tmp;
-			cache_sz_inc *= cache_sz_inc_factor;
-			if (cache_sz_inc > cache_sz_inc_max) {
-				cache_sz_inc = cache_sz_inc_max;
-			}
-		}
+        /* Increase the cache size when necessary. */
+        if (cache_sz < count) {
+            cache_sz += cache_sz_inc;
+            pos_cache_tmp = gcRealloc(pos_cache, sizeof(*pos_cache) * cache_sz);
+            if (pos_cache_tmp == NULL) {
+                goto end_repl_str;
+            } else pos_cache = pos_cache_tmp;
+            cache_sz_inc *= cache_sz_inc_factor;
+            if (cache_sz_inc > cache_sz_inc_max) {
+                cache_sz_inc = cache_sz_inc_max;
+            }
+        }
 
-		pos_cache[count-1] = pstr2 - str;
-		pstr = pstr2 + fromlen;
-	}
+        pos_cache[count-1] = pstr2 - str;
+        pstr = pstr2 + fromlen;
+    }
 
-	orglen = pstr - str + strlen(pstr);
+    orglen = pstr - str + strlen(pstr);
 
-	/* Allocate memory for the post-replacement string. */
-	if (count > 0) {
-		tolen = strlen(to);
-		retlen = orglen + (tolen - fromlen) * count;
-	} else	retlen = orglen;
-	ret = gcMalloc(retlen + 1);
-	if (ret == NULL) {
-		goto end_repl_str;
-	}
+    /* Allocate memory for the post-replacement string. */
+    if (count > 0) {
+        tolen = strlen(to);
+        retlen = orglen + (tolen - fromlen) * count;
+    } else    retlen = orglen;
+    ret = gcMalloc(retlen + 1);
+    if (ret == NULL) {
+        goto end_repl_str;
+    }
 
-	if (count == 0) {
-		/* If no matches, then just duplicate the string. */
-		strcpy(ret, str);
-	} else {
-		/* Otherwise, duplicate the string whilst performing
-		 * the replacements using the position cache. */
-		pret = ret;
-		memcpy(pret, str, pos_cache[0]);
-		pret += pos_cache[0];
-		for (i = 0; i < count; i++) {
-			memcpy(pret, to, tolen);
-			pret += tolen;
-			pstr = str + pos_cache[i] + fromlen;
-			cpylen = (i == count-1 ? orglen : pos_cache[i+1]) - pos_cache[i] - fromlen;
-			memcpy(pret, pstr, cpylen);
-			pret += cpylen;
-		}
-		ret[retlen] = '\0';
-	}
+    if (count == 0) {
+        /* If no matches, then just duplicate the string. */
+        strcpy(ret, str);
+    } else {
+        /* Otherwise, duplicate the string whilst performing
+         * the replacements using the position cache. */
+        pret = ret;
+        memcpy(pret, str, pos_cache[0]);
+        pret += pos_cache[0];
+        for (i = 0; i < count; i++) {
+            memcpy(pret, to, tolen);
+            pret += tolen;
+            pstr = str + pos_cache[i] + fromlen;
+            cpylen = (i == count-1 ? orglen : pos_cache[i+1]) - pos_cache[i] - fromlen;
+            memcpy(pret, pstr, cpylen);
+            pret += cpylen;
+        }
+        ret[retlen] = '\0';
+    }
 
 end_repl_str:
-	/* gcFree the cache and return the post-replacement string,
-	 * which will be NULL in the event of an error. */
-	gcFree(pos_cache);
-	return ret;
+    /* gcFree the cache and return the post-replacement string,
+     * which will be NULL in the event of an error. */
+    gcFree(pos_cache);
+    return ret;
 }
 
 wchar_t *repl_wcs(const wchar_t *str, const wchar_t *from, const wchar_t *to) 
 {
-	/* Adjust each of the below values to suit your needs. */
+    /* Adjust each of the below values to suit your needs. */
 
-	/* Increment positions cache size initially by this number. */
-	size_t cache_sz_inc = 16;
-	/* Thereafter, each time capacity needs to be increased,
-	 * multiply the increment by this factor. */
-	const size_t cache_sz_inc_factor = 3;
-	/* But never increment capacity by more than this number. */
-	const size_t cache_sz_inc_max = 1048576;
+    /* Increment positions cache size initially by this number. */
+    size_t cache_sz_inc = 16;
+    /* Thereafter, each time capacity needs to be increased,
+     * multiply the increment by this factor. */
+    const size_t cache_sz_inc_factor = 3;
+    /* But never increment capacity by more than this number. */
+    const size_t cache_sz_inc_max = 1048576;
 
-	wchar_t *pret, *ret = NULL;
-	const wchar_t *pstr2, *pstr = str;
-	size_t i, count = 0;
-	#if (__STDC_VERSION__ >= 199901L)
-	uintptr_t *pos_cache_tmp, *pos_cache = NULL;
-	#else
-	ptrdiff_t *pos_cache_tmp, *pos_cache = NULL;
-	#endif
-	size_t cache_sz = 0;
-	size_t cpylen, orglen, retlen, tolen, fromlen = wcslen(from);
+    wchar_t *pret, *ret = NULL;
+    const wchar_t *pstr2, *pstr = str;
+    size_t i, count = 0;
+    #if (__STDC_VERSION__ >= 199901L)
+    uintptr_t *pos_cache_tmp, *pos_cache = NULL;
+    #else
+    ptrdiff_t *pos_cache_tmp, *pos_cache = NULL;
+    #endif
+    size_t cache_sz = 0;
+    size_t cpylen, orglen, retlen, tolen, fromlen = wcslen(from);
 
-	/* Find all matches and cache their positions. */
-	
-	pos_cache = gcMalloc(sizeof(*pos_cache) * cache_sz); // FIX MEMORY LEAK
-		
-	while ((pstr2 = wcsstr(pstr, from)) != NULL) {
-		count++;
+    /* Find all matches and cache their positions. */
+    
+    pos_cache = gcMalloc(sizeof(*pos_cache) * cache_sz); // FIX MEMORY LEAK
+        
+    while ((pstr2 = wcsstr(pstr, from)) != NULL) {
+        count++;
 
-		/* Increase the cache size when necessary. */
-		if (cache_sz < count) {
-			cache_sz += cache_sz_inc;
-			pos_cache_tmp = gcRealloc(pos_cache, sizeof(*pos_cache) * cache_sz);
-			if (pos_cache_tmp == NULL) {
-				goto end_repl_wcs;
-			} else pos_cache = pos_cache_tmp;
-			cache_sz_inc *= cache_sz_inc_factor;
-			if (cache_sz_inc > cache_sz_inc_max) {
-				cache_sz_inc = cache_sz_inc_max;
-			}
-		}
+        /* Increase the cache size when necessary. */
+        if (cache_sz < count) {
+            cache_sz += cache_sz_inc;
+            pos_cache_tmp = gcRealloc(pos_cache, sizeof(*pos_cache) * cache_sz);
+            if (pos_cache_tmp == NULL) {
+                goto end_repl_wcs;
+            } else pos_cache = pos_cache_tmp;
+            cache_sz_inc *= cache_sz_inc_factor;
+            if (cache_sz_inc > cache_sz_inc_max) {
+                cache_sz_inc = cache_sz_inc_max;
+            }
+        }
 
-		pos_cache[count-1] = pstr2 - str;
-		pstr = pstr2 + fromlen;
-	}
+        pos_cache[count-1] = pstr2 - str;
+        pstr = pstr2 + fromlen;
+    }
 
-	orglen = pstr - str + wcslen(pstr);
+    orglen = pstr - str + wcslen(pstr);
 
-	/* Allocate memory for the post-replacement string. */
-	if (count > 0) {
-		tolen = wcslen(to);
-		retlen = orglen + (tolen - fromlen) * count;
-	} else	retlen = orglen;
-	ret = gcMalloc((retlen + 1) * sizeof(wchar_t));
-	if (ret == NULL) {
-		goto end_repl_wcs;
-	}
+    /* Allocate memory for the post-replacement string. */
+    if (count > 0) {
+        tolen = wcslen(to);
+        retlen = orglen + (tolen - fromlen) * count;
+    } else    retlen = orglen;
+    ret = gcMalloc((retlen + 1) * sizeof(wchar_t));
+    if (ret == NULL) {
+        goto end_repl_wcs;
+    }
 
-	if (count == 0) {
-		/* If no matches, then just duplicate the string. */
-		wcscpy(ret, str);
-	} else {
-		/* Otherwise, duplicate the string whilst performing
-		 * the replacements using the position cache. */
-		pret = ret;
-		wmemcpy(pret, str, pos_cache[0]);
-		pret += pos_cache[0];
-		for (i = 0; i < count; i++) {
-			wmemcpy(pret, to, tolen);
-			pret += tolen;
-			pstr = str + pos_cache[i] + fromlen;
-			cpylen = (i == count-1 ? orglen : pos_cache[i+1]) - pos_cache[i] - fromlen;
-			wmemcpy(pret, pstr, cpylen);
-			pret += cpylen;
-		}
-		ret[retlen] = L'\0';
-	}
+    if (count == 0) {
+        /* If no matches, then just duplicate the string. */
+        wcscpy(ret, str);
+    } else {
+        /* Otherwise, duplicate the string whilst performing
+         * the replacements using the position cache. */
+        pret = ret;
+        wmemcpy(pret, str, pos_cache[0]);
+        pret += pos_cache[0];
+        for (i = 0; i < count; i++) {
+            wmemcpy(pret, to, tolen);
+            pret += tolen;
+            pstr = str + pos_cache[i] + fromlen;
+            cpylen = (i == count-1 ? orglen : pos_cache[i+1]) - pos_cache[i] - fromlen;
+            wmemcpy(pret, pstr, cpylen);
+            pret += cpylen;
+        }
+        ret[retlen] = L'\0';
+    }
 
 end_repl_wcs:
-	/* gcFree the cache and return the post-replacement string,
-	 * which will be NULL in the event of an error. */
-	gcFree(pos_cache);
-	return ret;
+    /* gcFree the cache and return the post-replacement string,
+     * which will be NULL in the event of an error. */
+    gcFree(pos_cache);
+    return ret;
 }
 
 wchar_t* wsFormat_(const wchar_t* format,...) 
 {
-	va_list args,a2 ;
-	va_start (args  , format );
-	va_start (a2    , format );
+    va_list args,a2 ;
+    va_start (args  , format );
+    va_start (a2    , format );
 
-	// calcola la lunghezza della stringa 
-	wchar_t buffer[gcMaxStringBuffer];
+    // calcola la lunghezza della stringa 
+    wchar_t buffer[gcMaxStringBuffer];
 
-	int len = -1;
-	
-	len=vswprintf(buffer,gcMaxStringBuffer,format, args ); 
-	assert(len>=0);
+    int len = -1;
+    
+    len=vswprintf(buffer,gcMaxStringBuffer,format, args ); 
+    assert(len>=0);
 
-	wchar_t* temp  = gcMalloc( (len+1)*sizeof(wchar_t) );
-	assert(temp!=NULL);
-	
-	// formattala
-	len=vswprintf( temp , len+1, format, a2 );     
-	assert(len>=0); 
-	
-	va_end (args);
-	va_end (a2); 
-	
-	return temp;          
+    wchar_t* temp  = gcMalloc( (len+1)*sizeof(wchar_t) );
+    assert(temp!=NULL);
+    
+    // formattala
+    len=vswprintf( temp , len+1, format, a2 );     
+    assert(len>=0); 
+    
+    va_end (args);
+    va_end (a2); 
+    
+    return temp;          
 }
     
 
 char* s8Format_(const char* format,...) 
 {
-	va_list args,a2 ;
-	va_start (args  , format );
-	va_start (a2    , format );
+    va_list args,a2 ;
+    va_start (args  , format );
+    va_start (a2    , format );
 
-	// calcola la lunghezza della stringa 
-	char buffer[gcMaxStringBuffer];
+    // calcola la lunghezza della stringa 
+    char buffer[gcMaxStringBuffer];
 
-	int len = -1;
-	
-	len=vsprintf(buffer,format, args ); 
-	assert(len>=0);
+    int len = -1;
+    
+    len=vsprintf(buffer,format, args ); 
+    assert(len>=0);
 
-	char* temp  = gcMalloc( (len+1)*sizeof(wchar_t) );
-	assert(temp!=NULL);
-	
-	// formattala
-	len=vsprintf( temp , format, a2 );     
-	assert(len>=0); 
-	
-	va_end (args);
-	va_end (a2); 
-	
-	return temp;          
+    char* temp  = gcMalloc( (len+1)*sizeof(wchar_t) );
+    assert(temp!=NULL);
+    
+    // formattala
+    len=vsprintf( temp , format, a2 );     
+    assert(len>=0); 
+    
+    va_end (args);
+    va_end (a2); 
+    
+    return temp;          
 }
  
 
