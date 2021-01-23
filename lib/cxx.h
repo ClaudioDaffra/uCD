@@ -52,7 +52,7 @@
 #include "gc.h"
 #include "stdio.h"
 #include "argParse.h"
-#include "hashMap.h"
+#include "hmap.h"
 #include "iterator.h"
 #include "mvector.h"
 #include "mstack.h"
@@ -104,6 +104,13 @@
 
 #define wdebug(...) fwprintf(stderr,__VA_ARGS__)
 #define debug(...)  fprintf (stderr,__VA_ARGS__)
+
+// questo per evitare warning comparazione ( signed wchar_t / unsigned wchar_t )
+#define _WEOF (wchar_t)WEOF
+
+// (not standard) : error: use of undeclared identifier 'errno_t'
+typedef int errno_t;
+
 
 #endif
 

@@ -1,14 +1,14 @@
 
 #include "lexer.h"
 
-/*
- 
+
 // n.b.
 //
 // il calcolo riga e la colonna viene effettuato con row,col+1, per tanto occorrerà visualizzare
 // il risultato con row,col-1 e passarlo così  anche al parser 
 
 sym_t       sym ;
+
 
 // var global main.c
 
@@ -33,6 +33,7 @@ mapKW_t mapArrayKW[] =
     {   NULL        , 0                 }    ,
 } ;
 
+
 // *********
 //  LEXER   
 // *********
@@ -52,11 +53,11 @@ int lexerInclude( plexer_t this , char * fileInputName )
         
         stdFileWOpen ( &this->pFileOutputLexer , this->fileNameOutputLexer , "w+","ccs=UTF-8" ) ;
         
-        if ( this->pFileOutputLexer != NULL )
+        if ( this->pFileOutputLexer != NULL ) // 1234
         {
-            fwprintf ( this->pFileOutputLexer , L"\n%-20ls : [%018p] -> [%-20hs]\n" 
+            fwprintf ( this->pFileOutputLexer , L"\n%-20ls : [0x%x] -> [%-20hs]\n" 
                 ,L"file lexer"        
-                ,this->pFileOutputLexer 
+                ,(unsigned long)this->pFileOutputLexer 
                 ,this->fileNameOutputLexer 
             ) ;
         }
@@ -82,18 +83,9 @@ int lexerInclude( plexer_t this , char * fileInputName )
         return err=1;
     }
 
-    // #3 open file MEM or STREAM
-    
-    if (this->fString==1)
-    {
-		size_t	size = wcslen( this->pString );
-		if ( this->pString==NULL ) err=1;
-		if ( size==0 ) err=1;
-	}
-	else
-	{
-		err = cdFileWOpen ( &fi , fileInputName , "r" , "ccs=UTF-8" ) ; 
-	}
+    // #3 open file STREAM
+
+	err = cdFileWOpen ( &fi , fileInputName , "r" , "ccs=UTF-8" ) ; 
 
     if (err)
     { 
@@ -103,7 +95,7 @@ int lexerInclude( plexer_t this , char * fileInputName )
         #else
         swprintf ( buffer,16,L" ERR_T <%d>",(uint32_t)err) ;
         #endif
-        $lexer ( error,checkFileExists,fileNotFound,tempLexBuffer->row,tempLexBuffer->col,$2WS(fileInputName),buffer );
+        $lexer ( error,checkFileExists,fileNotFound,tempLexBuffer->row,tempLexBuffer->col,cnvS8toWS(fileInputName),buffer );
         this->pfileInput=NULL;        
         return err;
     }
@@ -112,7 +104,7 @@ int lexerInclude( plexer_t this , char * fileInputName )
     
     this->row               =   1 ;
     this->col               =   0 ;
-    this->fileInputName     =   $2WS(fileInputName) ;    
+    this->fileInputName     =   cnvS8toWS(fileInputName) ;    
     this->pfileInput        =   fi ;
 
     return 0 ;
@@ -120,46 +112,26 @@ int lexerInclude( plexer_t this , char * fileInputName )
 
 // ......................................................... lexer get char
 
-
-
 wchar_t fgetwc2( plexer_t this )
 {
 	wchar_t CAR;
-	if ( this->fString == 1 )
-	{
-		CAR = (wchar_t)*this->pString++;
-		if ( CAR == L'\0' ) CAR=_WEOF ;
-	}
-	else
-	{
-		CAR = fgetwc ( this->pfileInput  ) ;
-	}
+
+	CAR = fgetwc ( this->pfileInput  ) ;
+
 	return CAR ;
 }
 
 void fungetwc2( plexer_t this )
 {
-	if ( this->fString == 1 )
-	{
-		--this->pString;
-	}
-	else
-	{
-		ungetwc ( this->c1 , this->pfileInput ) ;
-	}
-}
 
+  ungetwc ( this->c1 , this->pfileInput ) ;
+
+}
 
 wchar_t lexerGetChar( plexer_t this )
 {
-	if ( this->fString == 1 )
-	{
-		if ( this->pString == NULL ) return _WEOF ;
-	}
-	else
-	{
-		if ( this->pfileInput==NULL ) return _WEOF ;
-	} 
+
+	if ( this->pfileInput==NULL ) return _WEOF ;
 
     // save for $prev
     
@@ -207,6 +179,7 @@ wchar_t lexerGetChar( plexer_t this )
     
     return this->c0  ;
 }
+
 
 // ......................................................... lexerPrintInfoChar
 
@@ -504,7 +477,7 @@ wchar_t lexerGetCharacter( plexer_t this )
 
     return C ;
 }
-
+/*
 // ......................................................... mcpp directive
 
 int lexerMcpp( plexer_t this ) 
@@ -567,6 +540,7 @@ int lexerMcpp( plexer_t this )
 	}
   return 0 ;
 }
+*/
 
 // ***********
 // Lexer Scan
@@ -591,13 +565,12 @@ int lexerScan( plexer_t this )
         this->tokenSize=0; // reinizia con un nuovo token
 
         // ....................................... check file include
-        
-        if (this->fString==1)
-			if ( this->pfileInput==NULL ) 
-			{
-				this->sym = sym_end    ;
-				return 0 ;
-			}
+
+		if ( this->pfileInput==NULL ) 
+		{
+			this->sym = sym_end    ;
+			return 0 ;
+		}
         
         // ....................................... get char  
 
@@ -605,7 +578,7 @@ int lexerScan( plexer_t this )
 
         // ....................................... #line 123 "file"
         
-        if ( lexerMcpp( this )==1 ) continue ;
+        //if ( lexerMcpp( this )==1 ) continue ;
         
         // ....................................... buffer terminato 
         
@@ -623,7 +596,7 @@ int lexerScan( plexer_t this )
         this->col_start = this->col ; 
 
         // ....................................... DEMO #include lexer
-        
+/*        
         if (  this->c0==L'X' )
         {
            lexerInclude( "test/b.txt" ) ;
@@ -634,7 +607,7 @@ int lexerScan( plexer_t this )
            lexerInclude( "test/c.txt" ) ;
            continue ;
         }
-
+*/
         //......................... skip blank
 
         if ( iswblank($c0) || iswcntrl(this->c0) || this->c0==L'\u2003' )
@@ -777,7 +750,7 @@ int lexerScan( plexer_t this )
             
             return 1 ;
         }
-        
+      
         // ## .......................................  CHAR
         
         if ( $c0 == L'\'' && $c1 == L'\'' )
@@ -951,7 +924,7 @@ int lexerScan( plexer_t this )
     // l'ultimo WEOF determina END lexer -> sym_end ;
 
     // chiudi il file sullo stack
-    if (this->fString==0) if (this->pfileInput!=NULL) fclose( this->pfileInput ) ; // 1234 to check
+    if (this->pfileInput!=NULL) fclose( this->pfileInput ) ;
     
     if (stackSize(this->sLexBuffer)>=1)
     {
@@ -1027,9 +1000,7 @@ plexer_t      lexerAlloc            ( void )
         pLexer->sym                  = sym_end   ;
         pLexer->token[0]             = 0         ;
         pLexer->tokenSize            = 0         ;
-        pLexer->value.integer        = 0         ; // union
-        pLexer->fString			     = 0		 ; // read from string
-        pLexer->pString			     = NULL		 ; //        
+        pLexer->value.integer        = 0         ; // union    
     }
 
     return pLexer ;
@@ -1055,7 +1026,7 @@ void lexerCtor( plexer_t this )
 {
     // init stack
     
-    stackNew(this->sLexBuffer,128);
+    stackAlloc(this->sLexBuffer,128);
 
     // init keyword map
 
@@ -1067,6 +1038,7 @@ void lexerCtor( plexer_t this )
     #endif
     this->mapKW = whmapDef ( gcComparepWStrC );
     int count=0;
+    
     while ( mapArrayKW[count].kw != NULL )
     {
        // wprintf ( L"\n ## %ls %d.",mapArrayKW[count].kw,mapArrayKW[count].sym );
@@ -1077,24 +1049,21 @@ void lexerCtor( plexer_t this )
         );
         ++count;
     }
-    #ifdef __GNUC__
-    #pragma GCC diagnostic pop
-    #endif
-    
+	//wprintf ( L"\n");
 }
 
 // ......................................................... lexer destructor
 
 void lexerDtor( plexer_t this )
 {
-    stackFree ( this->sLexBuffer ) ;
+    stackDealloc ( this->sLexBuffer ) ;
 
-    whmapDelete ( this->mapKW ) ;
-    
+	whmapDelete ( this->mapKW ) ;
+
     if (this->fDebug)     if ( this->pFileOutputLexer ) fclose(this->pFileOutputLexer);
-
 }
 
+/*
 // ......................................................... lexer token new
 
 ptoken_t lexerTokenNew( plexer_t this ) 

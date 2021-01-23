@@ -14,7 +14,7 @@ LDIR=lib
 
 LIBS =  argParse.obj	\
 		gc.obj			\
-		hashMap.obj		\
+		hmap.obj		\
 		stdio.obj		\
 		string.obj
 				

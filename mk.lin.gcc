@@ -14,7 +14,7 @@ LDIR=lib
 
 LIBS =  argParse.o	\
 		gc.o 		\
-		hashMap.o	\
+		hmap.o	\
 		stdio.o		\
 		string.o
 				

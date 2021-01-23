@@ -38,6 +38,7 @@ void*           gcRealloc_   (struct gc_s* gc , void* ptr, size_t size) ;
 void            gcPrint_     (struct gc_s* gc );
 void*           gcFileOpen_  (struct gc_s* gc ,char* fileName, char* action);
 FILE*           gcFileTemp   (void) ;
+void* 			gcPop_		 (struct gc_s* gc , void* ptr ) ;
 
 #define         gcStart(...)            GC=gc_new(0)/*__VA_ARGS__*/
 #define         gcStop(...)             gc_del(GC)/*__VA_ARGS__*/
@@ -48,6 +49,7 @@ FILE*           gcFileTemp   (void) ;
 #define         gcPrint(...)            gcPrint_(GC)/*__VA_ARGS__*/
 #define         gcFileOpen(pf,mode)     gcFileOpen_(GC,pf,mode)
 #define         gcFileClose(ptr)        gcFree_(GC,ptr)
+#define         gcPop(ptr)        		gcPop_(GC,ptr)
 
 extern struct gc_s* GC ;
 

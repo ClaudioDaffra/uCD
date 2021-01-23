@@ -318,7 +318,23 @@ void* gcCalloc_( struct gc_s* gc , size_t SIZEOF , size_t size )
     return ptr ;
 }
 
-// ........................................... gc free
+// ........................................... gc pop
+
+void* gcPop_( struct gc_s* gc , void* ptr )
+{
+    if ( gcFind(gc,ptr) ) 
+    {
+        if (*gc->dtor!=NULL)
+        {
+            //(*gc->dtor)(ptr);
+            
+            *gc->dtor=NULL ;
+
+            ptr=NULL;
+        }
+    }
+    return ptr;
+}
 
 void* gcFree_( struct gc_s* gc , void* ptr )
 {

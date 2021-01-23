@@ -5,7 +5,7 @@ SOURCES = \
 	lib\argParse.c	\
 	lib\stdio.c		\
 	lib\gc.c		\
-	lib\hashMap.c	\
+	lib\hmap.c	\
 	lib\string.c	\
 	src\lexer.c     \
 	src\error.c		\

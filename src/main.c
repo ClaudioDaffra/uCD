@@ -2,6 +2,7 @@
 #include "../lib/cxx.h"
 #include "global.h"
 #include "error.h"
+#include "lexer.h"
 
 // *********
 //  GLOBAL
@@ -147,10 +148,32 @@ int main (int argc , const char** argv )
 
     }
     
-    // *********
-    //  LEXER
-    // *********
-      
+	// *********
+	//  LEXER
+	// *********
+
+	plexer_t lexer = lexerAlloc();
+
+	lexerCtor(lexer);
+
+	if ( g.fDebug == 1 ) lexer->fDebug = 1 ;
+
+	// LEXER
+	
+		lexerInclude ( lexer , g.fileInputName ) ;
+		
+		for(;;)
+		{
+			lexerGetToken(lexer) ; // ottien il token
+			if ( lexer->sym == sym_end ) break; 
+		}
+		
+	// END LEXER
+            
+	lexerDtor(lexer);
+
+	lexerDealloc(lexer);
+		                 
     // *********
     //  END
     // *********

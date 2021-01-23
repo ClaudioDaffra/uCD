@@ -193,7 +193,7 @@ int printErrLog(void); // error.printLog
         ) ;
         
 // ...................................................................................... lexer
-/*
+
 #define $lexer( TYPE,ACTION,ERRMESSAGE,ROW,COL,FILE,EXTRA )\
         pushErrLog(\
             sender_lexer,\
@@ -253,7 +253,7 @@ int printErrLog(void); // error.printLog
             gcWcsDup((wchar_t*)this->fileInputName),\
             gcWcsDup((wchar_t*)EXTRA)\
         ) ;
-*/
+
 #endif
 
 extern vector_errLog_t  vErrLog 	; // error.c

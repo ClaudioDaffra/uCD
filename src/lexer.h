@@ -2,24 +2,13 @@
 #define cdLexer
 
 #include "../lib/cxx.h"
-
-/*
+#include "global.h"
+#include "error.h"
 #include "token.h"
 
 extern sym_t       sym ;
 
-// questo per evitare warning comparazione ( signed wchar_t / unsigned wchar_t )
-#define _WEOF (wchar_t)WEOF
-
-// (not standard ) :error: use of undeclared identifier 'errno_t'
-typedef int errno_t;
-
 //
-
-wchar_t*    cdConvertFromStringToWString     ( const char* _ansi_string ) ;
-int         cdFileWOpen                      ( FILE** pf,char* fileName,const char* flag,const char* ccs ) ; 
-
-#define $2WS(X) cdConvertFromStringToWString(X)
 
 // *********
 //  LEXER
@@ -53,6 +42,8 @@ typedef struct mapKW_s
 extern struct mapKW_s mapArrayKW[] ;
 
 // lexer : fields
+
+stackTypeDef(lexerBuffer_t,sLexBuffer) ; // stack_sLexBuffer_t
 
 struct lexer_s
 {
@@ -97,17 +88,16 @@ struct lexer_s
     
     //
 
-    stackStruct(lexerBuffer_t,sLexBuffer) ; // stack include file
+    stack_sLexBuffer_t sLexBuffer 	;
     
     whmapType(mapKW) ; // mappa keyword
-    
-     int 	 fString					;	// read from memory
-    wchar_t* pString					;	// source in memory      
+       
 } ;
 
 typedef struct lexer_s lexer_t ;
 
 typedef struct lexer_s* plexer_t ;
+
 
 // lexer : macro
 
@@ -115,8 +105,8 @@ typedef struct lexer_s* plexer_t ;
 #define $c0             (this->c0)
 #define $c1             (this->c1)
 #define $pushToken(C)   if ( ! lexerPushToken(this,C) ) return 0;
-#define $prev                do { ungetwc ( $c0    ,this->pfileInput ) ; this->col=this->old_col; this->row=this->old_row; } while(0);
-#define lexerUnGetChar(C)    do { ungetwc ( C    ,this->pfileInput ) ; this->col=this->old_col; this->row=this->old_row;   } while(0);
+#define $prev                do { ungetwc ( $c0  ,this->pfileInput ) ; this->col=this->old_col; this->row=this->old_row; } while(0);
+#define lexerUnGetChar(C)    do { ungetwc ( C    ,this->pfileInput ) ; this->col=this->old_col; this->row=this->old_row; } while(0);
 
 // ............................... pToken
 
@@ -165,7 +155,7 @@ ptoken_t 	lexerTokenNew		 ( plexer_t this ) ;
 
 //
 
-*/
+
 
 #endif
 
