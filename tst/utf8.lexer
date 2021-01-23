@@ -1,5 +1,5 @@
 
-file lexer           : [0x4ce73ef0] -> [tst/utf8.lexer      ]
+file lexer           : [0x4a56170] -> [tst/utf8.lexer      ]
 
 # Lexer  -> scanning ...
 

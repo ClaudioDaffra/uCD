@@ -1,90 +1,125 @@
+#ifndef gc_
+#define gc_
 
-#ifndef gcGarbageCollector
-#define gcGarbageCollector
+#ifdef __linux__
+#define _GNU_SOURCE 
+#endif
 
-#include "cxx.h"
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h>
+#include <wchar.h>
+#include <assert.h>
+#include <stdint.h>
 
+// ................................................................... enum pointer type
 
-typedef void(*gcHashDictValue_t)(void*);
-
-typedef int gcKeyLength_t ;
-
-struct gcKeyNode_s 
+typedef enum gc_pointer_e
 {
-    struct gcKeyNode_s *    next;
-    char *                  key;
-    gcKeyLength_t           len;
-    gcHashDictValue_t       dtor;
-};
+    gc_generic  ,
+    gc_file
 
-struct gc_s 
-{
-    struct gcKeyNode_s **    table;
-    int                      length, count;
-    double                   growth_treshold;
-    double                   growth_factor;
-    gcHashDictValue_t *      dtor;
-};
+} gc_pointer_t ;
 
-void            cb_fclose    (void*ptr) ;
-struct gc_s*    gc_new       (int initial_size);
-void            gc_del       (struct gc_s* gc);
-int             gcAdd        (struct gc_s* gc,void* key,gcHashDictValue_t dtor);
-int             gc_find      (struct gc_s* gc, void *key, int keyn) ;
-void*           gcMalloc_    (struct gc_s* gc , size_t size) ;
-void*           gcCalloc_    (struct gc_s* gc , size_t SIZEOF , size_t size) ;
-void*           gcFree_      (struct gc_s* gc , void* ptr) ;
-void*           gcRealloc_   (struct gc_s* gc , void* ptr, size_t size) ;
-void            gcPrint_     (struct gc_s* gc );
-void*           gcFileOpen_  (struct gc_s* gc ,char* fileName, char* action);
-FILE*           gcFileTemp   (void) ;
-void* 			gcPop_		 (struct gc_s* gc , void* ptr ) ;
+// ................................................................... main struct 
+ 
+typedef struct gcNode_s 
+{ 
+    void*               pointer             ; 
+    struct gcNode_s *   left                ; 
+    struct gcNode_s *   right               ;
+    gc_pointer_t        type                ;
+    void (*destructor)(struct gcNode_s *p)  ; 
+       
+} gcNode_t ; 
+ 
+struct gcNode_s *   gcNewNode       (void*  item                                        ) ;
 
-#define         gcStart(...)            GC=gc_new(0)/*__VA_ARGS__*/
-#define         gcStop(...)             gc_del(GC)/*__VA_ARGS__*/
-#define         gcRealloc(ptr,size)     gcRealloc_(GC,ptr,size)
-#define         gcFree(ptr)             gcFree_(GC,ptr)
-#define         gcMalloc(size)          gcMalloc_(GC,size)
-#define         gcCalloc(SIZEOF,size)   gcCalloc_(GC,SIZEOF,size)
-#define         gcPrint(...)            gcPrint_(GC)/*__VA_ARGS__*/
-#define         gcFileOpen(pf,mode)     gcFileOpen_(GC,pf,mode)
-#define         gcFileClose(ptr)        gcFree_(GC,ptr)
-#define         gcPop(ptr)        		gcPop_(GC,ptr)
+void                gcPrint_        (struct gcNode_s *  root                            ) ;
+void                gcWPrint_       (struct gcNode_s *  root                            ) ;
 
-extern struct gc_s* GC ;
+struct gcNode_s *   gcPushBack      (struct gcNode_s *  node    ,   void* pointer       ) ;
+void                gcPopBack_      (struct gcNode_s *  node    ,   void *pointer       ) ;
+void                gcStop_         (struct gcNode_s *  node                            ) ;
+void*               gcPush_         (struct gcNode_s *  gc_root ,   void*P              ) ;
+void                gcPop_          (struct gcNode_s *  gc_root ,   void*P              ) ;
+void*               gcRealloc_      (void*              P       ,   size_t dim          ) ;
 
-// ......................................... [] dup functioon
 
-char*       gcStrDup    (char *s ) ;
+extern struct gcNode_s *gc_root ;
 
-wchar_t*    gcWcsDup    (wchar_t *s ) ;
+// push : insert node and pointer
+// free : delete node and pointer
+// pop  : delete node -----------
 
-int*        gcIntDup    (int val) ;
+#define gcPrint()               gcPrint_(gc_root)
+#define gcWPrint()              gcWPrint_(gc_root)
 
-double*     gcDoubleDup (double val )  ;
+#define gcStart()               gc_root = NULL;
+
+#if defined(__MINGW32__) || defined(__MINGW64__)
+#define fcloseall _fcloseall
+#define flushall _flushall
+#endif 
+
+//extern void cdEraseTemp(void) ;
+
+#define gcStop()\
+do {\
+    gcStop_(gc_root);\
+    /*fcloseall();*/\
+    /*cdEraseTemp()*/;\
+}while(0);
+ 
+#define gcPush(P)               gcPush_(gc_root,(P))
+#define gcPop(P)                gcPop_(gc_root,(P))
+
+#define gcFree(P)               gcPopBack_(gc_root,(P))  
+#define gcMalloc(...)           gcPush( malloc(  __VA_ARGS__ ) ) 
+#define gcRealloc( P, ... )     gcRealloc_((P),__VA_ARGS__)
+#define gcCalloc(N,...)         gcPush( calloc(  N,__VA_ARGS__ ) ) 
+
+/**/
+
+// ................................................................... wrapper strdup
+char*    gcStrDup( char *s ) ;
+#define strdup gcStrDup
+
+// ................................................................... wrapper wcsdup
+wchar_t* gcWcsDup( wchar_t *s ) ;
+#define wcsdup gcWcsDup
+
+// ................................................................... int dup
+int* gcIntDup(int val) ;
+
+// ................................................................... double dup
+double* gcDoubleDup ( double val ) ;
+
+/**/
 
 // ......................................... [] compare functioon
 
-int    gcCompareInt        ( const void * a, const void * b ) ;
+int gcCompareInt        ( const void * a, const void * b ) ;
 
-int    gcCompareFloat      ( const void * a, const void * b ) ;
+int gcCompareFloat      ( const void * a, const void * b ) ;
 
-int    gcCompareDouble     ( const void * a, const void * b ) ;
+int gcCompareDouble     ( const void * a, const void * b ) ;
 
-int    gcCompareFloatAsInt ( const void * a, const void * b ) ;
+int gcCompareFloatAsInt ( const void * a, const void * b ) ;
 
-int gcCompareDoubleAsInt   ( const void * a, const void * b ) ;
+int gcCompareDoubleAsInt( const void * a, const void * b ) ;
 
-int gcCompareStrC          ( const void * a, const void * b ) ;
+int gcCompareStrC       ( const void * a, const void * b ) ;
 
-int gcCompareWStrC         ( const void * a, const void * b ) ;
+int gcCompareWStrC      ( const void * a, const void * b ) ;
 
-int gcComparepStrC         ( const void * a, const void * b ) ;
+int gcComparepStrC      ( const void * a, const void * b ) ;
 
-int gcComparepWStrC        ( const void * a, const void * b ) ;
+int gcComparepWStrC     ( const void * a, const void * b ) ;
 
+/**/
 
-#endif
+#endif  /* gc_ */
 
 
 

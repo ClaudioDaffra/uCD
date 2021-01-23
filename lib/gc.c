@@ -1,480 +1,182 @@
 
 #include "gc.h"
 
-#define gcHashFunc gcMeyan
+static int gcPopButNotFree=0 ;  // flag elimina ma non dealloca
 
-// global
+struct gcNode_s *gc_root ;
 
-struct gc_s* GC=NULL ;
+// ................................................................... new
+struct gcNode_s *gcNewNode(void* item) 
+{ 
+    struct gcNode_s *temp =  (struct gcNode_s *)malloc(sizeof(struct gcNode_s )); 
 
-// n.b.
-//
-// 1) I confronti vengono fatti con memcmp .
-// 2) Le chiavi vengono duplicate all'iterno della tavola 
-//
+    temp->pointer   = item; 
+    temp->left      = NULL;
+    temp->right     = NULL; 
+    temp->type      = gc_generic;
+    temp->destructor= NULL;
 
-// ........................................... gc hash function
-
-static 
-inline uint32_t gcMeyan(const char *key, int count) 
-{
-    typedef uint32_t* P;
-    uint32_t h = 0x811c9dc5;
-    while (count >= 8) {
-    h = (h ^ ((((*(P)key) << 5) | ((*(P)key) >> 27)) ^ *(P)(key + 4))) * 0xad3e7;
-    count -= 8;
-    key += 8;
-    }
-    #define tmp h = (h ^ *(uint16_t*)key) * 0xad3e7; key += 2;
-    if (count & 4) { tmp tmp }
-    if (count & 2) { tmp }
-    if (count & 1) { h = (h ^ *key) * 0xad3e7; }
-    #undef tmp
-    return h ^ (h >> 16);
-}
-
-// ........................................... gc new node
-
-struct gcKeyNode_s *gc_node_new(char*k, int l) 
-{
-    if(GC==NULL) { printf("!! GC==NULL\n"); exit(-1);} ;
-    
-    struct gcKeyNode_s *node = (struct gcKeyNode_s *) malloc(sizeof(struct gcKeyNode_s));
-    node->len = l;
-    node->key = (char*) malloc(l);
-    memcpy(node->key, k, l);
-    node->next = 0;
-    node->dtor = NULL;
-    return node;
-}
-
-// ........................................... gc delete node
-
-static
-void gc_node_del(struct gcKeyNode_s *node) 
-{
-
-    if ( node->dtor!=NULL )
-    { 
-        union {
-            char  ptrc[8];
-            void* ptr;
-        } pkey ;
-        
-        #if defined(_MSC_VER)
-        #pragma warning(disable:4996)
-        #endif
-        strncpy( pkey.ptrc , node->key , 8 ) ;
-
-        (node->dtor)(pkey.ptr); // CALL DESTRUCTOR
-
-    }
-    if ( node->key!=NULL ) 
-    { 
-        free(node->key); 
-        node->key=NULL ;
-    }
-    
-    if (node->next) gc_node_del(node->next);
-    
-    free(node);
-}
-
-// ........................................... gc new
-
-struct gc_s* gc_new(int initial_size) 
-{
-    struct gc_s* gc = (struct gc_s *)malloc(sizeof(struct gc_s));
-    if (initial_size == 0) initial_size = 1024;
-    gc->length = initial_size;
-    gc->count = 0;
-    gc->table =  calloc(sizeof(struct gcKeyNode_s*), initial_size);
-    gc->growth_treshold = 2.0;
-    gc->growth_factor = 10;
-    return gc;
-}
-
-// ........................................... gc delete
-
-void gc_del(struct gc_s* gc) 
-{
-    for (int i = 0; i < gc->length; i++) 
-    {
-        if (gc->table[i])
-        gc_node_del(gc->table[i]);
-    }
-    free(gc->table);
-    gc->table = 0;
-    free(gc);
-    
-    //.......................... close stream
-    
-    #if defined(__MINGW32__) || defined(__MINGW64__)
-    fcloseall();
-    flushall();
-    #endif
-    
-    #if defined(__clang__) || defined(__APPLE__)
-    //fcloseall();
-    fflush(NULL);
-    #endif    
-    
-    #if defined(_WIN32) || defined(_WIN64)
-    _fcloseall();
-    _flushall();
-    #endif     
-    
-    fclose(stdin);
-    fclose(stdout);
-    fclose(stderr);    
-    
-}
-
-// ........................................... gc reinsert when resizing
-
-static
-void gc_reinsert_when_resizing(struct gc_s* gc, struct gcKeyNode_s *k2) 
-{
-    int n = gcHashFunc(k2->key, k2->len) % gc->length;
-    if (gc->table[n] == 0) 
-    {
-        gc->table[n] = k2;
-        gc->dtor = &gc->table[n]->dtor;
-        return;
-    }
-    struct gcKeyNode_s *k = gc->table[n];
-    k2->next = k;
-    gc->table[n] = k2;
-    gc->dtor = &k2->dtor;
-}
-
-// ........................................... gc  resize
-
-static
-void gc_resize(struct gc_s* gc, int newsize) 
-{
-    int o = gc->length;
-    struct gcKeyNode_s **old = gc->table;
-    gc->table = calloc(sizeof(struct gcKeyNode_s*), newsize);
-    gc->length = newsize;
-    for (int i = 0; i < o; i++) 
-    {
-        struct gcKeyNode_s *k = old[i];
-        while (k) 
-        {
-            struct gcKeyNode_s *next = k->next;
-            k->next = 0;
-            gc_reinsert_when_resizing(gc, k);
-            k = next;
-        }
-    }
-    free(old);
-}
-
-// ........................................... gc add
-
-static
-int gc_add(struct gc_s* gc, void *key, int keyn)
-{
-    assert(gc!=NULL);
-    
-    int n = gcHashFunc((const char*)key, keyn) % gc->length;
-    if (gc->table[n] == 0)
-    {
-        double f = (double)gc->count / (double)gc->length;
-        if (f > gc->growth_treshold)
-        {
-            #if defined(_MSC_VER)
-            #pragma warning(disable:4244)
-            #endif
-            gc_resize(gc, gc->length * gc->growth_factor);
-            return gc_add(gc, key, keyn);
-        }
-        gc->table[n] = gc_node_new((char*)key, keyn);
-        gc->dtor = &gc->table[n]->dtor;
-        gc->count++;
-        return 0;
-    }
-    struct gcKeyNode_s *k = gc->table[n];
-    while (k) 
-    {
-        if (k->len == keyn && memcmp(k->key, key, keyn) == 0) 
-        {
-            gc->dtor = &k->dtor;
-            return 1;
-        }
-        k = k->next;
-    }
-    gc->count++;
-    struct gcKeyNode_s *k2 = gc_node_new((char*)key, keyn);
-    k2->next = gc->table[n];
-    gc->table[n] = k2;
-    gc->dtor = &k2->dtor;
-    return 0;
-}
-
-// ........................................... gc find
-
-int gc_find(struct gc_s* gc, void *key, int keyn) 
-{
-    int n = gcHashFunc((const char*)key, keyn) % gc->length;
-    #if defined(__MINGW32__) || defined(__MINGW64__)
-    __builtin_prefetch(gc->table[n]);
-    #endif
-    
-    #if defined(_WIN32) || defined(_WIN64)
-    _mm_prefetch((char*)gc->table[n], _MM_HINT_T0);
-    #endif
-    
-    struct gcKeyNode_s *k = gc->table[n];
-    if (!k) return 0;
-    while (k) 
-    {
-        if (k->len == keyn && !memcmp(k->key, key, keyn)) 
-        {
-            gc->dtor = &k->dtor;
-            return 1;
-        }
-        k = k->next;
-    }
-    return 0;
-}
-
-// ........................................... gc print
-
-void gcPrint_(struct gc_s* gc) 
-{
-    for (int i = 0; i < gc->length; i++) 
-    {
-        if (gc->table[i] != 0) 
-        {
-            struct gcKeyNode_s *k = gc->table[i];
-            while (k) 
-            {
-                union // legal way to printf function pointer
-                {
-                    // typed def void(*gcHashDictValue_t)(void*);
-                    gcHashDictValue_t funcptr ;
-                    void *objptr;
-                } u;
-                u.funcptr = k->dtor;
+    return temp; 
+} 
   
-                printf ( "# node(%p)::(%p)\n"
-                    ,(void*)k
-                    ,(void*)u.objptr
-                ) ;
-                k = k->next;
-            }
-        }
-    }
-}
-#undef gcHashFunc
+// ................................................................... print inorder
+static int gcLevel=0;
 
-// ........................................... gc add key , dtor
-
-int gcAdd(struct gc_s* gc,void* key,gcHashDictValue_t dtor)
-{
-    union {
-        char  ptrc[8];
-        void* ptr;
-    } pkey ;
-    pkey.ptr=(void*)key;
-    
-    int ret=gc_add(gc, pkey.ptrc, 8);
-    *gc->dtor = dtor;
-    return ret ;
-}
-
-
-// ........................................... gc find
-
-static
-int gcFind(struct gc_s* gc,void* key)
-{
-    union {
-        char  ptrc[8];
-        void* ptr;
-    } pkey ;
-    pkey.ptr=(void*)key;
-    
-    return gc_find(gc, pkey.ptrc, 8);
-}
-
-// ........................................... gc malloc
-
-void* gcMalloc_( struct gc_s* gc , size_t size )
-{
-    void* ptr = malloc( size ) ;
-    gcAdd(gc,ptr,free);
-    return ptr ;
-}
-
-// ........................................... gc calloc
-
-void* gcCalloc_( struct gc_s* gc , size_t SIZEOF , size_t size )
-{
-    void* ptr = calloc( SIZEOF , size ) ;
-    gcAdd(gc,ptr,free);
-    return ptr ;
-}
-
-// ........................................... gc pop
-
-void* gcPop_( struct gc_s* gc , void* ptr )
-{
-    if ( gcFind(gc,ptr) ) 
+void gcPrint_(struct gcNode_s *root) 
+{ 
+    gcLevel=0;
+    if (root != NULL) 
     {
-        if (*gc->dtor!=NULL)
-        {
-            //(*gc->dtor)(ptr);
-            
-            *gc->dtor=NULL ;
+        gcPrint_(root->left); 
 
-            ptr=NULL;
-        }
-    }
-    return ptr;
-}
+        printf ( "\n%10p[%10p]\n----LEFT/%10p ... RIGHT/%10p type(%03d)."
+            ,(void*)root
+            ,(void*)root->pointer
+            ,(void*)root->left
+            ,(void*)root->right 
+            ,(int)root->type
+        ) ;
 
-void* gcFree_( struct gc_s* gc , void* ptr )
-{
-    if ( gcFind(gc,ptr) ) 
+        gcPrint_(root->right);
+    } 
+ 
+} 
+
+void gcWPrint_(struct gcNode_s *root) 
+{ 
+    gcLevel=0;
+    if (root != NULL) 
     {
-        if (*gc->dtor!=NULL)
-        {
-            (*gc->dtor)(ptr);
-            
-            *gc->dtor=NULL ;
+        gcWPrint_(root->left); 
 
-            ptr=NULL;
-        }
-    }
-    return ptr;
-}
+        wprintf ( L"\n%10p[%10p]\n----LEFT/%10p ... RIGHT/%10p type(%03d)."
+            ,(void*)root
+            ,(void*)root->pointer
+            ,(void*)root->left
+            ,(void*)root->right 
+            ,(int)root->type
+        ) ;
 
-// ........................................... gc realloc
-/*
-void* gcRealloc_( struct gc_s* gc , void* ptr, size_t size )
-{
-    if ( ptr==NULL )                 // FIX WITH NULL POINTER
-    {
-        return gcMalloc(size);
-    }
-    
-    void* old = ptr ;
+        gcWPrint_(root->right);
+    } 
+ 
+} 
 
-    ptr = realloc( ptr,size ) ;
-    gcAdd(gc,ptr,free); 
-
-    gcFind(gc,old);
-    *gc->dtor=NULL ;    
-
-    return ptr ;
-}
-*/
-
-void* gcFree_NoDtor( struct gc_s* gc , void* ptr )
-{
-    if ( gcFind(gc,ptr) ) 
-    {
-        if (*gc->dtor!=NULL)
-        {
-            //(*gc->dtor)(ptr);
-            
-            *gc->dtor=NULL ;
-
-            ptr=NULL;
-        }
-    }
-    return ptr;
-}
-
-
-// ........................................... gc realloc
-
-void* gcRealloc_( struct gc_s* gc , void* ptr, size_t size )
-{
-    if ( ptr==NULL )                 // FIX WITH NULL POINTER
-    {
-        return gcMalloc(size);
-    }
-    
-    void* old = ptr ;
-
-    ptr = realloc( ptr,size ) ;
-
-    if (old!=ptr)
-    {
-        gcAdd(gc,ptr,free);
-        // remove no free
-        gcFree_NoDtor(gc,old);
-    }
+// ................................................................... insert  
+ 
+struct gcNode_s * gcPushBack(struct gcNode_s * node, void* pointer) 
+{ 
+    /* If the tree is empty, return a new node */
+    if (node == NULL) return gcNewNode(pointer); 
+  
+    /* Otherwise, recur down the tree */
+    if (pointer < node->pointer) 
+        node->left  = gcPushBack(node->left, pointer); 
     else
+        node->right = gcPushBack(node->right, pointer); 
+  
+    /* return the (unchanged) node pointer */
+    return node; 
+} 
+
+// ................................................................... gcPopBack_
+
+void gcPopBack_(struct gcNode_s * node,void *pointer)  
+{  
+    if (node == NULL) return;  
+
+    gcPopBack_(node->left,pointer);  
+
+    if ( node->pointer == pointer ) 
     {
-        gcFree_(gc,old);
+        if ( gcPopButNotFree==0 )
+            free(node->pointer);
+
+        node->pointer=NULL;
     }
 
-    return ptr ;
-}
+    gcPopBack_(node->right,pointer);  
+} 
 
-// ........................................... gc file Open
+// ................................................................... gcStop_
 
-void* gcFileOpen_( struct gc_s* gc ,char* fileName, char* mode)
+void gcStop_(struct gcNode_s * node)  
+{  
+    if (node == NULL) return;  
+
+    /* first delete both subtrees */
+    gcStop_(node->left);  
+    gcStop_(node->right);  
+      
+    /* then pointer & delete the node */
+
+    if ( node->pointer != NULL ) 
+    {
+        free(node->pointer);
+        node->pointer=NULL;
+    }
+ 
+    if ( node != NULL ) 
+    {
+        free(node);
+        node=NULL;  
+    }
+
+}  
+
+// ................................................................... push(hook)
+void* gcPush_ ( struct gcNode_s *gc_root2,void*P )
 {
-    #if defined(_MSC_VER)
-    #pragma warning(disable:4996)
-    #endif
-    FILE* ptr = fopen ( fileName,mode );
+    gc_root=gcPushBack(gc_root2,P);
     
-    gcAdd(gc,ptr,cb_fclose);
+    assert ( gc_root != NULL ) ;
     
-    return ptr ;
+    return P ;
 }
-
-// ........................................... gc file temp
-
-FILE* gcFileTemp( void )
+// ................................................................... pop
+void gcPop_ ( struct gcNode_s *gc_root,void*P )
 {
-    #if defined(_MSC_VER)
-    #pragma warning(disable:4996)
-    #endif
-    FILE* ptr = tmpfile();
+    gcPopButNotFree=1;
     
-    gcAdd(GC,ptr,cb_fclose);
+    gcPopBack_(gc_root,P);
     
-    return ptr ;
+    gcPopButNotFree=0;
 }
 
-// ........................................... call back fclose
-//
-// hack to avoid  warning: passing argument 3 of ‘gcAdd’ 
-// from incompatible pointer type [-Wincompatible-pointer-types]
-
-void cb_fclose(void*ptr)
+// ................................................................... wrapper realloc
+void* gcRealloc_( void* P , size_t N )
 {
-    if (ptr!=NULL) fclose(ptr);
+	if (P==NULL) return gcMalloc(N);
+	
+    void* old=P;
+    P = (void*) realloc ( P,N ) ;
+
+    gcPop(old);
+    gcPush(P) ;
+    
+    assert ( P != NULL ) ; 
+    
+    return P ;
 }
+
+/**/
 
 // ................................................................... wrapper strdup
-
 char* gcStrDup( char *s )
 {
     if ( s == NULL ) return (char*)NULL ;
     #undef strdup
-    gcAdd( GC,strdup(s),free ) ;
-    return s ;    
+    return (char*)gcPush( strdup(s) ) ;
     #define strdup gcStrDup
 }
 
 // ................................................................... wrapper wcsdup
-
 wchar_t* gcWcsDup( wchar_t *s)
 {
     if ( s == NULL ) return (wchar_t*)NULL ;
     #undef wcsdup
-    gcAdd( GC,wcsdup(s),free ) ;
-    return s ;    
-    #define wcsdup gcWcsDup
+    return (wchar_t*)gcPush( wcsdup(s) ) ;
+    #define wcs gcWcsDup
 }
 
 // ................................................................... intDup
@@ -487,13 +189,14 @@ int* gcIntDup(int val)
 }
 
 // ................................................................... doubleDup
-
 double* gcDoubleDup ( double val )  
 {
     double* p = (double*) gcMalloc ( sizeof(double) );
     *p=val;
     return p ;
 }
+
+/**/
 
 // ......................................... [] compare function
 
@@ -526,7 +229,6 @@ int gcCompareFloatAsInt (const void * a, const void * b)
   int fb = (int)_fb;
   return (fa > fb) - (fa < fb);
 }
-
 int gcCompareDoubleAsInt (const void * a, const void * b)
 {
   double _fa = *(const double*) a;
@@ -535,7 +237,6 @@ int gcCompareDoubleAsInt (const void * a, const void * b)
   int fb = (int)_fb;  
   return (fa > fb) - (fa < fb);
 }
-
 int gcCompareStrC ( const void * a, const void * b ) 
 {
     const char **pa = (const char **)a;
@@ -543,7 +244,6 @@ int gcCompareStrC ( const void * a, const void * b )
     return strcmp(*pa, *pb);   
     
 }
-
 int gcCompareWStrC ( const void * a, const void * b ) 
 {
     const wchar_t **pa = (const wchar_t **)a;
@@ -558,15 +258,12 @@ int gcComparepStrC ( const void * a, const void * b )
     return strcmp(pa, pb);   
     
 }
-
 int gcComparepWStrC ( const void * a, const void * b ) 
 {
     const wchar_t *pa = (const wchar_t *)a;
     const wchar_t *pb = (const wchar_t *)b;
     return wcscmp(pa, pb);  
 }
-
-
 
 /**/
 
