@@ -543,6 +543,28 @@ int lexerMcpp( plexer_t this )
 }
 */
 
+// ............................................................ <<= >>=
+
+int lexerCheckOp3( plexer_t this , const wchar_t* op3,sym_t sym )
+{               
+	if ( ($c0 == op3[0] ) && ($c1 == op3[1]) )
+	{
+		FILE *fpSave=this->pfileInput;
+		$next ; 
+		if ( ($c0 == op3[1]) && ($c1 == op3[2]) )
+		{
+			$pushToken(op3[0]) ;
+			$pushToken(op3[1]) ;
+			$pushToken(op3[2]) ;
+			$next ;   
+			lexerMakeToken( this, sym ) ;
+			return 1 ;
+		}
+		this->pfileInput=fpSave;			
+	}
+	return 0;
+}
+		
 // ***********
 // Lexer Scan
 // ***********
@@ -853,45 +875,45 @@ int lexerScan( plexer_t this )
         }
 
         // ## ....................................... OPERATOR3
-                   
-		// >>=
+
+		if ( lexerCheckOp3( this, L"<<=",sym_shiftLeftEq  ) ) return 1 ;
 		
-		// <<=
+		if ( lexerCheckOp3( this, L">>=",sym_shiftRightEq ) ) return 1 ;
 
         // ## ....................................... OPERATOR2
         
         sym_t symOp2=sym_end;
         
-        if ( ($c0 == L':') && ($c1 == L'=') ) symOp2=sym_assign;
-        if ( ($c0 == L'?') && ($c1 == L'=') ) symOp2=sym_eq;
-        if ( ($c0 == L'=') && ($c1 == L'=') ) symOp2=sym_eq;
-        if ( ($c0 == L':') && ($c1 == L':') ) symOp2=sym_scope;
-		if ( ($c0 == L'+') && ($c1 == L'+') ) symOp2=sym_inc;
-		if ( ($c0 == L'-') && ($c1 == L'-') ) symOp2=sym_dec;
-		if ( ($c0 == L'-') && ($c1 == L'>') ) symOp2=sym_ptr;
-		if ( ($c0 == L'<') && ($c1 == L'<') ) symOp2=sym_shiftLeft;
-		if ( ($c0 == L'>') && ($c1 == L'>') ) symOp2=sym_shiftRight;		
-		if ( ($c0 == L'<') && ($c1 == L'=') ) symOp2=sym_le;
-		if ( ($c0 == L'>') && ($c1 == L'=') ) symOp2=sym_ge;	
-		if ( ($c0 == L'!') && ($c1 == L'=') ) symOp2=sym_ne;	
-		if ( ($c0 == L'&') && ($c1 == L'&') ) symOp2=sym_and;
-		if ( ($c0 == L'|') && ($c1 == L'|') ) symOp2=sym_or;	
-		if ( ($c0 == L'^') && ($c1 == L'^') ) symOp2=sym_xor;	
-		if ( ($c0 == L'+') && ($c1 == L'=') ) symOp2=sym_addEq;	
-		if ( ($c0 == L'-') && ($c1 == L'=') ) symOp2=sym_subEq;	
-		if ( ($c0 == L'*') && ($c1 == L'=') ) symOp2=sym_mulEq;
-		if ( ($c0 == L'/') && ($c1 == L'=') ) symOp2=sym_divEq;	
-		if ( ($c0 == L'%') && ($c1 == L'=') ) symOp2=sym_modEq;	
-		if ( ($c0 == L'&') && ($c1 == L'=') ) symOp2=sym_bitAndEq;
-		if ( ($c0 == L'|') && ($c1 == L'=') ) symOp2=sym_bitOrEq;	
-		if ( ($c0 == L'^') && ($c1 == L'=') ) symOp2=sym_bitXorEq;	
+			 if ( ($c0 == L':') && ($c1 == L'=') ) symOp2=sym_assign;
+        else if ( ($c0 == L'?') && ($c1 == L'=') ) symOp2=sym_eq;
+        else if ( ($c0 == L'=') && ($c1 == L'=') ) symOp2=sym_eq;
+        else if ( ($c0 == L':') && ($c1 == L':') ) symOp2=sym_scope;
+        else if ( ($c0 == L'+') && ($c1 == L'+') ) symOp2=sym_inc;
+        else if ( ($c0 == L'-') && ($c1 == L'-') ) symOp2=sym_dec;
+        else if ( ($c0 == L'-') && ($c1 == L'>') ) symOp2=sym_ptr;
+        else if ( ($c0 == L'<') && ($c1 == L'<') ) symOp2=sym_shiftLeft;
+        else if ( ($c0 == L'>') && ($c1 == L'>') ) symOp2=sym_shiftRight;		
+        else if ( ($c0 == L'<') && ($c1 == L'=') ) symOp2=sym_le;
+        else if ( ($c0 == L'>') && ($c1 == L'=') ) symOp2=sym_ge;	
+        else if ( ($c0 == L'!') && ($c1 == L'=') ) symOp2=sym_ne;	
+        else if ( ($c0 == L'&') && ($c1 == L'&') ) symOp2=sym_and;
+        else if ( ($c0 == L'|') && ($c1 == L'|') ) symOp2=sym_or;	
+        else if ( ($c0 == L'^') && ($c1 == L'^') ) symOp2=sym_xor;	
+        else if ( ($c0 == L'+') && ($c1 == L'=') ) symOp2=sym_addEq;	
+        else if ( ($c0 == L'-') && ($c1 == L'=') ) symOp2=sym_subEq;	
+        else if ( ($c0 == L'*') && ($c1 == L'=') ) symOp2=sym_mulEq;
+        else if ( ($c0 == L'/') && ($c1 == L'=') ) symOp2=sym_divEq;	
+        else if ( ($c0 == L'%') && ($c1 == L'=') ) symOp2=sym_modEq;	
+        else if ( ($c0 == L'&') && ($c1 == L'=') ) symOp2=sym_bitAndEq;
+        else if ( ($c0 == L'|') && ($c1 == L'=') ) symOp2=sym_bitOrEq;	
+        else if ( ($c0 == L'^') && ($c1 == L'=') ) symOp2=sym_bitXorEq;	
 														                                
         if (symOp2!=sym_end)
         {
-            $pushToken($c0) ; $next;     // :
-            $pushToken($c0) ;            // =
+            $pushToken($c0) ; // ex :=	: $c0[:]
+            $next;     
+            $pushToken($c0) ;// 		= $c0[=]
             lexerMakeToken( this, symOp2 ) ;
-            
             return 1 ;
         }
         

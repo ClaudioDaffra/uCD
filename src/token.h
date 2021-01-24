@@ -42,10 +42,17 @@ typedef enum e_sym
     sym_pg1        ,    // +9    }  
     sym_diesis	   ,    // +10   #  
        
-    //              operator 2
+    //              operator
     
     sym_op2=200    ,    
-    
+ 
+    //              operator 3
+     
+    sym_shiftLeftEq		,
+    sym_shiftRightEq	,
+        
+    //              operator 2
+        
     sym_assign		,    // :=	assign
     sym_eq			,    // ?=	is equal
     sym_scope		,    // ::	scope resolution
