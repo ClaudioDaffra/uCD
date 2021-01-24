@@ -874,6 +874,41 @@ int lexerScan( plexer_t this )
             return 1 ;
         }
 
+        // ## ....................................... trigraphs
+
+       if ( ($c0 == L'?') && ($c1 == L'?') )
+       {
+			// skip ?
+			$next
+			// skip ?$c0	   
+			$next;
+			sym_t symT=sym_end;
+			switch ( $c0 )
+			{
+			   case L'='  : $c0=L'#'	;	 symT=sym_diesis	; break ;
+			   case L'/'  : $c0=L'\\'	;	 symT=sym_div		; break ;	
+			   case L'\'' : $c0=L'^'	;	 symT=sym_bitXor	; break ;	
+			   case L'('  : $c0=L'['	;	 symT=sym_pq0		; break ;
+			   case L')'  : $c0=L']'	;	 symT=sym_pq1		; break ;	
+			   case L'!'  : $c0=L'|'	;	 symT=sym_bitOr		; break ; 
+			   case L'<'  : $c0=L'{'	;	 symT=sym_pg0		; break ;
+			   case L'>'  : $c0=L'}'	;	 symT=sym_pg1		; break ;
+			   case L'-'  : $c0=L'~'	;	 symT=sym_neg		; break ;			   			   			   			   		   
+			   default:
+			   {
+				   wchar_t extra[2];
+				   extra[0]=$c0;
+				   extra[1]=0;
+				   $lexerErrorExtra( tokenizing , invalid_argument , extra ) ;
+				   return 0 ;
+			   }
+			   break;
+			}
+			$pushToken($c0);
+			lexerMakeToken( this, symT ) ;
+			return 1 ;
+	   }
+      
         // ## ....................................... OPERATOR3
 
 		if ( lexerCheckOp3( this, L"<<=",sym_shiftLeftEq  ) ) return 1 ;

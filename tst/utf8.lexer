@@ -1,5 +1,5 @@
 
-file lexer           : [0x4cd3c5d0] -> [tst/utf8.lexer      ]
+file lexer           : [0xba6b25d0] -> [tst/utf8.lexer      ]
 
 # Lexer  -> scanning ...
 
@@ -37,10 +37,10 @@ file lexer           : [0x4cd3c5d0] -> [tst/utf8.lexer      ]
 -[tst/utf8.txt        ][012,007] len(01) sym(005) [                   8] -> [[8]]
 -[tst/utf8.txt        ][013,004] len(02) sym(004) [                  t1]
 -[tst/utf8.txt        ][014,005] len(02) sym(004) [                  t2]
--[tst/utf8.txt        ][014,007] len(01) sym(252) [                   +]
--[tst/utf8.txt        ][014,008] len(01) sym(005) [                   1] -> [[1]]
+-[tst/utf8.txt        ][014,007] len(01) sym(258) [                   ~]
+-[tst/utf8.txt        ][014,010] len(01) sym(005) [                   1] -> [[1]]
 -[tst/utf8.txt        ][015,006] len(02) sym(004) [                  t3]
--[tst/utf8.txt        ][015,008] len(01) sym(252) [                   +]
--[tst/utf8.txt        ][015,009] len(01) sym(005) [                   3] -> [[3]]
+-[tst/utf8.txt        ][015,008] len(00) sym(004) [                  t3]
+-[tst/utf8.txt        ][015,011] len(01) sym(005) [                   3] -> [[3]]
 -[tst/utf8.txt        ][016,002] len(01) sym(266) [                   ‎]
 -[tst/utf8.txt        ][017,000] len(03) sym(004) [                 بбв]
