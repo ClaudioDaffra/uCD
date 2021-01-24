@@ -29,7 +29,8 @@ mapKW_t mapArrayKW[] =
     {   L"array"    , sym_kw_array      }    ,    //    +9   
     {   L"type"     , sym_kw_type       }    ,    //    +10   
     {   L"function" , sym_kw_function   }    ,    //    +11   
-                 
+    {   L"sizeof"   , sym_sizeof   		}    ,    //    +12   
+                     
     {   NULL        , 0                 }    ,
 } ;
 
@@ -93,7 +94,7 @@ int lexerInclude( plexer_t this , char * fileInputName )
         #if defined(__MINGW32__) || defined(__MINGW64__)
         snwprintf ( buffer,16,L"ERR_T <%d>",(uint32_t)err) ;
         #else
-        swprintf ( buffer,16,L" ERR_T <%d>",(uint32_t)err) ;
+        swprintf  ( buffer,16,L"ERR_T <%d>",(uint32_t)err) ;
         #endif
         $lexer ( error,checkFileExists,fileNotFound,tempLexBuffer->row,tempLexBuffer->col,cnvS8toWS(fileInputName),buffer );
         this->pfileInput=NULL;        
@@ -596,15 +597,15 @@ int lexerScan( plexer_t this )
         this->col_start = this->col ; 
 
         // ....................................... DEMO #include lexer
-/*        
+/* TODO da sistemare directory       
         if (  this->c0==L'X' )
         {
-           lexerInclude( "test/b.txt" ) ;
+           lexerInclude( this,"b.txt" ) ;
            continue ;
         }
         if (  this->c0==L'Y' )
         {
-           lexerInclude( "test/c.txt" ) ;
+           lexerInclude( this,"test/c.txt" ) ;
            continue ;
         }
 */
@@ -850,14 +851,46 @@ int lexerScan( plexer_t this )
 
             return 1 ;
         }
-                
+
+        // ## ....................................... OPERATOR3
+                   
+		// >>=
+		
+		// <<=
+
         // ## ....................................... OPERATOR2
         
-        if ( ($c0 == L':') && ($c1 == L'=') ) // :=
+        sym_t symOp2=sym_end;
+        
+        if ( ($c0 == L':') && ($c1 == L'=') ) symOp2=sym_assign;
+        if ( ($c0 == L'?') && ($c1 == L'=') ) symOp2=sym_eq;
+        if ( ($c0 == L'=') && ($c1 == L'=') ) symOp2=sym_eq;
+        if ( ($c0 == L':') && ($c1 == L':') ) symOp2=sym_scope;
+		if ( ($c0 == L'+') && ($c1 == L'+') ) symOp2=sym_inc;
+		if ( ($c0 == L'-') && ($c1 == L'-') ) symOp2=sym_dec;
+		if ( ($c0 == L'-') && ($c1 == L'>') ) symOp2=sym_ptr;
+		if ( ($c0 == L'<') && ($c1 == L'<') ) symOp2=sym_shiftLeft;
+		if ( ($c0 == L'>') && ($c1 == L'>') ) symOp2=sym_shiftRight;		
+		if ( ($c0 == L'<') && ($c1 == L'=') ) symOp2=sym_le;
+		if ( ($c0 == L'>') && ($c1 == L'=') ) symOp2=sym_ge;	
+		if ( ($c0 == L'!') && ($c1 == L'=') ) symOp2=sym_ne;	
+		if ( ($c0 == L'&') && ($c1 == L'&') ) symOp2=sym_and;
+		if ( ($c0 == L'|') && ($c1 == L'|') ) symOp2=sym_or;	
+		if ( ($c0 == L'^') && ($c1 == L'^') ) symOp2=sym_xor;	
+		if ( ($c0 == L'+') && ($c1 == L'=') ) symOp2=sym_addEq;	
+		if ( ($c0 == L'-') && ($c1 == L'=') ) symOp2=sym_subEq;	
+		if ( ($c0 == L'*') && ($c1 == L'=') ) symOp2=sym_mulEq;
+		if ( ($c0 == L'/') && ($c1 == L'=') ) symOp2=sym_divEq;	
+		if ( ($c0 == L'%') && ($c1 == L'=') ) symOp2=sym_modEq;	
+		if ( ($c0 == L'&') && ($c1 == L'=') ) symOp2=sym_bitAndEq;
+		if ( ($c0 == L'|') && ($c1 == L'=') ) symOp2=sym_bitOrEq;	
+		if ( ($c0 == L'^') && ($c1 == L'=') ) symOp2=sym_bitXorEq;	
+														                                
+        if (symOp2!=sym_end)
         {
             $pushToken($c0) ; $next;     // :
             $pushToken($c0) ;            // =
-            lexerMakeToken( this, sym_assign ) ;
+            lexerMakeToken( this, symOp2 ) ;
             
             return 1 ;
         }
@@ -868,24 +901,32 @@ int lexerScan( plexer_t this )
         sym_t   symOp=sym_end ;
         switch ( $c0 )
         {
-            case L'#' : symOp=sym_diesis ; break;
-            case L'+' : symOp=sym_add ; break; 
-            case L'-' : symOp=sym_sub ; break;
-            case L'*' : symOp=sym_mul ; break; 
-            case L'/' : symOp=sym_div ; break;
-            case L'%' : symOp=sym_mod ; break; 
-            case L'(' : symOp=sym_p0  ; break;
-            case L')' : symOp=sym_p1  ; break; 
-            case L'!' : symOp=sym_not ; break; 
-            case L';' : symOp=sym_pv  ; break; 
-            case L'=' : symOp=sym_eq  ; break; 
-            case L',' : symOp=sym_v   ; break;  
-            case L':' : symOp=sym_dp  ; break;
-            case L'[' : symOp=sym_pq0 ; break;
-            case L']' : symOp=sym_pq1 ; break;  
-            case L'{' : symOp=sym_pg0 ; break;
-            case L'}' : symOp=sym_pg1 ; break;  
-            case L'.' : symOp=sym_dot ; break;                                                                          
+            case L'#' : symOp=sym_diesis 		; break;
+            case L'+' : symOp=sym_add 			; break; 
+            case L'-' : symOp=sym_sub 			; break;
+            case L'*' : symOp=sym_mul 			; break; 
+            case L'/' : symOp=sym_div 			; break;
+            case L'%' : symOp=sym_mod 			; break; 
+            case L'(' : symOp=sym_p0  			; break;
+            case L')' : symOp=sym_p1  			; break; 
+            case L'!' : symOp=sym_not 			; break; 
+            case L';' : symOp=sym_pv  			; break; 
+            case L'=' : symOp=sym_assign  		; break; 
+            case L',' : symOp=sym_v   			; break;  
+            case L'?' : symOp=sym_qm  			; break;           
+            case L':' : symOp=sym_dp  			; break;
+            case L'[' : symOp=sym_pq0 			; break;
+            case L']' : symOp=sym_pq1 			; break;  
+            case L'{' : symOp=sym_pg0 			; break;
+            case L'}' : symOp=sym_pg1 			; break;  
+            case L'.' : symOp=sym_dot 			; break;  
+            case L'~' : symOp=sym_neg 			; break;  
+            case L'§' : symOp=sym_sizeof 		; break;              
+            case L'<' : symOp=sym_le			; break;   
+            case L'>' : symOp=sym_ge			; break;  
+            case L'&' : symOp=sym_bitAnd		; break;   
+            case L'|' : symOp=sym_bitOr			; break;  
+            case L'^' : symOp=sym_bitXor		; break;                                                                                                                                     
             // se non trovi opertore allora è 1 carattere
             default   : fOp=0;          break; 
         } ;

@@ -46,8 +46,32 @@ typedef enum e_sym
     
     sym_op2=200    ,    
     
-    sym_assign     ,    // :=
-     
+    sym_assign		,    // :=	assign
+    sym_eq			,    // ?=	is equal
+    sym_scope		,    // ::	scope resolution
+	sym_inc			,    // ++	increment (next)
+	sym_dec      	,    // --  decrement (prev)
+	sym_ptr      	,    // ->  pointer access
+	sym_shiftLeft	,    // <<  shift left
+	sym_shiftRight	,    // >>  shift right
+	sym_le			,    // <=  less equal
+	sym_ge			,    // >=  greater equal
+	sym_ne			,    // !=  not equal
+	sym_and			,    // &&	and
+	sym_or			,    // ||	or
+	sym_xor			,    // ^^	xor
+
+	sym_addEq		,    // +=
+	sym_subEq		,    // -=
+	
+	sym_mulEq		,    // *=
+	sym_divEq		,    // /=
+	sym_modEq		,    // %=
+
+	sym_bitAndEq	,    // &=
+	sym_bitOrEq		,    // |=
+	sym_bitXorEq	,    // ^=
+										                     
     //              operator 1
     
     sym_op1=250    ,
@@ -61,10 +85,18 @@ typedef enum e_sym
     sym_div        ,   // +5
     sym_mod        ,   // +6
 
-    sym_dot        ,   // +7 				.
-        
-    sym_eq         ,   // +8 =
-        
+    sym_dot			,	// +7 				.				.
+    sym_neg			,   // +8				~	        
+	sym_sizeof		,	// +9				§
+	sym_lt			,	// +10				>
+	sym_gt			,	// +11				<
+
+	sym_bitAnd		,	// +12				&
+	sym_bitOr		,	// +13				|
+	sym_bitXor		,	// +14				^
+
+	sym_qm			,	// +15				?	Question Mark
+						        
     //
     
     sym_lexema      ,  // carattere non riconosciuto
