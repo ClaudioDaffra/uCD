@@ -915,6 +915,24 @@ int lexerScan( plexer_t this )
 		
 		if ( lexerCheckOp3( this, L">>=",sym_shiftRightEq ) ) return 1 ;
 
+        // ## ....................................... digraphs
+        
+        sym_t symD=sym_end;
+
+			 if ( ($c0 == L'<') && ($c1 == L':') ) { $c0=L'[';	symD=sym_pq0; 		}
+		else if ( ($c0 == L':') && ($c1 == L'>') ) { $c0=L']';	symD=sym_pq1; 		}
+		else if ( ($c0 == L'<') && ($c1 == L'%') ) { $c0=L'{';	symD=sym_pg0; 		}	
+		else if ( ($c0 == L'%') && ($c1 == L'>') ) { $c0=L'}';	symD=sym_pg1; 		}
+		else if ( ($c0 == L'%') && ($c1 == L':') ) { $c0=L'#';	symD=sym_diesis; 	}	// %:%: ##
+
+        if (symD!=sym_end)
+        {
+            $pushToken($c0) ; // ex <: --> [
+            $next;     
+            lexerMakeToken( this, symD ) ;
+            return 1 ;
+        }
+        						
         // ## ....................................... OPERATOR2
         
         sym_t symOp2=sym_end;
