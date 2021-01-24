@@ -462,7 +462,9 @@ wchar_t lexerGetCharacter( plexer_t this )
 
 	// \x00
 	// \x0000
-	// \X00000000
+	// \x00000000		
+	// \u0000
+	// \U00000000
 	// \033			octal
 		
     wchar_t C=0;
@@ -483,6 +485,8 @@ wchar_t lexerGetCharacter( plexer_t this )
 			case L'f'     : $pushToken($c0) ; C = '\f' ; break;
 			case L'v'     : $pushToken($c0) ; C = '\v' ; break;
 			case L'0'     : $pushToken($c0) ; C = '\0' ; break;
+			case L'e'     : $pushToken($c0) ; C = '\e' ; break;	
+			case L'?'     : $pushToken($c0) ; C = '\?' ; break;					
             default :
             {
                 wchar_t strErrTemp[2];
