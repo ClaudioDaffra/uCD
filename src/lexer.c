@@ -32,23 +32,22 @@ mapKW_t mapArrayKW[] =
     
     // operator
     
-    {   L"sizeof"   , sym_sizeof   		}    ,    //    +12
+    {   L"sizeof"   , sym_sizeof   		}    ,	
        
-    {   L"compl"    , sym_neg   		}    ,    //    +13 
-    {   L"not"    	, sym_not   		}    ,    //    +14 
-    {   L"bitand"	, sym_bitAnd   		}    ,    //    +15 
-    {   L"bitor"	, sym_bitOr   		}    ,    //    +16 
-    {   L"and"		, sym_and   		}    ,    //    +17 
-    {   L"or"		, sym_or   			}    ,    //    +18 
-    {   L"xor"		, sym_bitXor  	    }    ,    //    +19 
-    {   L"and_eq"	, sym_bitAndEq		}    ,    //    +20 
-    {   L"or_eq"	, sym_bitOrEq		}    ,    //    +21 
-    {   L"xor_eq"	, sym_bitXorEq 	    }    ,    //    +22 
-    {   L"not_eq"	, sym_bitXorEq 	    }    ,    //    +23 
+    {   L"compl"    , sym_neg   		}    ,	
+    {   L"not"    	, sym_not   		}    ,	
+    {   L"bitand"	, sym_bitAnd   		}    ,	
+    {   L"bitor"	, sym_bitOr   		}    ,	
+    {   L"and"		, sym_and   		}    ,	
+    {   L"or"		, sym_or   			}    ,	
+    {   L"xor"		, sym_bitXor  	    }    ,	
+    {   L"and_eq"	, sym_bitAndEq		}    ,	
+    {   L"or_eq"	, sym_bitOrEq		}    ,	
+    {   L"xor_eq"	, sym_bitXorEq 	    }    ,	
+    {   L"not_eq"	, sym_bitXorEq 	    }    ,	
                                                                        
     {   NULL        , 0                 }    ,
 } ;
-
 
 // *********
 //  LEXER   
@@ -459,6 +458,13 @@ sym_t lexerGetConst( plexer_t this , int base )
 
 wchar_t lexerGetCharacter( plexer_t this )
 {
+	// TODO
+
+	// \x00
+	// \x0000
+	// \X00000000
+	// \033			octal
+		
     wchar_t C=0;
     
     if ( $c0 == L'\\') 
@@ -467,13 +473,16 @@ wchar_t lexerGetCharacter( plexer_t this )
         $next ;
         switch ( $c0 )
         {
-            case L'n'     : $pushToken($c0) ; C = '\n' ; break;
-            case L't'     : $pushToken($c0) ; C = '\t' ; break;
-            case L'v'     : $pushToken($c0) ; C = '\v' ; break;
-            case L'f'     : $pushToken($c0) ; C = '\f' ; break;
-            case L'"'     : $pushToken($c0) ; C = '\"' ; break;
-            case L'\''    : $pushToken($c0) ; C = '\'' ; break;
-            case L'\\'    : $pushToken($c0) ; C = '\\' ; break;
+			case L'"'     : $pushToken($c0) ; C = '\"' ; break;
+			case L'\''    : $pushToken($c0) ; C = '\'' ; break;
+			case L'\\'    : $pushToken($c0) ; C = '\\' ; break;	
+			case L'n'     : $pushToken($c0) ; C = '\n' ; break;
+			case L'r'     : $pushToken($c0) ; C = '\r' ; break;
+			case L't'     : $pushToken($c0) ; C = '\t' ; break;				
+			case L'b'     : $pushToken($c0) ; C = '\b' ; break;				
+			case L'f'     : $pushToken($c0) ; C = '\f' ; break;
+			case L'v'     : $pushToken($c0) ; C = '\v' ; break;
+			case L'0'     : $pushToken($c0) ; C = '\0' ; break;
             default :
             {
                 wchar_t strErrTemp[2];
@@ -800,7 +809,7 @@ int lexerScan( plexer_t this )
             if ( $c0 != L'\'' ) $lexerErrorExtra( tokenizing , invalid_argument , L"''" ) ;
             return 1 ;
         }
-        
+
         if ( $c0 == L'\'' )
         {
             $pushToken($c0); 
@@ -822,9 +831,9 @@ int lexerScan( plexer_t this )
 
         if ( $c0 == L'\"' && $c1 == L'\"' )
         {
-            $pushToken($c0);    // "
+            $pushToken($c0);    	// "
              
-            $next;                // "
+            $next;                	// "
             $pushToken($c0); 
             
             // here    // " character after ""
@@ -839,7 +848,7 @@ int lexerScan( plexer_t this )
         {
             const int	maxBuffer  	= maxTokenSize     	;
             int         kBuffer    	=     0    			;
-            wchar_t buffer[maxTokenSize];
+            wchar_t 	buffer[maxTokenSize]			;
             
             $pushToken($c0); 
             $next;    // "
