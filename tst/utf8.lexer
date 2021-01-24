@@ -1,5 +1,5 @@
 
-file lexer           : [0xf249c5d0] -> [tst/utf8.lexer      ]
+file lexer           : [0xeb8b920] -> [tst/utf8.lexer      ]
 
 # Lexer  -> scanning ...
 
@@ -15,6 +15,11 @@ file lexer           : [0xf249c5d0] -> [tst/utf8.lexer      ]
 -[tst/utf8.txt        ][004,000] len(01) sym(259) [                   §]
 -[tst/utf8.txt        ][004,002] len(03) sym(102) [                 for]
 -[tst/utf8.txt        ][004,006] len(02) sym(004) [                  id]
+-[tst/utf8.txt        ][004,009] len(06) sym(222) [              and_eq]
+-[tst/utf8.txt        ][004,016] len(01) sym(005) [                   4] -> [[4]]
+-[tst/utf8.txt        ][004,018] len(03) sym(004) [                 id2]
+-[tst/utf8.txt        ][004,022] len(02) sym(222) [                  &=]
+-[tst/utf8.txt        ][004,025] len(02) sym(005) [                  42] -> [[42]]
 -[tst/utf8.txt        ][005,004] len(05) sym(004) [               ラドクリフ]
 -[tst/utf8.txt        ][006,000] len(01) sym(004) [                   y]
 -[tst/utf8.txt        ][006,003] len(02) sym(004) [                  אP]

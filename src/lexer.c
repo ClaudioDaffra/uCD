@@ -28,9 +28,24 @@ mapKW_t mapArrayKW[] =
     {   L"byte"     , sym_kw_byte       }    ,    //    +8        
     {   L"array"    , sym_kw_array      }    ,    //    +9   
     {   L"type"     , sym_kw_type       }    ,    //    +10   
-    {   L"function" , sym_kw_function   }    ,    //    +11   
-    {   L"sizeof"   , sym_sizeof   		}    ,    //    +12   
-                     
+    {   L"function" , sym_kw_function   }    ,    //    +11 
+    
+    // operator
+    
+    {   L"sizeof"   , sym_sizeof   		}    ,    //    +12
+       
+    {   L"compl"    , sym_neg   		}    ,    //    +13 
+    {   L"not"    	, sym_not   		}    ,    //    +14 
+    {   L"bitand"	, sym_bitAnd   		}    ,    //    +15 
+    {   L"bitor"	, sym_bitOr   		}    ,    //    +16 
+    {   L"and"		, sym_and   		}    ,    //    +17 
+    {   L"or"		, sym_or   			}    ,    //    +18 
+    {   L"xor"		, sym_bitXor  	    }    ,    //    +19 
+    {   L"and_eq"	, sym_bitAndEq		}    ,    //    +20 
+    {   L"or_eq"	, sym_bitOrEq		}    ,    //    +21 
+    {   L"xor_eq"	, sym_bitXorEq 	    }    ,    //    +22 
+    {   L"not_eq"	, sym_bitXorEq 	    }    ,    //    +23 
+                                                                       
     {   NULL        , 0                 }    ,
 } ;
 
