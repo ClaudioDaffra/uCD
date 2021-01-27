@@ -459,7 +459,7 @@ sym_t lexerGetConst( plexer_t this , int base )
 wchar_t lexerGetCharU( plexer_t this,int ndigit )
 {
 	$next
-	// da qu iin poi deve iniziare \U 00ff00ff0ff
+	// da qui in poi deve iniziare \U 00ff00ff0ff oppure \u0ff00
 	wchar_t strTemp[9];
 	int ndx=0;
 	while( isxdigit($c0) )
@@ -472,7 +472,7 @@ wchar_t lexerGetCharU( plexer_t this,int ndigit )
 	// il carattere che non è xdigit va rimesso nllo stream
 	lexerUnGetChar($c0);
 
-	fwprintf( stderr , L"lexerGetCharU :: strtemp %ls %d next %lc %lc \n",strTemp ,ndx,$c0,$c1);
+//fwprintf( stderr , L"lexerGetCharU :: strtemp %ls %d next %lc %lc \n",strTemp ,ndx,$c0,$c1);
 	
 	if( ndx!=ndigit ) $lexerErrorExtra( tokenizing , incompleteUCN , strTemp ) ;
 	
@@ -517,9 +517,9 @@ wchar_t lexerGetCharacter( plexer_t this )
 			case L'?'	: $pushToken($c0) ; C = '\?' ; break;	
 			case L'U'	:
 			{ 
+				this->tokenSize--; // eliminiano il carattere \ backslash 
 				wchar_t ret=lexerGetCharU(this,8);
 				$pushToken(ret)	;
-				//lexerUnGetChar(C);
 				C=ret;
 				break;
 			}				
@@ -857,7 +857,7 @@ int lexerScan( plexer_t this )
             
             this->value.wchar = lexerGetCharacter(this);
  
-fwprintf(stderr,L"\nexit token [%lc]\n",this->value.wchar); 
+//fwprintf(stderr,L"\nexit token [%lc]\n",this->value.wchar); 
             
             $next;    // '
             $pushToken($c0);
