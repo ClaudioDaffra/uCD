@@ -459,10 +459,14 @@ sym_t lexerGetConst( plexer_t this , int base )
 wchar_t lexerGetCharU( plexer_t this,int ndigit )
 {
 	$next
-	// da qui in poi deve iniziare \U 00ff00ff0ff oppure \u0ff00
-	wchar_t strTemp[9];
+	
+	// da qui in poi deve iniziare  con 
+	// \U 00ff00ff0ff oppure \u0ff00 o \x00 \x00ff \x00ff00ff 
+	// non superiore a 8
+	
+	wchar_t strTemp[9]; // ottieni la sequenza di UCN max u caratteri si seguito
 	int ndx=0;
-	while( isxdigit($c0) )
+	while( isxdigit($c0) && ndx<8 )
 	{
 		strTemp[ndx++]=$c0;
 		$next;
@@ -473,14 +477,22 @@ wchar_t lexerGetCharU( plexer_t this,int ndigit )
 	lexerUnGetChar($c0);
 
 //fwprintf( stderr , L"lexerGetCharU :: strtemp %ls %d next %lc %lc \n",strTemp ,ndx,$c0,$c1);
-	
-	if( ndx!=ndigit ) $lexerErrorExtra( tokenizing , incompleteUCN , strTemp ) ;
+
+	int errUCN=0; // check validità lungheza UCN
+	if( ndigit==-1 )
+	{
+		if (( ndx!=2 ) && ( ndx!=4 ) && ( ndx!=8 )) errUCN=1;
+	}
+	else
+	{ 	
+		if( ndx!=ndigit ) errUCN=1;
+	}
+	if ( errUCN ) $lexerErrorExtra( tokenizing , incompleteUCN , strTemp ) ;
 	
 	wchar_t* end=NULL;
 	wchar_t ret = 0;	
 	ret=wcstol(strTemp,&end,16) ;
 	
-	//exit(-1);
 	return  ret;
 }
 
@@ -488,11 +500,6 @@ wchar_t lexerGetCharacter( plexer_t this )
 {
 	// TODO
 
-	// \x00
-	// \x0000
-	// \x00000000		
-	// \u0000
-	// \U00000000
 	// \033			octal
 		
     wchar_t C=0;
@@ -516,9 +523,14 @@ wchar_t lexerGetCharacter( plexer_t this )
 //			case L'e'	: $pushToken($c0) ; C = '\e' ; break;	non iso standard sequence
 			case L'?'	: $pushToken($c0) ; C = '\?' ; break;	
 			case L'U'	:
+			case L'u'	:
+			case L'x'	:			
 			{ 
+				int nDigit=-1; // 2 ,4 ,8
+				if ( $c0=='U') nDigit=8;
+				if ( $c0=='u') nDigit=4;				
 				this->tokenSize--; // eliminiano il carattere \ backslash 
-				wchar_t ret=lexerGetCharU(this,8);
+				wchar_t ret=lexerGetCharU(this,nDigit);
 				$pushToken(ret)	;
 				C=ret;
 				break;

@@ -1,5 +1,5 @@
 
-file lexer           : [0x15ebf920] -> [tst/prova.lexer     ]
+file lexer           : [0x326d920] -> [tst/prova.lexer     ]
 
 # Lexer  -> scanning ...
 
@@ -7,6 +7,10 @@ file lexer           : [0x15ebf920] -> [tst/prova.lexer     ]
 -[tst/prova.txt       ][001,001] len(03) sym(002) [                 '╳'] -> [[╳]]
 -[tst/prova.txt       ][001,013] len(01) sym(004) [                   z]
 -[tst/prova.txt       ][001,014] len(03) sym(002) [                 'q'] -> [[q]]
--[tst/prova.txt       ][002,000] len(01) sym(004) [                   b]
--[tst/prova.txt       ][002,001] len(10) sym(003) [           "123╳xyz"] -> [[123╳xyz]]
--[tst/prova.txt       ][002,019] len(01) sym(004) [                   b]
+-[tst/prova.txt       ][002,000] len(01) sym(004) [                   a]
+-[tst/prova.txt       ][002,001] len(03) sym(002) [                 'e'] -> [[e]]
+-[tst/prova.txt       ][002,007] len(01) sym(004) [                   z]
+-[tst/prova.txt       ][002,008] len(03) sym(002) [                 'q'] -> [[q]]
+-[tst/prova.txt       ][003,000] len(01) sym(004) [                   b]
+-[tst/prova.txt       ][003,001] len(11) sym(003) [          "123╳6xyz"] -> [[123╳6xyz]]
+-[tst/prova.txt       ][003,020] len(01) sym(004) [                   b]
