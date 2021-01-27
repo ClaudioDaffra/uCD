@@ -68,7 +68,7 @@ typedef enum action_e
     action_running          ,   // mentre siamo in esecuzione del codice 
     action_assembling       ,   // mentre sto assemblando codice macchina 
     action_scanning         ,   // mentre sto analizzando semanticamente
-    action_tokenizing       ,   // metre sto analissado col lexer   
+    action_tokenizing       ,   // mentre sto analissado col lexer   
             
 } e_action_t ;
 
@@ -114,6 +114,7 @@ typedef enum errMessage_e
     errMessage_typeVoid                        ,   // nessun campo trovato nella struttura 
     errMessage_symbolNotDeclared               ,   // simbol was not declared in this scope 
     errMessage_invalidUseOf                    ,   // invalid use of (symbol)
+    errMessage_incompleteUCN				   ,   // incomplete universal chracter name
 } e_errMessage_t;
 
 typedef struct errMessage_s

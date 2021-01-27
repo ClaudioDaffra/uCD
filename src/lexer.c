@@ -420,7 +420,7 @@ sym_t lexerGetConst( plexer_t this , int base )
     // converti 
     
     wchar_t* ps=&this->token[0] ;
-    wchar_t* end=NULL; ;
+    wchar_t* end=NULL; 
     switch ( base ) 
     {
         case 16 :
@@ -456,6 +456,34 @@ sym_t lexerGetConst( plexer_t this , int base )
 
 // ......................................................... get character
 
+wchar_t lexerGetCharU( plexer_t this,int ndigit )
+{
+	$next
+	// da qu iin poi deve iniziare \U 00ff00ff0ff
+	wchar_t strTemp[9];
+	int ndx=0;
+	while( isxdigit($c0) )
+	{
+		strTemp[ndx++]=$c0;
+		$next;
+	}
+	strTemp[ndx]=0;
+	
+	// il carattere che non è xdigit va rimesso nllo stream
+	lexerUnGetChar($c0);
+
+	fwprintf( stderr , L"lexerGetCharU :: strtemp %ls %d next %lc %lc \n",strTemp ,ndx,$c0,$c1);
+	
+	if( ndx!=ndigit ) $lexerErrorExtra( tokenizing , incompleteUCN , strTemp ) ;
+	
+	wchar_t* end=NULL;
+	wchar_t ret = 0;	
+	ret=wcstol(strTemp,&end,16) ;
+	
+	//exit(-1);
+	return  ret;
+}
+
 wchar_t lexerGetCharacter( plexer_t this )
 {
 	// TODO
@@ -475,18 +503,26 @@ wchar_t lexerGetCharacter( plexer_t this )
         $next ;
         switch ( $c0 )
         {
-			case L'"'     : $pushToken($c0) ; C = '\"' ; break;
-			case L'\''    : $pushToken($c0) ; C = '\'' ; break;
-			case L'\\'    : $pushToken($c0) ; C = '\\' ; break;	
-			case L'n'     : $pushToken($c0) ; C = '\n' ; break;
-			case L'r'     : $pushToken($c0) ; C = '\r' ; break;
-			case L't'     : $pushToken($c0) ; C = '\t' ; break;				
-			case L'b'     : $pushToken($c0) ; C = '\b' ; break;				
-			case L'f'     : $pushToken($c0) ; C = '\f' ; break;
-			case L'v'     : $pushToken($c0) ; C = '\v' ; break;
-			case L'0'     : $pushToken($c0) ; C = '\0' ; break;
-			case L'e'     : $pushToken($c0) ; C = '\e' ; break;	
-			case L'?'     : $pushToken($c0) ; C = '\?' ; break;					
+			case L'"'	: $pushToken($c0) ; C = '\"' ; break;
+			case L'\''	: $pushToken($c0) ; C = '\'' ; break;
+			case L'\\'	: $pushToken($c0) ; C = '\\' ; break;	
+			case L'n'	: $pushToken($c0) ; C = '\n' ; break;
+			case L'r'	: $pushToken($c0) ; C = '\r' ; break;
+			case L't'	: $pushToken($c0) ; C = '\t' ; break;				
+			case L'b'	: $pushToken($c0) ; C = '\b' ; break;				
+			case L'f'	: $pushToken($c0) ; C = '\f' ; break;
+			case L'v'	: $pushToken($c0) ; C = '\v' ; break;
+			case L'0'	: $pushToken($c0) ; C = '\0' ; break;
+//			case L'e'	: $pushToken($c0) ; C = '\e' ; break;	non iso standard sequence
+			case L'?'	: $pushToken($c0) ; C = '\?' ; break;	
+			case L'U'	:
+			{ 
+				wchar_t ret=lexerGetCharU(this,8);
+				$pushToken(ret)	;
+				//lexerUnGetChar(C);
+				C=ret;
+				break;
+			}				
             default :
             {
                 wchar_t strErrTemp[2];
@@ -820,11 +856,14 @@ int lexerScan( plexer_t this )
             $next;    // '
             
             this->value.wchar = lexerGetCharacter(this);
+ 
+fwprintf(stderr,L"\nexit token [%lc]\n",this->value.wchar); 
             
             $next;    // '
             $pushToken($c0);
             
-            if ( $c0 != L'\'' ) $lexerError( tokenizing , unexpectedToken ) ;
+            wchar_t strTemp[2]; strTemp[0]=$c0; strTemp[1]=0;
+            if ( $c0 != L'\'' ) $lexerErrorExtra( tokenizing , unexpectedToken,strTemp ) ;
 
             lexerMakeToken( this, sym_char ) ;
 
@@ -858,7 +897,7 @@ int lexerScan( plexer_t this )
             $next;    // "
             do {
                 this->value.wchar = lexerGetCharacter(this);
-                
+              
                 if ($c0==L'\n')
                 {
                     $lexerErrorExtra( tokenizing , unexpectedToken , L"\\n") ;
@@ -867,7 +906,7 @@ int lexerScan( plexer_t this )
                     lexerMakeToken( this, sym_string ) ;
                     return 1 ;
                 }
-                
+               
                 if ( kBuffer<maxBuffer ) 
                     buffer[kBuffer++] = this->value.wchar ;
                 else

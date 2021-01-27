@@ -88,7 +88,8 @@ errMessage_t errMessage[] =
     { L"array bound is not an integer constant before ']'"                              } ,
     { L"type void not allowed"                                                          } , 
     { L"was not declared in this scope"                                                 } ,    
-    { L"invalid use of"                                                                 } ,        
+    { L"invalid use of"                                                                 } ,
+    { L"incomplete universal chracter name"											    } ,        
 } ;
 
 // ................................................... push err log
