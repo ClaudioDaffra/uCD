@@ -554,14 +554,21 @@ wchar_t lexerGetCharacter( plexer_t this )
 
     return C ;
 }
-/*
-// ......................................................... mcpp directive
 
-int lexerMcpp( plexer_t this ) 
+// ......................................................... cpp directive
+/*
+ #line 1 "tst/ex0101.txt"
+ 
+-[tst/cpp.txt         ][001,000] len(01) sym(160) [                   #]
+-[tst/cpp.txt         ][001,001] len(04) sym(004) [                line]
+-[tst/cpp.txt         ][001,006] len(01) sym(005) [                   1] -> [[1]]
+-[tst/cpp.txt         ][001,008] len(17) sym(003) [    "tst/ex0101.txt"] -> [[tst/ex0101.txt]]
+*/
+int lexerCPP( plexer_t this ) 
 {
 	if ( $c0==L'#' ) 
 	{
-		while ( $c0!=L'\n' ) // get directive mcpp : line.
+		while ( $c0!=L'\n' ) // get directive cpp : line.
 		{
 			$pushToken($c0)
 			$next
@@ -590,7 +597,7 @@ int lexerMcpp( plexer_t this )
 				if ( kToken>ktokenMax )
 				{
 					//fwprintf ( stdout, L"[ lexer ] : #line -> kToken>%d\n",ktokenMax )  ;
-					$pushErrLog( mcpp , internal , tokenizing , out_of_range , 0 , 0 , this->fileInputName , L"kToken > kTokenMax" ) ;
+					$pushErrLog( cpp , internal , tokenizing , out_of_range , 0 , 0 , this->fileInputName , L"kToken > kTokenMax" ) ;
 					return 0 ;
 				} 
 			} 
@@ -605,19 +612,19 @@ int lexerMcpp( plexer_t this )
 			// [2] file Name
 			
 				token[2][wcslen(token[2])-1]=0; 				// elimina doppio apice finale
-				this->fileInputName = gcWcsDup(&token[2][1]); 	// elinina doppio apice iniziale
+				this->fileInputName = gcWcsDup(&token[2][1]); 	// elimina doppio apice iniziale
 		}
 		else
 		{
 			//fwprintf  ( stderr,L"?? lexer error : lexer line : #line -> not found \n") ;
-			$pushErrLog( mcpp , internal , tokenizing , errUnknown , 0 , 0 , this->fileInputName , L"directive not found" ) ;
+			$pushErrLog( cpp , internal , tokenizing , errUnknown , 0 , 0 , this->fileInputName , L"directive not found" ) ;
 		}
 
 		return 1;
 	}
   return 0 ;
 }
-*/
+
 
 // ............................................................ <<= >>=
 
@@ -677,7 +684,7 @@ int lexerScan( plexer_t this )
 
         // ....................................... #line 123 "file"
         
-        //if ( lexerMcpp( this )==1 ) continue ;
+        if ( lexerCPP( this )==1 ) continue ;
         
         // ....................................... buffer terminato 
         

@@ -11,14 +11,15 @@ vector_errLog_t  vErrLog ;
 
 sender_t sender[] =
 {
-    { L"loader"     } ,
-    { L"lexer"      } ,    
-    { L"parser"     } , 
-    { L"AST"        } , 
-    { L"node"       } , 
-    { L"assembler"  } ,  
-    { L"VM"         } , 
-    { L"scanner"    } ,         
+    { L"loader"     	} ,
+    { L"lexer"      	} ,    
+    { L"parser"     	} , 
+    { L"AST"        	} , 
+    { L"node"       	} , 
+    { L"assembler"  	} ,  
+    { L"VM"         	} , 
+    { L"scanner"    	} ,  
+    { L"preprocessor"	} ,             
 } ;
 
 // ................................................... type

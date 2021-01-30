@@ -1,0 +1,28 @@
+#line 1 "tst/ex0101.txt"
+
+
+
+int a ;
+
+#line 1 "tst/ex0102.txt"
+
+
+
+#line 1 "tst/ex0103.txt"
+
+
+
+#line 1 "tst/test2/ex0104.txt"
+
+
+int e ;
+#line 5 "tst/ex0103.txt"
+
+int c ;
+#line 5 "tst/ex0102.txt"
+
+int b ;
+#line 7 "tst/ex0101.txt"
+
+printf("%d %d %d",かん,かんじ,(è - @ + ù - § + è ) ) ;
+

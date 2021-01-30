@@ -15,7 +15,8 @@ typedef enum sender_e
     sender_node     ,   // node 
     sender_asm      ,   // assembler 
     sender_vm       ,   // Virtual Machine 
-    sender_scanner  ,   // analizzatore sematico           
+    sender_scanner  ,   // analizzatore sematico 
+    sender_cpp		,	// preprocessore          
 } e_sender_t ;
 
 typedef struct sender_s
