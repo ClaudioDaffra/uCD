@@ -22,6 +22,7 @@ OBJS =  main.o		\
 		error.o		\
 		lexer.o		\
 		parser.o	\
+		expr.o		\
 		ast.o
 		
 OBJ = $(patsubst %,$(ODIR)/%,$(OBJS))

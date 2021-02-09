@@ -22,6 +22,7 @@ OBJS =  main.obj		\
 		lexer.obj		\
 		error.obj		\
 		parser.obj		\
+		expr.obj		\
 		ast.obj
 				
 OBJ = $(patsubst %,$(ODIR)/%,$(OBJS))
