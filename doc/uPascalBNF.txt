@@ -1,0 +1,67 @@
+
+//................................................ atomic types
+
+t   :
+        integer
+        real
+        char
+        byte
+
+//................................................ declaration
+
+var     x   :   integer ;
+const   x   :   integer :=  xxx ;
+array   x   :   []  integer ;
+fn      x   :   ()  integer;
+
+type
+{
+    array   key     :   [20]    integer   // null after malloc
+    array   val     :   []      integer     // null after malloc  
+    var     next    :   list    //
+} list ;
+        
+var x   : list  ;
+
+x.next = x // circular
+
+//................................................ statement    1
+
+fn  (
+
+var     x1   :   integer        ;   //  by reference
+const   x2   :   integer        ;   //  by value
+array   x3   :   []  integer    ;
+fn      x4   :   ()  integer    ;
+
+)
+
+fn ( x1,10,arr,fn ) : integer
+{
+}
+
+//................................................ statement    2
+
+
+
+    if  ( )
+    {
+    }
+    
+    if  ( )
+    {
+    }
+    else
+    {
+    }
+
+    while  ( )
+    {
+    }
+ 
+    repeat
+    {
+    } until()
+ 
+
+ 
