@@ -20,31 +20,40 @@ mapKW_t mapArrayKW[] =
 {
     {   L"while"    , sym_kw_while      }    ,    //    +1
     {   L"for"      , sym_kw_for        }    ,    //    +2
+    
     {   L"const"    , sym_kw_const      }    ,    //    +3 
     {   L"var"      , sym_kw_var        }    ,    //    +4
+    
     {   L"integer"  , sym_kw_integer    }    ,    //    +5 
     {   L"real"     , sym_kw_real       }    ,    //    +6  
     {   L"char"     , sym_kw_char       }    ,    //    +7  
-    {   L"byte"     , sym_kw_byte       }    ,    //    +8        
+    {   L"byte"     , sym_kw_byte       }    ,    //    +8  
+    
     {   L"array"    , sym_kw_array      }    ,    //    +9   
     {   L"type"     , sym_kw_type       }    ,    //    +10   
-    {   L"function" , sym_kw_function   }    ,    //    +11 
+    {   L"fn"       , sym_kw_function   }    ,    //    +11 
     
     // operator
     
     {   L"sizeof"   , sym_sizeof   		}    ,	
        
     {   L"compl"    , sym_neg   		}    ,	
-    {   L"not"    	, sym_not   		}    ,	
-    {   L"bitand"	, sym_bitAnd   		}    ,	
-    {   L"bitor"	, sym_bitOr   		}    ,	
+
     {   L"and"		, sym_and   		}    ,	
-    {   L"or"		, sym_or   			}    ,	
-    {   L"xor"		, sym_bitXor  	    }    ,	
-    {   L"and_eq"	, sym_bitAndEq		}    ,	
-    {   L"or_eq"	, sym_bitOrEq		}    ,	
-    {   L"xor_eq"	, sym_bitXorEq 	    }    ,	
-    {   L"not_eq"	, sym_bitXorEq 	    }    ,	
+    {   L"or"		, sym_or   			}    ,
+    {   L"xor"		, sym_xor  	        }    ,	
+	
+    {   L"not"    	, sym_not   		}    ,	
+    {   L"notEq"	, sym_bitXorEq 	    }    ,	
+    
+    {   L"bitAnd"	, sym_bitAnd   		}    ,	
+    {   L"bitOr"	, sym_bitOr   		}    ,	
+    {   L"bitXor"	, sym_bitXor   		}    ,	
+
+    {   L"bitAndEq"	, sym_bitAndEq		}    ,	
+    {   L"bitOrEq"	, sym_bitOrEq		}    ,	
+    {   L"bitXorEq"	, sym_bitXorEq 	    }    ,	
+
                                                                        
     {   NULL        , 0                 }    ,
 } ;

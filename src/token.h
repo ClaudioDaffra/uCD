@@ -64,6 +64,7 @@ typedef enum e_sym
 	sym_le			,    // <=  less equal
 	sym_ge			,    // >=  greater equal
 	sym_ne			,    // !=  not equal
+    
 	sym_and			,    // &&	and
 	sym_or			,    // ||	or
 	sym_xor			,    // ^^	xor
