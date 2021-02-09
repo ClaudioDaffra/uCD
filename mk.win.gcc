@@ -20,8 +20,10 @@ LIBS =  argParse.obj	\
 				
 OBJS =  main.obj		\
 		lexer.obj		\
-		error.obj
-
+		error.obj		\
+		parser.obj		\
+		ast.obj
+				
 OBJ = $(patsubst %,$(ODIR)/%,$(OBJS))
 
 $(ODIR)/%.obj: $(SDIR)/%.c 

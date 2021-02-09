@@ -5,11 +5,13 @@ SOURCES = \
 	lib\argParse.c	\
 	lib\stdio.c		\
 	lib\gc.c		\
-	lib\hmap.c	\
+	lib\hmap.c		\
 	lib\string.c	\
 	src\lexer.c     \
 	src\error.c		\
-	src\main.c		\
+	src\parser.c	\
+	src\ast.c		\
+	src\main.c	
 	
 all: $(TARGET)
 
