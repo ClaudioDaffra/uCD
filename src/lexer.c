@@ -70,11 +70,19 @@ int lexerInclude( plexer_t this , char * fileInputName )
         
         if ( this->pFileOutputLexer != NULL ) // 1234
         {
+            #ifdef _MSC_VER
+            fwprintf ( this->pFileOutputLexer , L"\n%-20ls : [%p] -> [%-20hs]\n" 
+                ,L"file lexer"        
+                ,this->pFileOutputLexer 
+                ,this->fileNameOutputLexer 
+            ) ;
+            #else
             fwprintf ( this->pFileOutputLexer , L"\n%-20ls : [0x%x] -> [%-20hs]\n" 
                 ,L"file lexer"        
                 ,(unsigned long)this->pFileOutputLexer 
                 ,this->fileNameOutputLexer 
             ) ;
+            #endif
         }
     }
   
