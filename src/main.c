@@ -3,6 +3,7 @@
 #include "global.h"
 #include "error.h"
 #include "lexer.h"
+#include "parser.h"
 
 // *********
 //  GLOBAL
@@ -147,7 +148,7 @@ int main (int argc , const char** argv )
         if (g.fDebug) fwprintf ( stdout,L"\n\nConsole set to UTF-8\n") ;
 
     }
-    
+/*    
 	// *********
 	//  LEXER
 	// *********
@@ -173,7 +174,43 @@ int main (int argc , const char** argv )
 	lexerDtor(lexer);
 
 	lexerDealloc(lexer);
-		                 
+*/		
+
+        // *********
+        //  symbol Table
+        // *********
+        
+        //stInitSymTable();
+        
+        // *********
+        //  PARSER
+        // *********
+
+        pparser_t parser = parserAlloc();
+
+        parser->fileInputName = g.fileInputName ;
+        parser->fDebug = 1     ;
+        
+        parserCtor(parser);
+
+        if ( !kError ) 
+        {
+            pnode_t pn = NULL ;
+            
+            pn = parserScan(parser);
+            
+            astDebug ( parser->ast , pn ) ; // esegue check null e fDebug
+
+        }
+
+        // show map
+
+        //stShowMap() ;
+
+        parserDtor(parser);
+
+        parserDealloc(parser);
+                 
     // *********
     //  END
     // *********

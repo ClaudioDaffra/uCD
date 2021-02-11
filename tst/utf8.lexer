@@ -1,0 +1,6 @@
+
+file lexer           : [0xcdf865e0] -> [tst/utf8.lexer      ]
+
+# Lexer  -> scanning ...
+
+-[tst/utf8.txt        ][001,000] len(01) sym(005) [                   1] -> [[1]]

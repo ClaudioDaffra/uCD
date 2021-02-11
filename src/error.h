@@ -256,6 +256,111 @@ int printErrLog(void); // error.printLog
             gcWcsDup((wchar_t*)EXTRA)\
         ) ;
 
+// ...................................................................................... parser
+
+#define $parserInternal( ACTION,ERRMESSAGE,FILE,EXTRA )\
+        pushErrLog(\
+            sender_parser,\
+            type_internal,\
+            action_##ACTION,\
+            errMessage_##ERRMESSAGE,\
+            0,\
+            0,\
+            gcWcsDup((wchar_t*)FILE),\
+            gcWcsDup(EXTRA)\
+        ) ;
+
+#define $parserInternalExtra( ACTION,ERRMESSAGE,FILE,EXTRA )\
+        pushErrLog(\
+            sender_parser,\
+            type_internal,\
+            action_##ACTION,\
+            errMessage_##ERRMESSAGE,\
+            this->lexer->row_start,\
+            this->lexer->col_start,\
+            gcWcsDup((wchar_t*)FILE),\
+            gcWcsDup(EXTRA)\
+        ) ;
+        
+#define $parserError( ACTION,ERRMESSAGE )\
+        pushErrLog(\
+            sender_parser,\
+            type_error,\
+            action_##ACTION,\
+            errMessage_##ERRMESSAGE,\
+            this->lexer->row_start,\
+            this->lexer->col_start,\
+            gcWcsDup((wchar_t*)this->lexer->fileInputName),\
+            NULL\
+        ) ;
+        
+#define $parserErrorExtra( ACTION,ERRMESSAGE,EXTRA )\
+        pushErrLog(\
+            sender_parser,\
+            type_error,\
+            action_##ACTION,\
+            errMessage_##ERRMESSAGE,\
+            this->lexer->row_start,\
+            this->lexer->col_start,\
+            gcWcsDup((wchar_t*)this->lexer->fileInputName),\
+            gcWcsDup(EXTRA)\
+        ) ;
+        
+#define $syntaxError \
+            pushErrLog(\
+                sender_parser,\
+                type_error,\
+                action_parse,\
+                errMessage_syntaxError,\
+                this->lexer->row_start,\
+                this->lexer->col_start,\
+                gcWcsDup((wchar_t*)this->lexer->fileInputName),\
+                gcWcsDup(this->lexer->token)\
+           ) ;
+ 
+#define $matchError( EXTRA )\
+            pushErrLog(\
+                sender_parser,\
+                type_error,\
+                action_parseExpr,\
+                errMessage_unexpectedToken,\
+                this->lexer->row_start,\
+                this->lexer->col_start,\
+                gcWcsDup((wchar_t*)this->lexer->fileInputName),\
+                gcWcsDup(EXTRA)\
+           ) ; 
+               
+                  
+// ...................................................................................... ast
+
+#define $astInternal( ACTION,ERRMESSAGE,FILE,EXTRA )\
+        pushErrLog(\
+            sender_ast,\
+            type_internal,\
+            action_##ACTION,\
+            errMessage_##ERRMESSAGE,\
+            0,\
+            0,\
+            gcWcsDup((wchar_t*)FILE),\
+            gcWcsDup(EXTRA)\
+        ) ;
+        
+// ...................................................................................... node
+
+#define $nodeInternal( ACTION,ERRMESSAGE,FILE,EXTRA )\
+        pushErrLog(\
+            sender_node,\
+            type_internal,\
+            action_##ACTION,\
+            errMessage_##ERRMESSAGE,\
+            0,\
+            0,\
+            gcWcsDup((wchar_t*)FILE),\
+            gcWcsDup(EXTRA)\
+        ) ;
+                        
+               
+               
 #endif
 
 extern vector_errLog_t  vErrLog 	; // error.c

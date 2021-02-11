@@ -1,0 +1,6 @@
+
+file parser          : [0x00005625cdf712c0] -> [tst/utf8.parser     ]
+
+# Parser  -> scanning ...
+
+-[tst/utf8.txt        ][001,000] len(01) sym(005) [                   1] -> [[1]]
