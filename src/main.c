@@ -148,68 +148,31 @@ int main (int argc , const char** argv )
         if (g.fDebug) fwprintf ( stdout,L"\n\nConsole set to UTF-8\n") ;
 
     }
-/*    
+    
 	// *********
-	//  LEXER
+	//  PARSER
 	// *********
 
-	plexer_t lexer = lexerAlloc();
+	pparser_t parser = parserAlloc();
 
-	lexerCtor(lexer);
-
-	if ( g.fDebug == 1 ) lexer->fDebug = 1 ;
-
-	// LEXER
+	parser->fileInputName = g.fileInputName ;
+	parser->fDebug = 1     ;
 	
-		lexerInclude ( lexer , g.fileInputName ) ;
+	parserCtor(parser);
+
+	if ( !kError ) 
+	{
+		pnode_t pn = NULL ;
 		
-		for(;;)
-		{
-			lexerGetToken(lexer) ; // ottien il token
-			if ( lexer->sym == sym_end ) break; 
-		}
+		pn = parserScan(parser);
 		
-	// END LEXER
-            
-	lexerDtor(lexer);
+		astDebug ( parser->ast , pn ) ; // esegue check null e fDebug
 
-	lexerDealloc(lexer);
-*/		
+	}
 
-        // *********
-        //  symbol Table
-        // *********
-        
-        //stInitSymTable();
-        
-        // *********
-        //  PARSER
-        // *********
+	parserDtor(parser);
 
-        pparser_t parser = parserAlloc();
-
-        parser->fileInputName = g.fileInputName ;
-        parser->fDebug = 1     ;
-        
-        parserCtor(parser);
-
-        if ( !kError ) 
-        {
-            pnode_t pn = NULL ;
-            
-            pn = parserScan(parser);
-            
-            astDebug ( parser->ast , pn ) ; // esegue check null e fDebug
-
-        }
-
-        // show map
-
-        //stShowMap() ;
-
-        parserDtor(parser);
-
-        parserDealloc(parser);
+	parserDealloc(parser);
                  
     // *********
     //  END
@@ -227,5 +190,4 @@ int main (int argc , const char** argv )
   
     return 0 ;
 }
-
-
+ 

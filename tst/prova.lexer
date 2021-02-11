@@ -1,0 +1,20 @@
+
+file lexer           : [0x839e9610] -> [tst/prova.lexer     ]
+
+# Lexer  -> scanning ...
+
+-[tst/prova.txt       ][001,000] len(01) sym(253) [                   -]
+-[tst/prova.txt       ][001,001] len(01) sym(251) [                   !]
+-[tst/prova.txt       ][001,002] len(01) sym(005) [                   1] -> [[1]]
+-[tst/prova.txt       ][001,003] len(01) sym(252) [                   +]
+-[tst/prova.txt       ][001,004] len(01) sym(005) [                   2] -> [[2]]
+-[tst/prova.txt       ][001,005] len(01) sym(254) [                   *]
+-[tst/prova.txt       ][001,006] len(01) sym(005) [                   3] -> [[3]]
+-[tst/prova.txt       ][001,008] len(01) sym(153) [                   ;]
+-[tst/prova.txt       ][002,000] len(01) sym(005) [                   4] -> [[4]]
+-[tst/prova.txt       ][002,001] len(01) sym(254) [                   *]
+-[tst/prova.txt       ][002,002] len(01) sym(253) [                   -]
+-[tst/prova.txt       ][002,003] len(01) sym(005) [                   5] -> [[5]]
+-[tst/prova.txt       ][002,004] len(01) sym(252) [                   +]
+-[tst/prova.txt       ][002,005] len(01) sym(005) [                   6] -> [[6]]
+-[tst/prova.txt       ][002,007] len(01) sym(153) [                   ;]

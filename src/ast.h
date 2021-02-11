@@ -32,8 +32,8 @@ enum enodeType
     nTypeTermInteger    ,   // 1
     nTypeTermReal       ,   // 2 
     nTypeTermChar       ,   // 3
-/*
     nTypeTermString     ,   // 4 
+/*
     nTypeTermField      ,   // 5  	1 campo della struttura 
 	nTypeTermStruct		,	// 6	+ campi della struttura
     nTypeTermVar        ,   // 7
@@ -42,18 +42,17 @@ enum enodeType
 */
     nTypeBinOp          ,   // 10
     nTypePrefix         ,   // 11
-/*
     nTypeBlock          ,   // 12
-    
+/*    
     nTypeDeclConst      ,    // 13 decl const global local 
     nTypeDeclVar        ,    // 14 decl var     global local    
     nTypeDeclArray      ,    // 15 decl array global local   
     nTypeArrayDim       ,    // 16 array dim [][][] ...   
     nTypeDeclType       ,    // 17 type declaration 
     nTypeDeclFunction   ,    // 18 dichiarazione di funzione   
-    
+*/   
     nTypeAssign         ,    // 19 := 
-*/          
+        
 } ;
 
 typedef enum enodeType     enodeType_t;
@@ -65,7 +64,7 @@ typedef struct nodeTerm_s
         int64_t     integer  ;     // integer  / wchar_t  / byte
         double      real     ;     // float / double
         wchar_t     wchar    ;     // character
-        //wchar_t*    wstring  ;     // string    
+        wchar_t*    wstring  ;     // string    
         wchar_t*    id       ;     // id / keyword            
 } 
 nodeTerm_t ;
@@ -90,13 +89,15 @@ typedef struct nodePrefix_s
 nodePrefix_t ;
 
 // .................................... nodo blocco
-/*
+
+vectorTypeDef(pnode_t,next);
+
 typedef struct nodeBlock_s
 {
-    vectorStruct(pnode_t,next);    // vettore di nodi
+    vector_next_t	next ;    // vettore di nodi
     
 } nodeBlock_t ;
-
+/*
 // .................................... nodo    costanti globali / locali
 
 typedef struct nodeDeclConst_s
@@ -197,7 +198,7 @@ typedef struct nodeTermStruct_s
     
 } nodeTermStruct_t ;
 
-
+*/
 // .................................... nodo  lhs := rhs
 
 typedef struct nodeAssign_s
@@ -207,6 +208,7 @@ typedef struct nodeAssign_s
     
 } nodeAssign_t ;
 
+/*
 // .................................... nodo  decl function
 
 typedef struct nodeDeclFunction_s
@@ -239,14 +241,13 @@ struct node_s
         //nodeTermFunction_t      termFunction  ;
         //nodeTermVar_t           termVar       ;
         //nodeTermField_t         termField     ;	// 1 campo    
-        //nodeTermStruct_t        termStruct    ; // + campi
-                      
+        //nodeTermStruct_t        termStruct    ; // + campi             
         nodeBinOp_t             binOp         ;
         nodePrefix_t            prefix        ;
-        //nodeBlock_t             block         ;
+        nodeBlock_t             block         ;
         //nodeDeclConst_t         declConst     ; 
         //nodeDeclVar_t           declVar       ; 
-        //nodeAssign_t            assign        ;
+        nodeAssign_t            assign        ;
         //nodeDeclArray_t         declArray     ;
         //nodeArrayDim_t          arrayDim      ; 
         //nodeDeclType_t          declType      ;
@@ -302,7 +303,7 @@ void        astDebug                  ( past_t this , pnode_t n ) ;
 node_t*     astMakeNodeTermInteger    ( past_t this , plexer_t lexer , int64_t     _integer     )    ;
 node_t*     astMakeNodeTermReal       ( past_t this , plexer_t lexer , double     _real         )    ;
 node_t*     astMakeNodeTermChar       ( past_t this , plexer_t lexer , wchar_t     _wchar       )    ;
-//node_t*     astMakeNodeTermString     ( past_t this , plexer_t lexer , wchar_t*     _wstring    )    ;
+node_t*     astMakeNodeTermString     ( past_t this , plexer_t lexer , wchar_t*     _wstring    )    ;
 //node_t*     astMakeNodeTermVar        ( past_t this , wchar_t* _name , uint32_t row , uint32_t col ) ;
 //pnode_t     astMakeNodeTermArray      ( past_t this , wchar_t* id  , pnode_t pArrayDim )     ;
 //pnode_t     astMakeNodeTermFunction   ( past_t this , wchar_t* id  , pnode_t pArrayParam ) ;
@@ -312,8 +313,8 @@ node_t*     astMakeNodeTermChar       ( past_t this , plexer_t lexer , wchar_t  
 node_t*     astMakeNodeBinOP          ( past_t this , plexer_t lexer , sym_t sym , node_t* left , node_t* right ) ;
 node_t*     astMakeNodePrefix         ( past_t this ,    psPrefixOp_t prefix , node_t* left ) ;
 
-//node_t*     astMakeNodeBlock          ( past_t this ) ;
-//size_t      astPushNodeBlock          ( past_t this , node_t * nBlock     , node_t * next );
+node_t*     astMakeNodeBlock          ( past_t this ) ;
+size_t      astPushNodeBlock          ( past_t this , node_t * nBlock     , node_t * next );
 //size_t      astPushAllNodeBlock       ( past_t this , node_t * nBlockDest , node_t * nBlockSource ) ;
 
 //pnode_t     astMakeNodeDeclConst      ( past_t this , wchar_t* id ,  sym_t sym , pnode_t _term     , stScope_t    scope ) ;
@@ -325,7 +326,7 @@ node_t*     astMakeNodePrefix         ( past_t this ,    psPrefixOp_t prefix , n
 //pnode_t     astMakeNodeDeclType       ( past_t this , wchar_t* id , stScope_t    scope )  ;
 //pnode_t     astMakeNodeDeclFunction   ( past_t this , wchar_t* id , sym_t retType , pnode_t pParamList , pnode_t pBlockCode ) ;
 
-//node_t*     astMakeNodeAssign         ( past_t this , plexer_t lexer ,  node_t * lhs , node_t * rhs ) ;
+node_t*     astMakeNodeAssign         ( past_t this , plexer_t lexer ,  node_t * lhs , node_t * rhs ) ;
 
 
 

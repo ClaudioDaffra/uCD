@@ -1,7 +1,10 @@
 
 #include "parser.h"
 
-
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wrestrict"
+#endif
 
 // ................................................... MATCH
 
@@ -67,7 +70,9 @@ int parserPrintToken( pparser_t this )
     if ( this->lexer->sym==sym_char    )  fwprintf ( this->pFileOutputParser , L" -> [[%lc]]",g.outputSpecialCharInChar(this->lexer->value.wchar)     ) ;
     
     if ( this->lexer->sym==sym_string  )  fwprintf ( this->pFileOutputParser , L" -> [[%ls]]",g.outputSpecialCharInString(this->lexer->value.wstring) ) ;
-    
+
+    if ( this->lexer->sym==sym_id  	   )  fwprintf ( this->pFileOutputParser , L" -> [[%ls]]",g.outputSpecialCharInString(this->lexer->value.id) ) ;
+
     fwprintf ( this->pFileOutputParser , L"\n" ) ;
     
     return 0 ;
@@ -203,6 +208,40 @@ void parserDtor( pparser_t this )
         astDealloc(this->ast);
     }
 }
+// ......................................................... parser statement
+
+pnode_t parserStatement( pparser_t this , node_t* nBlock ) 
+{
+    pnode_t     pnode 	= 	NULL ;
+
+    // -----------
+    // EXPR
+    // -----------
+
+    pnode = NULL ;
+
+    do {
+        
+        if  ( this->lexer->sym==sym_pv)  parserGetToken(this);
+
+        if ( kError ) break ;
+        
+        pnode=parserExpr(this);
+        
+        if ( pnode!=NULL ) astPushNodeBlock( this->ast , nBlock , pnode );
+        
+        //if  ( this->lexer->sym==sym_pv) $MATCH( sym_pv , L';' ) else break ;
+        
+    } while (       pnode!=NULL 
+                &&  this->lexer->sym != sym_end 
+                &&  this->lexer->sym == sym_pv
+                &&  !kError 
+            ) ;
+            
+    //if ( this->lexer->sym==sym_pv) $MATCH( sym_pv , L';' ) ;
+
+    return nBlock ;
+}
 
 // ......................................................... parser scan 
 
@@ -221,9 +260,13 @@ pnode_t parserScan( pparser_t this )
         parserGetToken(this);
         
     // parser begin
-    
-       // pnode = parserMainBlock( this ) ; // decl(global); Function; statement[expr];
-    
+
+		node_t* 	nBlock	=	astMakeNodeBlock(this->ast);   
+		 
+		pnode=parserStatement(this,nBlock);
+
+		// pnode = parserMainBlock( this ) ; // decl(global); Function; statement[expr];
+
     // parser end
 
     // ritorna il nodo principale ( GC for deallocation )
@@ -231,9 +274,12 @@ pnode_t parserScan( pparser_t this )
     return pnode ;
 }
 
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
+
 
 
 /**/
-
 
 

@@ -1,0 +1,48 @@
+
+file parser          : [0x0000561b839d42e0] -> [tst/prova.parser    ]
+
+# Parser  -> scanning ...
+
+-[tst/prova.txt       ][001,000] len(01) sym(253) [                   -]
+parserExpr
+parserAssign
+parserAddSub
+parserMulDivMod
+parserPrefix push [253]
+-[tst/prova.txt       ][001,001] len(01) sym(251) [                   !]
+parserPrefix push [251]
+-[tst/prova.txt       ][001,002] len(01) sym(005) [                   1] -> [[1]]
+parserTerm
+sym_integer                    :: [1].
+-[tst/prova.txt       ][001,003] len(01) sym(252) [                   +]
+parserPrefix pop [252]
+parserPrefix pop [252]
+-[tst/prova.txt       ][001,004] len(01) sym(005) [                   2] -> [[2]]
+parserMulDivMod
+parserTerm
+sym_integer                    :: [2].
+-[tst/prova.txt       ][001,005] len(01) sym(254) [                   *]
+-[tst/prova.txt       ][001,006] len(01) sym(005) [                   3] -> [[3]]
+parserTerm
+sym_integer                    :: [3].
+-[tst/prova.txt       ][001,008] len(01) sym(153) [                   ;]
+-[tst/prova.txt       ][002,000] len(01) sym(005) [                   4] -> [[4]]
+parserExpr
+parserAssign
+parserAddSub
+parserMulDivMod
+parserTerm
+sym_integer                    :: [4].
+-[tst/prova.txt       ][002,001] len(01) sym(254) [                   *]
+-[tst/prova.txt       ][002,002] len(01) sym(253) [                   -]
+parserPrefix push [253]
+-[tst/prova.txt       ][002,003] len(01) sym(005) [                   5] -> [[5]]
+parserTerm
+sym_integer                    :: [5].
+-[tst/prova.txt       ][002,004] len(01) sym(252) [                   +]
+parserPrefix pop [252]
+-[tst/prova.txt       ][002,005] len(01) sym(005) [                   6] -> [[6]]
+parserMulDivMod
+parserTerm
+sym_integer                    :: [6].
+-[tst/prova.txt       ][002,007] len(01) sym(153) [                   ;]

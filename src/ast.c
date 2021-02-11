@@ -3,6 +3,11 @@
 #include "ast.h"
 //#include "symTable.h"
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wrestrict"
+#endif
+
 // ......................................................... ast alloc
 
 past_t  astAlloc ( void )
@@ -96,7 +101,6 @@ void astDtor ( past_t this )
     } ;
 }
 
-
 // TERM : INTEGER
 
 node_t* astMakeNodeTermInteger( past_t this , plexer_t lexer , int64_t _integer )
@@ -164,7 +168,6 @@ node_t* astMakeNodeTermChar( past_t this , plexer_t lexer , wchar_t _wchar )
     return nNew ;
 }
 
-/*
 // TERM : STRING
 
 node_t* astMakeNodeTermString( past_t this , plexer_t lexer , wchar_t* _wstring )
@@ -186,6 +189,7 @@ node_t* astMakeNodeTermString( past_t this , plexer_t lexer , wchar_t* _wstring 
     return nNew ;
 }
 
+/*
 // TERM : VAR
 
 node_t* astMakeNodeTermVar( past_t this , wchar_t* _name , uint32_t row , uint32_t col )
@@ -283,7 +287,7 @@ node_t* astMakeNodePrefix( past_t this , psPrefixOp_t prefix , node_t* left )
 
     return nNew ;
 }
-/*
+
 // BLOCK
 
 node_t* astMakeNodeBlock( past_t this ) 
@@ -316,7 +320,7 @@ size_t astPushNodeBlock( past_t this , node_t * nBlock , node_t * next )
     
     return vectorSize(nBlock->block.next);
 }
-
+/*
 size_t     astPushAllNodeBlock    ( past_t this , node_t * nBlockDest ,  node_t * nBlockSource )
 {
     if ( nBlockDest   == NULL ) return 0 ;
@@ -408,7 +412,7 @@ pnode_t     astMakeNodeArrayDim    ( past_t this )
 
     return nNew ;
 }
-
+*/
 // node terminale variabile semplice
 
 node_t* astMakeNodeAssign  (  past_t this , plexer_t lexer ,  node_t * lhs , node_t * rhs )
@@ -429,7 +433,7 @@ node_t* astMakeNodeAssign  (  past_t this , plexer_t lexer ,  node_t * lhs , nod
 
     return nNew ;
 }
-
+/*
 // DECL TYPE
 
 pnode_t     astMakeNodeDeclType    ( past_t this , wchar_t* id , stScope_t    scope ) 
@@ -532,7 +536,7 @@ node_t* astMakeNodeTermStruct( past_t this )
 // ***********
 // astDebug
 // ***********
-
+			
 #define $astDebugRowColToken(FLAG)    if ( this->FLAG ) fwprintf ( this->pFileOutputNode , L" { %03d/%03d :: %ls }\n",n->row,n->col,n->token );
 
 node_t* astNodeDebug( past_t this , node_t* n) 
@@ -541,16 +545,17 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
   
   // level
-  //static int nodeLevel=-1;
+/*
+	static int nodeLevel=-1;
   //++nodeLevel;
 
   // visualizzazione pessima con i prefissi meglio una di fila all'altra
-  //for(int i=0;i<nodeLevel;i++) 
-  //  if ( this->fDebug ) 
-  //      fwprintf ( this->pFileOutputNode , L"   " ) ; // 4 space for level
-  
-  // 
-/*
+ 
+	for(int i=0;i<nodeLevel;i++) 
+		if ( this->fDebug ) 
+			fwprintf ( this->pFileOutputNode , L"   " ) ; // 4 space for level
+*/
+
   switch ( n->type )
   {
       case  nTypeUndefined :
@@ -561,7 +566,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             }
             
             break;   
-            
+          
       case  nTypeTermInteger :
 
             if ( this->fDebug ) 
@@ -601,7 +606,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             }             
             
             break;
-
+/*
       case  nTypeTermVar :
 
             if ( this->fDebug ) 
@@ -621,7 +626,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             }             
             
             break;
-            
+*/           
         case  nTypeBinOp :
 
             astNodeDebug( this,n->binOp.right ) ;
@@ -653,8 +658,8 @@ node_t* astNodeDebug( past_t this , node_t* n)
             break;  
 
         case  nTypeBlock :
-    
-            if ( this->fDebug ) fwprintf ( this->pFileOutputNode , L"node [%018p] %-10ls\n\n",(void*)n,L"block");
+
+            if ( this->fDebug ) fwprintf ( this->pFileOutputNode , L"node [%018p] size[%03zu] %-10ls\n{",(void*)n,n->block.next.size-1,L"block");
             
             for (size_t i = 0 ; i<n->block.next.size; i++)
             {
@@ -662,18 +667,19 @@ node_t* astNodeDebug( past_t this , node_t* n)
                 {    
                     if ( n->block.next.data[i] != NULL )
                     {
-                        fwprintf ( this->pFileOutputNode , L"node [%018p] -> [%03d/%03d]::[%018p]\n",n,(int)i,(int)n->block.next.size-1,n->block.next.data[i] );
+                        fwprintf ( this->pFileOutputNode , L"\nnode [%018p] -> [%03d/%03d]::[%018p] :: \n\n",n,(int)i,(int)n->block.next.size-1,n->block.next.data[i] );
                     }
                 }
                 if ( n->block.next.data[i] != NULL ) 
                 {
                     astNodeDebug( this,n->block.next.data[i] ) ; 
                 }
-                fwprintf ( this->pFileOutputNode , L"\n"); // \n per meglio visualizzare i blocchi
+                //fwprintf ( this->pFileOutputNode , L"\n"); // \n per meglio visualizzare i blocchi
             }
-
+            fwprintf ( this->pFileOutputNode , L"}\n"); 
+                
             break; 
-
+ 
         case nTypeAssign :
 
             astNodeDebug( this,n->assign.lhs ) ;
@@ -694,7 +700,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             }
         
         break ;  
-    
+/*   
         case nTypeDeclConst :
         
             astNodeDebug( this , n->declConst.term ) ;
@@ -851,7 +857,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             fwprintf ( this->pFileOutputNode , L"}\n");  
                     
 			break ;
- 
+*/ 
       default :
 
             $nodeInternal ( debug , errUnknown , L"ast.c" , L"node_t* astDebug(node_t* n) -> switch ( n->type )") ;
@@ -861,7 +867,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
   }
   
   //--nodeLevel;
-*/  
+ 
   return NULL ;
 
 }
@@ -885,6 +891,10 @@ void astDebug( past_t this , pnode_t n)
 
 
 #undef $astDebugRowColToken
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 
 
