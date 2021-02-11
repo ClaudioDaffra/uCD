@@ -5,6 +5,14 @@
 #include "lexer.h"
 #include "parser.h"
 
+//
+// make -f mk.lin.gcc -j4
+// .bin/cd -i tst/prova.txt -o tst/prova.out -d
+//
+// nmake /F mk.win.cl
+// bin\cd  -i tst\prova.txt -o tst\prova.out -d
+//
+
 // *********
 //  GLOBAL
 // *********

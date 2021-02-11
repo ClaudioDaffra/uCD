@@ -145,7 +145,7 @@ void parserCtor( pparser_t this )
                 
                 if ( this->pFileOutputParser != NULL )
                 {
-                    fwprintf ( this->pFileOutputParser , L"\n%-20ls : [%018p] -> [%-20s]\n" 
+                    fwprintf ( this->pFileOutputParser , L"\n%-20ls : [%018p] -> [%-20hs]\n" 
                         ,L"file parser"        
                         ,this->pFileOutputParser 
                         ,this->fileNameOutputParser

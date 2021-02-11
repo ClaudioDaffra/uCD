@@ -61,7 +61,7 @@ void astCtor( past_t this , char* fileInputName )
             
             if ( this->pFileOutputAST != NULL )
             {
-                fwprintf ( this->pFileOutputAST , L"\n%-20ls : [%018p] -> [%-20s]\n" 
+                fwprintf ( this->pFileOutputAST , L"\n%-20ls : [%018p] -> [%-20hs]\n" 
                     ,L"file ast"        
                     ,this->pFileOutputAST 
                     ,this->fileNameOutputAST
@@ -75,7 +75,7 @@ void astCtor( past_t this , char* fileInputName )
             
             if ( this->pFileOutputNode != NULL ) // \n\n per meglio visualizzare i blocchi
             {
-                fwprintf ( this->pFileOutputNode , L"\n%-20ls : [%018p] -> [%-20s]\n\n" 
+                fwprintf ( this->pFileOutputNode , L"\n%-20ls : [%018p] -> [%-20hs]\n\n" 
                     ,L"file node"   
                     ,this->pFileOutputNode 
                     ,this->fileNameOutputNode
