@@ -47,18 +47,23 @@ psPrefixOp_t    parserPrefixDelete( psPrefixOp_t prefix )
 
 node_t* parserTerm( pparser_t this )
 {
+	// ................................................... EXPR[2]
+	
     // PREFIX PUSH
-
-        //stackType( psPrefixOp_t , sPrefixOp ) ;
-        //stackNew ( sPrefixOp , 128 ) ;
 
 		stackTypeDef(psPrefixOp_t,sPrefixOp);
 		stack_sPrefixOp_t	sPrefixOp ;
 		stackAlloc(sPrefixOp,16) ;
 
-        while (	this->lexer->sym == sym_add
-            ||	this->lexer->sym == sym_sub
-            ||	this->lexer->sym == sym_not
+        while (	this->lexer->sym == sym_add		//	+
+            ||	this->lexer->sym == sym_sub		//	-
+            ||	this->lexer->sym == sym_not		//	!
+            ||	this->lexer->sym == sym_bitAnd  //	&  
+            ||	this->lexer->sym == sym_neg  	//	~  
+            ||	this->lexer->sym == sym_mul  	//	*
+            ||	this->lexer->sym == sym_inc  	//	++
+            ||	this->lexer->sym == sym_dec  	//	--
+            ||	this->lexer->sym == sym_sizeof  //	sizeof $                                                                       
         )
         {
             if ( this->lexer->sym != sym_add ) // prefix -> skip '+'
@@ -188,7 +193,7 @@ node_t* parserTerm( pparser_t this )
  return n ;
 }
 
-// ................................................... mul div mod * / % 
+// ................................................... EXPR[3]	mul div mod * / % 
 
 node_t* parserMulDivMod( pparser_t this )
 {
@@ -236,7 +241,7 @@ node_t* parserMulDivMod( pparser_t this )
  return left ;
 }
 
-// ................................................... Add Sub + - 
+// ................................................... EXPR[4]	Add Sub + - 
 
 node_t* parserAddSub( pparser_t this )
 {
@@ -271,7 +276,7 @@ node_t* parserAddSub( pparser_t this )
  return left ;
 }
 
-// ................................................... Assign :=
+// ................................................... EXPR[14]	Assign :=
 
 node_t* parserAssign( pparser_t this )
 {

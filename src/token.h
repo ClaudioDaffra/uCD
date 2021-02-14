@@ -48,8 +48,8 @@ typedef enum e_sym
  
     //              operator 3
      
-    sym_shiftLeftEq		,
-    sym_shiftRightEq	,
+    sym_shiftLeftEq		,	// <<=
+    sym_shiftRightEq	,	// >>=
         
     //              operator 2
         
