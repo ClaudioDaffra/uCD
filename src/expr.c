@@ -43,6 +43,13 @@ psPrefixOp_t    parserPrefixDelete( psPrefixOp_t prefix )
     return prefix ;
 }
 
+// ................................................... postfix ++ -- [] () . ->
+
+node_t* parserPostFix( pparser_t this )
+{
+	return NULL;
+}
+
 // ................................................... TERM
 
 node_t* parserTerm( pparser_t this )
@@ -143,21 +150,15 @@ node_t* parserTerm( pparser_t this )
 
         break;
         
-        /*
-                Gestione Array Function Const Var Field
-                
-                1) id    [    :    array
-                2) id    (    :    function
-                3) id         :    const
-                4)            :    var
-                5)            :    field
 
-        */
-         
-        case sym_id : // Array || Function || Const || Var || Field
-        {
+        case sym_id :
+        
+            fwprintf ( this->pFileOutputParser , L"%-30ls :: [%ls].\n",L"sym_string",g.outputSpecialCharInString(this->lexer->value.id) );
 
-        }
+            n = astMakeNodeTermID( this->ast,this->lexer, this->lexer->value.id ) ;
+
+            parserGetToken(this);
+            
         break;
 
         default:

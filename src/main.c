@@ -143,7 +143,10 @@ int main (int argc , const char** argv )
         {
         g.fileOutputName          = makeFileWithNewExt( g.fileInputName , ".output" ) ;            
         }
-        stdFileWOpen ( &g.pFileOutput , g.fileOutputName , "w+","ccs=UTF-8") ;
+        
+        int err = stdFileWOpen ( &g.pFileOutput , g.fileOutputName , "w+","ccs=UTF-8") ;
+
+		if ( err ) ++kError ;
 
         if ( g.fDebug )
         {
@@ -157,35 +160,38 @@ int main (int argc , const char** argv )
 
     }
     
-	// *********
-	//  PARSER
-	// *********
+    if ( !kError ) 
+    {
+		// *********
+		//  PARSER
+		// *********
 
-	pparser_t parser = parserAlloc();
+		pparser_t parser = parserAlloc();
 
-	parser->fileInputName = g.fileInputName ;
-	parser->fDebug = 1     ;
-	
-	parserCtor(parser);
-
-	if ( !kError ) 
-	{
-		pnode_t pn = NULL ;
+		parser->fileInputName = g.fileInputName ;
+		parser->fDebug = 1     ;
 		
-		pn = parserScan(parser);
+		parserCtor(parser);
+
+		if ( !kError ) 
+		{
+			pnode_t pn = NULL ;
+			
+			pn = parserScan(parser);
+			
+			astDebug ( parser->ast , pn ) ; // esegue check null e fDebug
+
+		}
+
+		parserDtor(parser);
+
+		parserDealloc(parser);
 		
-		astDebug ( parser->ast , pn ) ; // esegue check null e fDebug
+		// *********
+		//  END
+		// *********		
+	}    
 
-	}
-
-	parserDtor(parser);
-
-	parserDealloc(parser);
-                 
-    // *********
-    //  END
-    // *********
- 
 	if (g.pFileInput)	fclose(g.pFileInput);
 	
 	if (g.pFileOutput)	fclose(g.pFileOutput);

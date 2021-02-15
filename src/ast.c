@@ -189,6 +189,27 @@ node_t* astMakeNodeTermString( past_t this , plexer_t lexer , wchar_t* _wstring 
     return nNew ;
 }
 
+// TERM : ID
+
+node_t* astMakeNodeTermID( past_t this , plexer_t lexer , wchar_t* _id )
+{
+    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: [%ls]\n",L"astMakeNodeTermID",_id );
+
+    node_t* nNew   = NULL ; // new node
+    
+    nNew = gcMalloc ( sizeof(node_t) ) ;
+    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeTermID") ;
+
+    nNew->type		= nTypeTermID ;
+    nNew->term.id 	= gcWcsDup(_id);
+    
+    nNew->row    =    lexer->row_start ;
+    nNew->col    =    lexer->col_start - 1;
+    nNew->token  =    gcWcsDup(lexer->token)  ;    
+
+    return nNew ;
+}
+
 /*
 // TERM : VAR
 
@@ -606,6 +627,17 @@ node_t* astNodeDebug( past_t this , node_t* n)
             }             
             
             break;
+            
+      case  nTypeTermID :
+
+            if ( this->fDebug ) 
+            {
+                fwprintf ( this->pFileOutputNode , L"node [%018p] %-10ls :: [%ls]",(void*)n,L"term id"  ,n->term.id );
+                $astDebugRowColToken(fDebug);
+            }             
+            
+            break;
+            
 /*
       case  nTypeTermVar :
 

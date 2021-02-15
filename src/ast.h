@@ -33,8 +33,8 @@ enum enodeType
     nTypeTermReal       ,   // 2 
     nTypeTermChar       ,   // 3
     nTypeTermString     ,   // 4 
-/*
-    nTypeTermField      ,   // 5  	1 campo della struttura 
+    nTypeTermID      	,   // 5 
+/* 
 	nTypeTermStruct		,	// 6	+ campi della struttura
     nTypeTermVar        ,   // 7
     nTypeTermArray      ,   // 8
@@ -300,10 +300,12 @@ void        astDtor                   ( past_t this ) ;
 pnode_t     astNodeDebug              ( past_t this , pnode_t n ) ;
 void        astDebug                  ( past_t this , pnode_t n ) ;
 
-node_t*     astMakeNodeTermInteger    ( past_t this , plexer_t lexer , int64_t     _integer     )    ;
-node_t*     astMakeNodeTermReal       ( past_t this , plexer_t lexer , double     _real         )    ;
-node_t*     astMakeNodeTermChar       ( past_t this , plexer_t lexer , wchar_t     _wchar       )    ;
-node_t*     astMakeNodeTermString     ( past_t this , plexer_t lexer , wchar_t*     _wstring    )    ;
+node_t*     astMakeNodeTermInteger    ( past_t this , plexer_t lexer , int64_t		_integer	) ;
+node_t*     astMakeNodeTermReal       ( past_t this , plexer_t lexer , double		_real		) ;
+node_t*     astMakeNodeTermChar       ( past_t this , plexer_t lexer , wchar_t		_wchar		) ;
+node_t*     astMakeNodeTermString     ( past_t this , plexer_t lexer , wchar_t*		_wstring    ) ;
+node_t* 	astMakeNodeTermID		  ( past_t this , plexer_t lexer , wchar_t* 	_id 		) ;
+
 //node_t*     astMakeNodeTermVar        ( past_t this , wchar_t* _name , uint32_t row , uint32_t col ) ;
 //pnode_t     astMakeNodeTermArray      ( past_t this , wchar_t* id  , pnode_t pArrayDim )     ;
 //pnode_t     astMakeNodeTermFunction   ( past_t this , wchar_t* id  , pnode_t pArrayParam ) ;
