@@ -50,7 +50,10 @@ node_t* parserPostFixArray( pparser_t this , node_t* left )
 {
 	node_t* vArray = astMakeNodeBlock( this->ast ) ;
 	node_t* exprNode  = NULL ;
-	
+
+	size_t rowSave = this->lexer->row_start;
+	size_t colSave = this->lexer->col_start;
+
 	while ( this->lexer->sym == sym_pq0 )
 	{
 		parserGetToken(this);
@@ -62,7 +65,7 @@ node_t* parserPostFixArray( pparser_t this , node_t* left )
 		$MATCH(  sym_pq1 , L']' ) ;
 	}
 	
-	fwprintf ( stderr,L" vector size array %d\n",  vArray->block.next.size  ) ;
+	//fwprintf ( stderr,L" vector size array %d\n",  vArray->block.next.size  ) ;
 	
 	if ( vArray->block.next.size ) // è presente vettore array
 	{
@@ -75,9 +78,9 @@ node_t* parserPostFixArray( pparser_t this , node_t* left )
 		node->postfix.sym  	 = sym_pq0 ; 			// operatore post fisso [
 		node->token 		 = gcWcsDup(L"[");  
 		node->postfix.array  = vArray ;
-		
-		// TODO row col initial
-			
+		node->row		 	 = rowSave ;
+		node->col			 = colSave -1 ;
+
 		return node ;
 	}
 	

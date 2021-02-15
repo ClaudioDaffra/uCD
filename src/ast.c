@@ -732,7 +732,8 @@ node_t* astNodeDebug( past_t this , node_t* n)
 					
 						astNodeDebug( this,n->postfix.left ) ;					
 						astNodeDebug( this,n->postfix.array) ;
-						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d]",(void*)n,L"postfix" ,n->postfix.sym );
+						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d] dim[%03d]"
+							,(void*)n,L"postfix" ,n->postfix.sym,n->postfix.array->block.next.size );
 						
 					break ;
 					default:
@@ -752,7 +753,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             {
 				size_t size = n->block.next.size ;
 				if (size>0) size--;
-				fwprintf ( this->pFileOutputNode , L"node [%018p] size[%03zu] %-16ls\n{",(void*)n,size,L"block");
+				fwprintf ( this->pFileOutputNode , L"\nnode [%018p] size[%03zu] %-16ls\n{",(void*)n,size,L"block");
 			}
             
             for (size_t i = 0 ; i<n->block.next.size; i++)
@@ -770,7 +771,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
                 }
                 //fwprintf ( this->pFileOutputNode , L"\n"); // \n per meglio visualizzare i blocchi
             }
-            fwprintf ( this->pFileOutputNode , L"}\n"); 
+            fwprintf ( this->pFileOutputNode , L"}\n\n"); 
                 
             break; 
  

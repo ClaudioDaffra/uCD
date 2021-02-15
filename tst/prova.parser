@@ -1,31 +1,43 @@
 
-file parser          : [0x00005615ba75e2e0] -> [tst/prova.parser    ]
+file parser          : [0x00005615b57b52e0] -> [tst/prova.parser    ]
 
 # Parser  -> scanning ...
 
--[tst/prova.txt       ][012,000] len(01) sym(004) [                   a] -> [[a]]
+-[tst/prova.txt       ][012,000] len(01) sym(151) [                   (]
 parserExpr
 parserAssign
 parserAddSub
 parserMulDivMod
 parserTerm
+parser Match ( .
+-[tst/prova.txt       ][012,001] len(01) sym(254) [                   *]
+parserExpr
+parserAssign
+parserAddSub
+parserMulDivMod
+parserPrefix push [254]
+-[tst/prova.txt       ][012,002] len(01) sym(004) [                   a] -> [[a]]
+parserTerm
 sym_string                     :: [a].
--[tst/prova.txt       ][012,001] len(01) sym(156) [                   []
--[tst/prova.txt       ][012,002] len(01) sym(005) [                   1] -> [[1]]
+-[tst/prova.txt       ][012,003] len(01) sym(152) [                   )]
+parserPrefix pop [152]
+-[tst/prova.txt       ][012,004] len(01) sym(156) [                   []
+parser Match ) . 
+-[tst/prova.txt       ][012,005] len(01) sym(005) [                   1] -> [[1]]
 parserExpr
 parserAssign
 parserAddSub
 parserMulDivMod
 parserTerm
 sym_integer                    :: [1].
--[tst/prova.txt       ][012,003] len(01) sym(157) [                   ]]
--[tst/prova.txt       ][012,004] len(01) sym(156) [                   []
--[tst/prova.txt       ][012,005] len(01) sym(005) [                   2] -> [[2]]
+-[tst/prova.txt       ][012,006] len(01) sym(157) [                   ]]
+-[tst/prova.txt       ][012,007] len(01) sym(156) [                   []
+-[tst/prova.txt       ][012,008] len(01) sym(005) [                   2] -> [[2]]
 parserExpr
 parserAssign
 parserAddSub
 parserMulDivMod
 parserTerm
 sym_integer                    :: [2].
--[tst/prova.txt       ][012,006] len(01) sym(157) [                   ]]
--[tst/prova.txt       ][012,007] len(01) sym(153) [                   ;]
+-[tst/prova.txt       ][012,009] len(01) sym(157) [                   ]]
+-[tst/prova.txt       ][012,010] len(01) sym(153) [                   ;]
