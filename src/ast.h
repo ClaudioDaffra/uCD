@@ -108,7 +108,7 @@ typedef struct nodePostfix_s
     sym_t   sym    ;
     pnode_t left   ;   // ! 1 il nodo che c'è a sinistra
     pnode_t array  ;   // [ ... [1][2][3]
-    
+    pnode_t param  ;   // ( ... ( 1,2,3 )    
 } 
 nodePostfix_t ;
 

@@ -580,6 +580,8 @@ node_t* astMakeNodeTermStruct( past_t this )
 // ***********
 // astDebug
 // ***********
+
+
 			
 #define $astDebugRowColToken(FLAG)    if ( this->FLAG ) fwprintf ( this->pFileOutputNode , L" { %03d/%03d :: %ls }\n",n->row,n->col,n->token );
 
@@ -736,9 +738,19 @@ node_t* astNodeDebug( past_t this , node_t* n)
 							,(void*)n,L"postfix" ,n->postfix.sym,n->postfix.array->block.next.size );
 						
 					break ;
+
+					case sym_p0 :
+					
+						astNodeDebug( this,n->postfix.left ) ;					
+						astNodeDebug( this,n->postfix.param) ;
+						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d] dim[%03d]"
+							,(void*)n,L"postfix" ,n->postfix.sym,n->postfix.param->block.next.size );
+						
+					break ;
+										
 					default:
 						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d]",(void*)n,L"postfix" ,n->postfix.sym );
-						fwprintf ( this->pFileOutputNode , L"!! not implemented yet\n" ,n->postfix.sym );						
+						fwprintf ( this->pFileOutputNode , L"\n!! not implemented yet\n" ,n->postfix.sym );						
 						exit(-1);
 					break ;
 				}

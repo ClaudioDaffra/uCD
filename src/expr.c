@@ -46,6 +46,56 @@ psPrefixOp_t    parserPrefixDelete( psPrefixOp_t prefix )
 // ................................................... postfix ++ -- [] () . ->
 
 static 
+node_t* parserPostFixParamSub( pparser_t this , node_t* left )
+{
+	node_t* vParamSub = astMakeNodeBlock( this->ast ) ;
+	node_t* exprNode  = NULL ;
+
+	size_t rowSave = this->lexer->row_start;
+	size_t colSave = this->lexer->col_start;
+
+	// (
+
+	do
+	{
+		parserGetToken(this);
+		
+		// expr
+		
+		exprNode = parserExpr(this);
+		
+		// ,
+		
+		astPushNodeBlock( this->ast , vParamSub , exprNode ) ;
+
+	} while ( this->lexer->sym == sym_v ) ;
+	
+	$MATCH(  sym_p1 , L')');
+
+	//fwprintf ( stderr,L" vector size array %d\n",  vArray->block.next.size  ) ;
+	
+	if ( vParamSub->block.next.size ) // è presente vettore array
+	{
+		// crea u nnodo post fisso ed inserisce operatore post fisso ( con 
+		// riferimento al blocco lista parametri
+		
+		//node_t* nodex = astMakeNodePostfix( this->ast , this->lexer , left ) ;		
+		node_t* node = astMakeNodePostfix( this->ast , this->lexer , left ) ;
+		
+		node->postfix.sym  	 = sym_p0 ; 			// operatore post fisso [
+		node->token 		 = gcWcsDup(L"(");  
+		node->postfix.param  = vParamSub ;
+		node->row		 	 = rowSave ;
+		node->col			 = colSave -1 ;
+
+		return node ;
+	}
+
+	return left ;
+}
+
+
+static 
 node_t* parserPostFixArray( pparser_t this , node_t* left )
 {
 	node_t* vArray = astMakeNodeBlock( this->ast ) ;
@@ -115,6 +165,8 @@ node_t* parserPostFix( pparser_t this , node_t* n )
 			// esce con nuovo token
 		break ;
 		case sym_p0 :
+			n= parserPostFixParamSub( this , n ) ;
+			// esce con nuovo token
 		break ;	
 		case sym_dot :
 		break ;	
