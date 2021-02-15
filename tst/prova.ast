@@ -1,0 +1,21 @@
+
+file ast             : [0x000055a38fffdf10] -> [tst/prova.ast       ]
+astMakeNodeBlock               
+astMakeNodeTermID              :: [f1]
+astMakeNodeBlock               
+astMakeNodeTermInteger         :: [1]
+astMakeNodePrefix              :: [254]
+astMakeNodePrefix              :: [251]
+astMakeNodeTermInteger         :: [2]
+astMakeNodeTermInteger         :: [3]
+astMakeNodeBinOP               :: sym [254]
+astMakeNodeBinOP               :: sym [252]
+astPushNodeBlock               :: [block]:[0x000055a3900132e0] -> [next]:[0x000055a390014160]
+astMakeNodeTermInteger         :: [4]
+astPushNodeBlock               :: [block]:[0x000055a3900132e0] -> [next]:[0x000055a3900142f0]
+astMakeNodeTermInteger         :: [6]
+astPushNodeBlock               :: [block]:[0x000055a3900132e0] -> [next]:[0x000055a390014480]
+astMakeNodePostfix             :: [153]
+astPushNodeBlock               :: [block]:[0x000055a390012c40] -> [next]:[0x000055a390014550]
+astMakeNodeTermID              :: [z]
+astPushNodeBlock               :: [block]:[0x000055a390012c40] -> [next]:[0x000055a390014780]
