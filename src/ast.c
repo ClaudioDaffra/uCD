@@ -592,7 +592,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
             if ( this->fDebug ) 
             {
-                fwprintf ( this->pFileOutputNode , L"node [%018p] %-10ls :: [%lld]",(void*)n,L"term integer"  ,n->term.integer );
+                fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%lld]",(void*)n,L"term integer"  ,n->term.integer );
                 $astDebugRowColToken(fDebug);   
             }          
             
@@ -602,7 +602,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
             if ( this->fDebug ) 
             {    
-                fwprintf ( this->pFileOutputNode , L"node [%018p] %-10ls :: [%lf]",(void*)n,L"term real" ,n->term.real );
+                fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%lf]",(void*)n,L"term real" ,n->term.real );
                 $astDebugRowColToken(fDebug);
             }
 
@@ -612,7 +612,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
             if ( this->fDebug ) 
             {
-                fwprintf ( this->pFileOutputNode , L"node [%018p] %-10ls :: [%lc]",(void*)n,L"term char"  ,g.outputSpecialCharInChar(n->term.wchar) );
+                fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%lc]",(void*)n,L"term char"  ,g.outputSpecialCharInChar(n->term.wchar) );
                 $astDebugRowColToken(fDebug);
             }             
             
@@ -622,7 +622,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
             if ( this->fDebug ) 
             {
-                fwprintf ( this->pFileOutputNode , L"node [%018p] %-10ls :: [%ls]",(void*)n,L"term string"  ,g.outputSpecialCharInString(n->term.wstring) );
+                fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%ls]",(void*)n,L"term string"  ,g.outputSpecialCharInString(n->term.wstring) );
                 $astDebugRowColToken(fDebug);
             }             
             
@@ -632,7 +632,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
             if ( this->fDebug ) 
             {
-                fwprintf ( this->pFileOutputNode , L"node [%018p] %-10ls :: [%ls]",(void*)n,L"term id"  ,n->term.id );
+                fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%ls]",(void*)n,L"term id"  ,n->term.id );
                 $astDebugRowColToken(fDebug);
             }             
             
@@ -643,21 +643,12 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
             if ( this->fDebug ) 
             {
-                fwprintf ( this->pFileOutputNode , L"node [%018p] %-10ls :: [%ls]",(void*)n,L"term var"  ,n->termVar.id );
+                fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%ls]",(void*)n,L"term var"  ,n->termVar.id );
                 $astDebugRowColToken(fDebug);
             }             
             
             break;
 
-      case  nTypeTermField :
-
-            if ( this->fDebug ) 
-            {
-                fwprintf ( this->pFileOutputNode , L"node [%018p] %-10ls :: [%ls]",(void*)n,L"ter field"  ,n->termField.id );
-                $astDebugRowColToken(fDebug);
-            }             
-            
-            break;
 */           
         case  nTypeBinOp :
 
@@ -667,7 +658,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
              if ( this->fDebug ) 
              {
                  fwprintf ( 
-                    this->pFileOutputNode ,L"node [%018p] %-10ls :: Left[%018p] Right[%018p] :: sym [%d]",(void*)n,L"BinOp" 
+                    this->pFileOutputNode ,L"node [%018p] %-16ls :: Left[%018p] Right[%018p] :: sym [%d]",(void*)n,L"BinOp" 
                     ,(void*)n->binOp.left 
                     ,(void*)n->binOp.right
                     ,n->binOp.sym 
@@ -683,7 +674,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
             if ( this->fDebug ) 
             {
-                fwprintf ( this->pFileOutputNode , L"node [%018p] %-10ls :: [%d]",(void*)n,L"prefix" ,n->prefix.sym );
+                fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d]",(void*)n,L"prefix" ,n->prefix.sym );
                 $astDebugRowColToken(fDebug);
             }
 
@@ -691,7 +682,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
         case  nTypeBlock :
 
-            if ( this->fDebug ) fwprintf ( this->pFileOutputNode , L"node [%018p] size[%03zu] %-10ls\n{",(void*)n,n->block.next.size-1,L"block");
+            if ( this->fDebug ) fwprintf ( this->pFileOutputNode , L"node [%018p] size[%03zu] %-16ls\n{",(void*)n,n->block.next.size-1,L"block");
             
             for (size_t i = 0 ; i<n->block.next.size; i++)
             {
@@ -722,7 +713,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             {
                 fwprintf 
                     ( 
-                        this->pFileOutputNode , L"node [%018p] %-10ls :: lhs [%018p] rhs [%018p]"
+                        this->pFileOutputNode , L"node [%018p] %-16ls :: lhs [%018p] rhs [%018p]"
                         ,(void*)n
                         ,L"nTypeAssign" 
                         ,(void*)n->assign.lhs
@@ -740,7 +731,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             if ( this->fDebug )
             { 
                 fwprintf 
-                    ( this->pFileOutputNode , L"node [%018p] %-10ls :: id[%ls] sym[%d] term[%018p] scope[%03d]\n"
+                    ( this->pFileOutputNode , L"node [%018p] %-16ls :: id[%ls] sym[%d] term[%018p] scope[%03d]\n"
                         ,(void*)n
                         ,L"DeclConst" 
                         ,n->declConst.id
@@ -759,7 +750,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             if ( this->fDebug )
             { 
                 fwprintf 
-                    ( this->pFileOutputNode , L"node [%018p] %-10ls :: id[%ls] sym[%d] expr[%018p] scope[%03d]\n"
+                    ( this->pFileOutputNode , L"node [%018p] %-16ls :: id[%ls] sym[%d] expr[%018p] scope[%03d]\n"
                         ,(void*)n
                         ,L"DeclVar" 
                         ,n->declVar.id
@@ -780,7 +771,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             if ( this->fDebug )
             { 
                 fwprintf 
-                    ( this->pFileOutputNode , L"node [%018p] %-10ls :: dim[%d]\n"
+                    ( this->pFileOutputNode , L"node [%018p] %-16ls :: dim[%d]\n"
                         ,(void*)n
                         ,L"ArrayDim"
                         ,(int)vectorSize ( n->arrayDim.ndx )
@@ -798,7 +789,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             if ( this->fDebug )
             { 
                 fwprintf 
-                    ( this->pFileOutputNode , L"node [%018p] %-10ls :: id[%ls]  : dim[%018p] sym[%d] il[%018p] scope[%03d]\n"
+                    ( this->pFileOutputNode , L"node [%018p] %-16ls :: id[%ls]  : dim[%018p] sym[%d] il[%018p] scope[%03d]\n"
                         ,(void*)n
                         ,L"DeclArray" 
                         ,n->declArray.id
@@ -816,7 +807,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             if ( this->fDebug )
             { 
                 fwprintf 
-                    ( this->pFileOutputNode , L"node [%018p] %-10ls :: id[%ls]  : scope[%03d]\n"
+                    ( this->pFileOutputNode , L"node [%018p] %-16ls :: id[%ls]  : scope[%03d]\n"
                         ,(void*)n
                         ,L"DeclType" 
                         ,n->declArray.id
@@ -840,7 +831,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             if ( this->fDebug )
             { 
                 fwprintf 
-                    ( this->pFileOutputNode , L"node [%018p] %-10ls :: id[%ls]  ( %018p ) -> [%03d] { %018p } "
+                    ( this->pFileOutputNode , L"node [%018p] %-16ls :: id[%ls]  ( %018p ) -> [%03d] { %018p } "
                         ,(void*)n
                         ,L"DeclFunction" 
                         ,n->declFunction.id
@@ -874,7 +865,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
             if ( this->fDebug )
             { 
                 fwprintf 
-                    ( this->pFileOutputNode , L"node [%018p] %-10ls :: id[%ls]  : dim[%03d]\n"
+                    ( this->pFileOutputNode , L"node [%018p] %-16ls :: id[%ls]  : dim[%03d]\n"
                         ,(void*)n
                         ,L"nTypeTermArray" 
                         ,n->termArray.id
