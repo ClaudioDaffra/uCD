@@ -191,6 +191,17 @@ node_t* parserTerm( pparser_t this )
 
     // END PREFIX POP
 
+
+
+	// POSTFIX
+
+	if ( n != NULL )
+	{
+	}
+	
+	// END POSTFIX
+
+
  return n ;
 }
 

@@ -649,6 +649,15 @@ node_t* astNodeDebug( past_t this , node_t* n)
             
             break;
 
+      case  nTypeTermField :
+
+            if ( this->fDebug ) 
+            {
+                fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%ls]",(void*)n,L"ter field"  ,n->termField.id );
+                $astDebugRowColToken(fDebug);
+            }             
+            
+            break;
 */           
         case  nTypeBinOp :
 
@@ -682,7 +691,12 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
         case  nTypeBlock :
 
-            if ( this->fDebug ) fwprintf ( this->pFileOutputNode , L"node [%018p] size[%03zu] %-16ls\n{",(void*)n,n->block.next.size-1,L"block");
+            if ( this->fDebug ) 
+            {
+				size_t size = n->block.next.size ;
+				if (size>0) size--;
+				fwprintf ( this->pFileOutputNode , L"node [%018p] size[%03zu] %-16ls\n{",(void*)n,size,L"block");
+			}
             
             for (size_t i = 0 ; i<n->block.next.size; i++)
             {
