@@ -1,0 +1,9 @@
+
+file ast             : [0x0000563c5877cf10] -> [tst/prova.ast       ]
+astMakeNodeBlock               
+astMakeNodeTermID              :: [a]
+astMakeNodePostfix             :: [206]
+astPushNodeBlock               :: [block]:[0x0000563c58791c40] -> [next]:[0x0000563c58793700]
+astMakeNodeTermID              :: [b]
+astMakeNodePostfix             :: [207]
+astPushNodeBlock               :: [block]:[0x0000563c58791c40] -> [next]:[0x0000563c58793a00]

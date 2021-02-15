@@ -45,9 +45,38 @@ psPrefixOp_t    parserPrefixDelete( psPrefixOp_t prefix )
 
 // ................................................... postfix ++ -- [] () . ->
 
-node_t* parserPostFix( pparser_t this )
+static 
+node_t* parserPostFix( pparser_t this , node_t* n )
 {
-	return NULL;
+	// ++ -- [] () . ->
+	
+	fwprintf ( stderr , L" parser post fix token [%ls][%d]\n",this->lexer->token,this->lexer->sym ) ;
+	
+	switch ( this->lexer->sym )
+	{
+		case sym_inc :
+			fwprintf ( stderr , L"[++]\n" ) ;
+			n = astMakeNodePostfix( this->ast , this->lexer , n );		
+			parserGetToken(this);
+		break ;
+		case sym_dec :
+			n = astMakeNodePostfix( this->ast , this->lexer , n );	
+			fwprintf ( stderr , L"[--]\n" ) ;
+			parserGetToken(this);
+		break ;
+		case sym_pq0 :
+		break ;
+		case sym_p0 :
+		break ;	
+		case sym_dot :
+		break ;	
+		case sym_ptr :
+		break ;	
+		default:
+		break;							
+	}
+	
+	return n;
 }
 
 // ................................................... TERM
@@ -191,12 +220,11 @@ node_t* parserTerm( pparser_t this )
 
     // END PREFIX POP
 
-
-
 	// POSTFIX
 
-	if ( n != NULL )
+	if ( n != NULL )	// se c'è un terminale
 	{
+		n=parserPostFix(this,n);
 	}
 	
 	// END POSTFIX

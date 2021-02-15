@@ -309,6 +309,28 @@ node_t* astMakeNodePrefix( past_t this , psPrefixOp_t prefix , node_t* left )
     return nNew ;
 }
 
+// POSTFIX
+
+node_t* astMakeNodePostfix(  past_t this , plexer_t lexer , node_t* left ) 
+{
+    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: [%d]\n",L"astMakeNodePostfix",lexer->sym );
+
+    node_t* nNew   = NULL ; // new node
+    
+    nNew = gcMalloc ( sizeof(node_t) ) ;
+    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodePostfix") ;
+
+    nNew->type         = nTypePostfix 	;
+    nNew->postfix.sym  = lexer->sym    	;
+    nNew->postfix.left = left     		;
+
+    nNew->row    =    lexer->row_start ;
+    nNew->col    =    lexer->col_start -1 ;
+    nNew->token  =    gcWcsDup(lexer->token)  ; 
+
+    return nNew ;
+}
+
 // BLOCK
 
 node_t* astMakeNodeBlock( past_t this ) 
@@ -689,6 +711,18 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
             break;  
 
+        case  nTypePostfix :
+
+            astNodeDebug( this,n->postfix.left ) ;
+
+            if ( this->fDebug ) 
+            {
+                fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d]",(void*)n,L"postfix" ,n->postfix.sym );
+                $astDebugRowColToken(fDebug);
+            }
+
+            break; 
+            
         case  nTypeBlock :
 
             if ( this->fDebug ) 
