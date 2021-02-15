@@ -518,24 +518,25 @@ pnode_t     astMakeNodeDeclFunction    ( past_t this , wchar_t* id , sym_t retTy
 
     return nNew ;
 }
-
-// TERM ARRAY
-
-pnode_t     astMakeNodeTermArray    ( past_t this , wchar_t* id  , pnode_t pArrayDim ) 
+*/
+// ARRAY
+/*
+pnode_t     astMakeNodePostFixArray    ( past_t this , node_t* left , pnode_t dim ) 
 {
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls \n",L"astMakeNodeTermArray" );
+    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls \n",L"astMakeNodeArray" );
     node_t* nNew   = NULL ; // new node
     
     nNew = gcMalloc ( sizeof(node_t) ) ;
-    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeTermArray") ;
+    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeArray") ;
 
-    nNew->type                    =    nTypeTermArray        ;
-    nNew->termArray.id            =    gcWcsDup( id )        ;
-    nNew->termArray.dim           =    pArrayDim             ;
-
+    nNew->type        	=    nTypePostFixArray	;
+    nNew->array.dim 	=    dim         		;
+    nNew->postfix.left  =    left     			;
+    
     return nNew ;
 }
-
+*/
+/*
 // TERM FUNCTION
 
 pnode_t     astMakeNodeTermFunction    ( past_t this , wchar_t* id  , pnode_t pArrayParam ) 
@@ -713,11 +714,33 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
         case  nTypePostfix :
 
-            astNodeDebug( this,n->postfix.left ) ;
+           // astNodeDebug( this,n->postfix.left ) ;
 
             if ( this->fDebug ) 
             {
-                fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d]",(void*)n,L"postfix" ,n->postfix.sym );
+				switch ( n->postfix.sym )
+				{
+					case sym_inc :
+					case sym_dec :
+					
+						astNodeDebug( this,n->postfix.left ) ;					
+						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d]",(void*)n,L"postfix" ,n->postfix.sym );
+        
+					break ;
+					
+					case sym_pq0 :
+					
+						astNodeDebug( this,n->postfix.left ) ;					
+						astNodeDebug( this,n->postfix.array) ;
+						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d]",(void*)n,L"postfix" ,n->postfix.sym );
+						
+					break ;
+					default:
+						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d]",(void*)n,L"postfix" ,n->postfix.sym );
+						fwprintf ( this->pFileOutputNode , L"!! not implemented yet\n" ,n->postfix.sym );						
+						exit(-1);
+					break ;
+				}
                 $astDebugRowColToken(fDebug);
             }
 

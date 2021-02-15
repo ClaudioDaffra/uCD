@@ -37,7 +37,9 @@ enum enodeType
 /* 
 	nTypeTermStruct		,	// 6	+ campi della struttura
     nTypeTermVar        ,   // 7
-    nTypeTermArray      ,   // 8
+*/
+//    nTypeArray      	,   // 8
+/*
     nTypeTermFunction   ,   // 9
 */
     nTypeBinOp          ,   // 10
@@ -89,15 +91,6 @@ typedef struct nodePrefix_s
 } 
 nodePrefix_t ;
 
-// .................................... nodo operatore postfisso
-
-typedef struct nodePostfix_s
-{
-    sym_t   sym     ;
-    pnode_t left   ;   // ! 1 il nodo che c'è a sinistra
-} 
-nodePostfix_t ;
-
 // .................................... nodo blocco
 
 vectorTypeDef(pnode_t,next);
@@ -107,6 +100,18 @@ typedef struct nodeBlock_s
     vector_next_t	next ;    // vettore di nodi
     
 } nodeBlock_t ;
+
+// .................................... nodo operatore postfisso
+
+typedef struct nodePostfix_s
+{
+    sym_t   sym    ;
+    pnode_t left   ;   // ! 1 il nodo che c'è a sinistra
+    pnode_t array  ;   // [ ... [1][2][3]
+    
+} 
+nodePostfix_t ;
+
 /*
 // .................................... nodo    costanti globali / locali
 
@@ -162,15 +167,16 @@ typedef struct nodeDeclType_s
     //    initializer list    : var p1 : point := { }
 } nodeDeclType_t ;
 
+*/
 // .................................... term : array dim [][][]
 
-typedef struct nodeTermArray_s
+typedef struct nodePostFixArray_s
 {
-    wchar_t*        id      ;
     pnode_t         dim     ;
+    node_t*			left	;
     
-} nodeTermArray_t ;
-
+} nodePostFixArray_t ;
+/*
 // .................................... term : function f1(,,)
 
 typedef struct nodeTermFunction_s
@@ -238,7 +244,6 @@ typedef struct nodeDeclFunction_s
 
 struct node_s
 {
-
     enodeType_t     type    ;
     uint32_t        row     ;
     uint32_t        col     ;
@@ -246,8 +251,8 @@ struct node_s
         
     union 
     {
-        nodeTerm_t              term          ;	// integer real wchar wstring id
-        //nodeTermArray_t         termArray     ; 
+        nodeTerm_t              term          	;	// integer real wchar wstring id
+        //nodeArray_t         	array     		; 
         //nodeTermFunction_t      termFunction  ;
         //nodeTermVar_t           termVar       ;
         //nodeTermField_t         termField     ;	// 1 campo    

@@ -1,9 +1,11 @@
 
-file ast             : [0x0000563c5877cf10] -> [tst/prova.ast       ]
+file ast             : [0x00005615ba768f10] -> [tst/prova.ast       ]
 astMakeNodeBlock               
 astMakeNodeTermID              :: [a]
-astMakeNodePostfix             :: [206]
-astPushNodeBlock               :: [block]:[0x0000563c58791c40] -> [next]:[0x0000563c58793700]
-astMakeNodeTermID              :: [b]
-astMakeNodePostfix             :: [207]
-astPushNodeBlock               :: [block]:[0x0000563c58791c40] -> [next]:[0x0000563c58793a00]
+astMakeNodeBlock               
+astMakeNodeTermInteger         :: [1]
+astPushNodeBlock               :: [block]:[0x00005615ba77e2e0] -> [next]:[0x00005615ba77e860]
+astMakeNodeTermInteger         :: [2]
+astPushNodeBlock               :: [block]:[0x00005615ba77e2e0] -> [next]:[0x00005615ba77e9f0]
+astMakeNodePostfix             :: [153]
+astPushNodeBlock               :: [block]:[0x00005615ba77dc40] -> [next]:[0x00005615ba77fee0]

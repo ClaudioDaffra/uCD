@@ -1,18 +1,23 @@
 
-file node            : [0x0000563c58782290] -> [tst/prova.node      ]
+file node            : [0x00005615ba76e290] -> [tst/prova.node      ]
 
 
 # node   -> debugging ...
 
-node [0x0000563c58791c40] size[001] block           
+node [0x00005615ba77dc40] size[000] block           
 {
-node [0x0000563c58791c40] -> [000/001]::[0x0000563c58793700] :: 
+node [0x00005615ba77dc40] -> [000/000]::[0x00005615ba77fee0] :: 
 
-node [0x0000563c587921c0] term id          :: [a] { 004/000 :: a }
-node [0x0000563c58793700] postfix          :: [206] { 004/001 :: ++ }
+node [0x00005615ba77e1c0] term id          :: [a] { 012/000 :: a }
+node [0x00005615ba77e2e0] size[001] block           
+{
+node [0x00005615ba77e2e0] -> [000/001]::[0x00005615ba77e860] :: 
 
-node [0x0000563c58791c40] -> [001/001]::[0x0000563c58793a00] :: 
+node [0x00005615ba77e860] term integer     :: [1] { 012/002 :: 1 }
 
-node [0x0000563c587938e0] term id          :: [b] { 005/000 :: b }
-node [0x0000563c58793a00] postfix          :: [207] { 005/001 :: -- }
+node [0x00005615ba77e2e0] -> [001/001]::[0x00005615ba77e9f0] :: 
+
+node [0x00005615ba77e9f0] term integer     :: [2] { 012/005 :: 2 }
+}
+node [0x00005615ba77fee0] postfix          :: [156] { 012/007 :: [ }
 }

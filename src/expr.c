@@ -46,25 +46,70 @@ psPrefixOp_t    parserPrefixDelete( psPrefixOp_t prefix )
 // ................................................... postfix ++ -- [] () . ->
 
 static 
+node_t* parserPostFixArray( pparser_t this , node_t* left )
+{
+	node_t* vArray = astMakeNodeBlock( this->ast ) ;
+	node_t* exprNode  = NULL ;
+	
+	while ( this->lexer->sym == sym_pq0 )
+	{
+		parserGetToken(this);
+		
+		exprNode = parserExpr(this);
+		
+		astPushNodeBlock( this->ast , vArray , exprNode ) ;
+		
+		$MATCH(  sym_pq1 , L']' ) ;
+	}
+	
+	fwprintf ( stderr,L" vector size array %d\n",  vArray->block.next.size  ) ;
+	
+	if ( vArray->block.next.size ) // è presente vettore array
+	{
+		// crea u nnodo post fisso ed inserisce operatore post fisso [ con 
+		// riferimento al blocco array
+		
+		//node_t* nodex = astMakeNodePostfix( this->ast , this->lexer , left ) ;		
+		node_t* node = astMakeNodePostfix( this->ast , this->lexer , left ) ;
+		
+		node->postfix.sym  	 = sym_pq0 ; 			// operatore post fisso [
+		node->token 		 = gcWcsDup(L"[");  
+		node->postfix.array  = vArray ;
+		
+		// TODO row col initial
+			
+		return node ;
+	}
+	
+	
+	return left ;
+}
+
+static 
 node_t* parserPostFix( pparser_t this , node_t* n )
 {
+	//
+	// lvalue required as postfix operand -> assembler
+	//
 	// ++ -- [] () . ->
 	
-	fwprintf ( stderr , L" parser post fix token [%ls][%d]\n",this->lexer->token,this->lexer->sym ) ;
+	//fwprintf ( stderr , L" parser post fix token [%ls][%d]\n",this->lexer->token,this->lexer->sym ) ;
 	
 	switch ( this->lexer->sym )
 	{
 		case sym_inc :
-			fwprintf ( stderr , L"[++]\n" ) ;
+			//fwprintf ( stderr , L"[++]\n" ) ;
 			n = astMakeNodePostfix( this->ast , this->lexer , n );		
 			parserGetToken(this);
 		break ;
 		case sym_dec :
 			n = astMakeNodePostfix( this->ast , this->lexer , n );	
-			fwprintf ( stderr , L"[--]\n" ) ;
+			//fwprintf ( stderr , L"[--]\n" ) ;
 			parserGetToken(this);
 		break ;
 		case sym_pq0 :
+			n= parserPostFixArray( this , n ) ;
+			// esce con nuovo token
 		break ;
 		case sym_p0 :
 		break ;	

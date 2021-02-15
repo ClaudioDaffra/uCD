@@ -3,7 +3,7 @@ Precedence	Operator	    Description	                                            
 
 1			-------------------------------------------------------------------------------------
 	        
-            ++ --	        Suffix/postfix increment and decrement	                Left-to-right
+.           ++ --	        Suffix/postfix increment and decrement	                Left-to-right
             ()	            Function call
             []	            Array subscripting
             .	            Structure and union member access

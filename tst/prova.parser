@@ -1,23 +1,31 @@
 
-file parser          : [0x0000563c587722e0] -> [tst/prova.parser    ]
+file parser          : [0x00005615ba75e2e0] -> [tst/prova.parser    ]
 
 # Parser  -> scanning ...
 
--[tst/prova.txt       ][004,000] len(01) sym(004) [                   a] -> [[a]]
+-[tst/prova.txt       ][012,000] len(01) sym(004) [                   a] -> [[a]]
 parserExpr
 parserAssign
 parserAddSub
 parserMulDivMod
 parserTerm
 sym_string                     :: [a].
--[tst/prova.txt       ][004,001] len(02) sym(206) [                  ++]
--[tst/prova.txt       ][004,003] len(01) sym(153) [                   ;]
--[tst/prova.txt       ][005,000] len(01) sym(004) [                   b] -> [[b]]
+-[tst/prova.txt       ][012,001] len(01) sym(156) [                   []
+-[tst/prova.txt       ][012,002] len(01) sym(005) [                   1] -> [[1]]
 parserExpr
 parserAssign
 parserAddSub
 parserMulDivMod
 parserTerm
-sym_string                     :: [b].
--[tst/prova.txt       ][005,001] len(02) sym(207) [                  --]
--[tst/prova.txt       ][005,003] len(01) sym(153) [                   ;]
+sym_integer                    :: [1].
+-[tst/prova.txt       ][012,003] len(01) sym(157) [                   ]]
+-[tst/prova.txt       ][012,004] len(01) sym(156) [                   []
+-[tst/prova.txt       ][012,005] len(01) sym(005) [                   2] -> [[2]]
+parserExpr
+parserAssign
+parserAddSub
+parserMulDivMod
+parserTerm
+sym_integer                    :: [2].
+-[tst/prova.txt       ][012,006] len(01) sym(157) [                   ]]
+-[tst/prova.txt       ][012,007] len(01) sym(153) [                   ;]
