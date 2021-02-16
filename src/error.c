@@ -76,7 +76,7 @@ errMessage_t errMessage[] =
   //  { L"symbol unexpected"                                                            } ,
     { L"error unknown"                                                                  } ,
     { L"unexptected Token"                                                              } ,
-  //  { L"Did you mean ?"                                                               } ,
+	{ L"Did you mean ?"                                                               } ,
     { L"syntax error"                                                                   } ,
     { L"out of memory"                                                                  } , 
     { L"not implemented yet"                                                            } , 

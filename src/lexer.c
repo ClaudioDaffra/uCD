@@ -719,7 +719,7 @@ int lexerScan( plexer_t this )
         this->col_start = this->col ; 
 
         // ....................................... DEMO #include lexer
-/* TODO da sistemare directory       
+/* include in lex       
         if (  this->c0==L'X' )
         {
            lexerInclude( this,"b.txt" ) ;
@@ -892,9 +892,7 @@ int lexerScan( plexer_t this )
             $next;    // '
             
             this->value.wchar = lexerGetCharacter(this);
- 
-//fwprintf(stderr,L"\nexit token [%lc]\n",this->value.wchar); 
-            
+
             $next;    // '
             $pushToken($c0);
             
@@ -1042,11 +1040,11 @@ int lexerScan( plexer_t this )
         
 			 if ( ($c0 == L':') && ($c1 == L'=') ) symOp2=sym_assign;
         else if ( ($c0 == L'?') && ($c1 == L'=') ) symOp2=sym_eq;
-        else if ( ($c0 == L'=') && ($c1 == L'=') ) symOp2=sym_eq;
+        else if ( ($c0 == L'=') && ($c1 == L'=') ) symOp2=sym_eq;			// ?=
         else if ( ($c0 == L':') && ($c1 == L':') ) symOp2=sym_scope;
         else if ( ($c0 == L'+') && ($c1 == L'+') ) symOp2=sym_inc;
         else if ( ($c0 == L'-') && ($c1 == L'-') ) symOp2=sym_dec;
-        else if ( ($c0 == L'-') && ($c1 == L'>') ) symOp2=sym_ptr;
+        else if ( ($c0 == L'-') && ($c1 == L'>') ) symOp2=sym_ptr;			//	->
         else if ( ($c0 == L'<') && ($c1 == L'<') ) symOp2=sym_shiftLeft;
         else if ( ($c0 == L'>') && ($c1 == L'>') ) symOp2=sym_shiftRight;		
         else if ( ($c0 == L'<') && ($c1 == L'=') ) symOp2=sym_le;
@@ -1063,6 +1061,9 @@ int lexerScan( plexer_t this )
         else if ( ($c0 == L'&') && ($c1 == L'=') ) symOp2=sym_bitAndEq;
         else if ( ($c0 == L'|') && ($c1 == L'=') ) symOp2=sym_bitOrEq;	
         else if ( ($c0 == L'^') && ($c1 == L'=') ) symOp2=sym_bitXorEq;	
+
+		if ( ($c0 == L'=') && ($c1 == L'=') )	$lexerWarningExtra( tokenizing , didYouMean , L"?=" ) ;
+		if ( ($c0 == L'-') && ($c1 == L'>') )	$lexerErrorExtra( tokenizing , didYouMean , L" '.' : op -> not allowed " ) ;
 														                                
         if (symOp2!=sym_end)
         {
@@ -1089,7 +1090,7 @@ int lexerScan( plexer_t this )
             case L')' : symOp=sym_p1  			; break; 
             case L'!' : symOp=sym_not 			; break; 
             case L';' : symOp=sym_pv  			; break; 
-            case L'=' : symOp=sym_assign  		; break; 
+            case L'=' : symOp=sym_assign  		; break; 	// :=
             case L',' : symOp=sym_v   			; break;  
             case L'?' : symOp=sym_qm  			; break;           
             case L':' : symOp=sym_dp  			; break;
@@ -1109,6 +1110,8 @@ int lexerScan( plexer_t this )
             default   : fOp=0;          break; 
         } ;
 
+		if ( ($c0 == L'=')  )	$lexerWarningExtra( tokenizing , didYouMean , L":=" ) ;
+		
         if ( fOp )
         {
             fOp=0;

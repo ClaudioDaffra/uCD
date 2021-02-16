@@ -169,7 +169,7 @@ node_t* parserPostFix( pparser_t this , node_t* n )
 	//
 	// lvalue required as postfix operand -> assembler
 	//
-	// ++ -- [] () . ->
+	// ++ -- [] () .
 
 	switch ( this->lexer->sym )
 	{
@@ -194,7 +194,7 @@ node_t* parserPostFix( pparser_t this , node_t* n )
 		break ;	
 
 		case sym_dot :
-		case sym_ptr :
+		//case sym_ptr :
 			n = parserPostFixDot( this , n ); // n = E .	
 			// esce con nuovo token			
 		break ;	

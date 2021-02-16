@@ -743,14 +743,14 @@ node_t* astNodeDebug( past_t this , node_t* n)
 						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d] dim[%03d]"
 							,(void*)n,L"postfix" ,n->postfix.sym,n->postfix.param->block.next.size );
 					break ;
-					
+				
 					case sym_dot :
 					
 						astNodeDebug( this,n->postfix.left ) ;					
 						astNodeDebug( this,n->postfix.vStruct) ;
 						printTab;
 						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d] dim[%03d]"
-							,(void*)n,L"postfix" ,n->postfix.sym,n->postfix.param->block.next.size );
+							,(void*)n,L"postfix" ,n->postfix.sym,n->postfix.vStruct->block.next.size );
 					break ;			
 											
 					default:

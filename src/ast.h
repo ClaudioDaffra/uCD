@@ -46,6 +46,7 @@ enum enodeType
     nTypePrefix         ,   // 11
     nTypePostfix        ,   // 12       
     nTypeBlock          ,   // 13
+    nTypeStruct         ,   // 14    
 /*    
     nTypeDeclConst      ,    // decl const global local 
     nTypeDeclVar        ,    // decl var     global local    
@@ -109,9 +110,9 @@ typedef struct nodePostfix_s
     pnode_t left   ;   // ! 1 il nodo che c'è a sinistra
 	union 
 	{
-		pnode_t array  	;   // [ 		... arr [1][2][3]
-		pnode_t param  	;   // ( 		... sub ( 1,2,3 )   
-		pnode_t vStruct ;   // . / -> 	... ___  a.b.c  , a->b.c    
+		pnode_t array  	;   // [	... arr [1][2][3]
+		pnode_t param  	;   // (	... sub ( 1,2,3 )   
+		pnode_t vStruct ;   // .	... ___  a.b.c	  
 	} ;
 } 
 nodePostfix_t ;

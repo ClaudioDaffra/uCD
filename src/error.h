@@ -101,7 +101,7 @@ typedef enum errMessage_e
   //  errMessage_unexpectedSym                 ,   // simbolo inatteso
     errMessage_errUnknown                      ,   // errore sconosciuto
     errMessage_unexpectedToken                 ,   // token inatteso     
-  //  errMessage_didYouMean                    ,   // intendevi forse ?
+	errMessage_didYouMean                      ,   // intendevi forse ?
     errMessage_syntaxError                     ,   // errore di sintassi
     errMessage_outOfMemory                     ,   // mancanza di memoria !  
     errMessage_notImplemetedYet                ,   // non ancora implementato 
@@ -219,7 +219,19 @@ int printErrLog(void); // error.printLog
             gcWcsDup((wchar_t*)this->fileInputName),\
             NULL\
         ) ;
-        
+
+#define $lexerWarningExtra( ACTION,ERRMESSAGE,EXTRA )\
+        pushErrLog(\
+            sender_lexer,\
+            type_warning,\
+            action_##ACTION,\
+            errMessage_##ERRMESSAGE,\
+            this->row_start,\
+            this->col_start,\
+            gcWcsDup((wchar_t*)this->fileInputName),\
+            gcWcsDup((wchar_t*)EXTRA)\
+        ) ;
+                
 #define $lexerError( ACTION,ERRMESSAGE )\
         pushErrLog(\
             sender_lexer,\
