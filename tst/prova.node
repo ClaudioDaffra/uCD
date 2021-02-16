@@ -1,41 +1,52 @@
 
-file node            : [0x000055a390003290] -> [tst/prova.node      ]
+file node            : [0x000055e21f51c290] -> [tst/prova.node      ]
 
 
 # node   -> debugging ...
 
 
-node [0x000055a390012c40] size[001] block           
+node [0x000055e21f52bc40] size[000] block           
 {
-   node [0x000055a390012c40] -> [000/001]::[0x000055a390014550] :: 
+   node [0x000055e21f52bc40] -> [000/000]::[0x000055e21f52e4b0] :: 
 
-      node [0x000055a3900131c0] term id          :: [f1] { 014/000 :: f1 }
+      node [0x000055e21f52c1c0] term id          :: [a] { 002/000 :: a }
    
-   node [0x000055a3900132e0] size[002] block           
+   node [0x000055e21f52c2e0] size[000] block           
    {
-      node [0x000055a3900132e0] -> [000/002]::[0x000055a390014160] :: 
+      node [0x000055e21f52c2e0] -> [000/000]::[0x000055e21f52e390] :: 
 
-                        node [0x000055a390013aa0] term integer     :: [1] { 014/005 :: 1 }
-      node [0x000055a390013b70] prefix           :: [254] { 014/004 :: * }
-      node [0x000055a390013c40] prefix           :: [251] { 014/003 :: ! }
-            node [0x000055a390013de0] term integer     :: [2] { 014/007 :: 2 }
-      node [0x000055a390013fc0] term integer     :: [3] { 014/009 :: 3 }
-      node [0x000055a390014090] BinOp            :: Left[0x000055a390013fc0] Right[0x000055a390013de0] :: sym [254] { 014/009 :: * }
-      node [0x000055a390014160] BinOp            :: Left[0x000055a390014090] Right[0x000055a390013c40] :: sym [252] { 014/007 :: + }
+            node [0x000055e21f52c8b0] term id          :: [b] { 002/004 :: b }
+      
+      node [0x000055e21f52c9d0] size[000] block           
+      {
+         node [0x000055e21f52c9d0] -> [000/000]::[0x000055e21f52e2c0] :: 
 
-      node [0x000055a3900132e0] -> [001/002]::[0x000055a3900142f0] :: 
+                  node [0x000055e21f52cfa0] term id          :: [c] { 002/009 :: c }
+                  node [0x000055e21f52d1d0] term integer     :: [1] { 002/011 :: 1 }
+         
+         node [0x000055e21f52d2a0] size[000] block           
+         {
+            node [0x000055e21f52d2a0] -> [000/000]::[0x000055e21f52e080] :: 
 
-      node [0x000055a3900142f0] term integer     :: [4] { 014/011 :: 4 }
+                        node [0x000055e21f52d870] term id          :: [d] { 002/015 :: d }
+            
+            node [0x000055e21f52d990] size[000] block           
+            {
+               node [0x000055e21f52d990] -> [000/000]::[0x000055e21f52df60] :: 
 
-      node [0x000055a3900132e0] -> [002/002]::[0x000055a390014480] :: 
+               node [0x000055e21f52df60] term id          :: [e] { 002/019 :: e }
+            }
 
-      node [0x000055a390014480] term integer     :: [6] { 014/013 :: 6 }
+            node [0x000055e21f52e080] postfix          :: [257] dim[001] { 002/017 :: . }
+         }
+
+         node [0x000055e21f52e1a0] postfix          :: [257] dim[001] { 002/013 :: . }
+         node [0x000055e21f52e2c0] BinOp            :: Left[0x000055e21f52e1a0] Right[0x000055e21f52cfa0] :: sym [252] { 002/011 :: + }
+      }
+
+      node [0x000055e21f52e390] postfix          :: [257] dim[001] { 002/006 :: . }
    }
 
-   node [0x000055a390014550] postfix          :: [151] dim[003] { 014/002 :: ( }
-
-   node [0x000055a390012c40] -> [001/001]::[0x000055a390014780] :: 
-
-   node [0x000055a390014780] term id          :: [z] { 015/000 :: z }
+   node [0x000055e21f52e4b0] postfix          :: [257] dim[001] { 002/002 :: . }
 }
 

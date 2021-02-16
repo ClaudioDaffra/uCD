@@ -43,7 +43,49 @@ psPrefixOp_t    parserPrefixDelete( psPrefixOp_t prefix )
     return prefix ;
 }
 
-// ................................................... postfix ++ -- [] () . ->
+static 
+node_t* parserPostFixDot( pparser_t this , node_t* left )
+{
+	node_t* vStruct = astMakeNodeBlock( this->ast ) ;
+	node_t* exprNode  = NULL ;
+
+	size_t rowSave = this->lexer->row_start;
+	size_t colSave = this->lexer->col_start;
+
+	// .
+
+	do
+	{
+		parserGetToken(this);
+		// expr
+		exprNode = parserExpr(this);
+		// .
+		astPushNodeBlock( this->ast , vStruct , exprNode ) ;
+
+	} while ( 
+			(this->lexer->sym == sym_dot	)	//	.
+	   ||	(this->lexer->sym == sym_ptr	)	//	->
+	) ;
+	
+	//$MATCH(  sym_p1 , L')');
+
+	if ( vStruct->block.next.size ) // è presente vettore array
+	{
+		// crea un nodo post fisso ed inserisce operatore post fisso ( con riferimento al blocco lista parametri
+		
+		node_t* node = astMakeNodePostfix( this->ast , this->lexer , left ) ;
+		
+		node->postfix.sym  	 	= sym_dot ; 			// operatore post fisso /
+		node->token 		 	= gcWcsDup(L".");  
+		node->postfix.vStruct   = vStruct ;
+		node->row		 	 	= rowSave ;
+		node->col			 	= colSave -1 ;
+
+		return node ;
+	}
+	return left ;
+}
+
 
 static 
 node_t* parserPostFixParamSub( pparser_t this , node_t* left )
@@ -59,30 +101,22 @@ node_t* parserPostFixParamSub( pparser_t this , node_t* left )
 	do
 	{
 		parserGetToken(this);
-		
 		// expr
-		
 		exprNode = parserExpr(this);
-		
 		// ,
-		
 		astPushNodeBlock( this->ast , vParamSub , exprNode ) ;
 
 	} while ( this->lexer->sym == sym_v ) ;
 	
 	$MATCH(  sym_p1 , L')');
 
-	//fwprintf ( stderr,L" vector size array %d\n",  vArray->block.next.size  ) ;
-	
 	if ( vParamSub->block.next.size ) // è presente vettore array
 	{
-		// crea u nnodo post fisso ed inserisce operatore post fisso ( con 
-		// riferimento al blocco lista parametri
+		// crea un nodo post fisso ed inserisce operatore post fisso ( con riferimento al blocco lista parametri
 		
-		//node_t* nodex = astMakeNodePostfix( this->ast , this->lexer , left ) ;		
 		node_t* node = astMakeNodePostfix( this->ast , this->lexer , left ) ;
 		
-		node->postfix.sym  	 = sym_p0 ; 			// operatore post fisso [
+		node->postfix.sym  	 = sym_p0 ; 			// operatore post fisso /
 		node->token 		 = gcWcsDup(L"(");  
 		node->postfix.param  = vParamSub ;
 		node->row		 	 = rowSave ;
@@ -90,10 +124,8 @@ node_t* parserPostFixParamSub( pparser_t this , node_t* left )
 
 		return node ;
 	}
-
 	return left ;
 }
-
 
 static 
 node_t* parserPostFixArray( pparser_t this , node_t* left )
@@ -114,15 +146,10 @@ node_t* parserPostFixArray( pparser_t this , node_t* left )
 		
 		$MATCH(  sym_pq1 , L']' ) ;
 	}
-	
-	//fwprintf ( stderr,L" vector size array %d\n",  vArray->block.next.size  ) ;
-	
+
 	if ( vArray->block.next.size ) // è presente vettore array
 	{
-		// crea u nnodo post fisso ed inserisce operatore post fisso [ con 
-		// riferimento al blocco array
-		
-		//node_t* nodex = astMakeNodePostfix( this->ast , this->lexer , left ) ;		
+		// crea un nodo post fisso ed inserisce operatore post fisso [ con riferimento al blocco array
 		node_t* node = astMakeNodePostfix( this->ast , this->lexer , left ) ;
 		
 		node->postfix.sym  	 = sym_pq0 ; 			// operatore post fisso [
@@ -133,8 +160,6 @@ node_t* parserPostFixArray( pparser_t this , node_t* left )
 
 		return node ;
 	}
-	
-	
 	return left ;
 }
 
@@ -145,33 +170,36 @@ node_t* parserPostFix( pparser_t this , node_t* n )
 	// lvalue required as postfix operand -> assembler
 	//
 	// ++ -- [] () . ->
-	
-	//fwprintf ( stderr , L" parser post fix token [%ls][%d]\n",this->lexer->token,this->lexer->sym ) ;
-	
+
 	switch ( this->lexer->sym )
 	{
 		case sym_inc :
-			//fwprintf ( stderr , L"[++]\n" ) ;
 			n = astMakeNodePostfix( this->ast , this->lexer , n );		
 			parserGetToken(this);
 		break ;
+		
 		case sym_dec :
-			n = astMakeNodePostfix( this->ast , this->lexer , n );	
-			//fwprintf ( stderr , L"[--]\n" ) ;
+			n = astMakeNodePostfix( this->ast , this->lexer , n );	;
 			parserGetToken(this);
 		break ;
+		
 		case sym_pq0 :
-			n= parserPostFixArray( this , n ) ;
+			n= parserPostFixArray( this , n ) ; // n = [ E
 			// esce con nuovo token
 		break ;
+		
 		case sym_p0 :
-			n= parserPostFixParamSub( this , n ) ;
+			n= parserPostFixParamSub( this , n ) ; // n = ( E
 			// esce con nuovo token
 		break ;	
+
 		case sym_dot :
-		break ;	
 		case sym_ptr :
+			n = parserPostFixDot( this , n ); // n = E .	
+			// esce con nuovo token			
 		break ;	
+
+		
 		default:
 		break;							
 	}

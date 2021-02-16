@@ -600,7 +600,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
  
 	switch ( n->type )
 	{
-	  case  nTypeUndefined :
+	  case  nTypeUndefined : // .............................................................................. nTypeUndefined
 
 			if ( this->fDebug ) 
 			{
@@ -610,7 +610,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 			
 			break;   
 		  
-	  case  nTypeTermInteger :
+	  case  nTypeTermInteger : // .............................................................................. nTypeTermInteger
 
 			if ( this->fDebug ) 
 			{
@@ -620,7 +620,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 			
 			break;
 			
-	   case  nTypeTermReal :
+	   case  nTypeTermReal : // .............................................................................. nTypeTermReal
 
 			if ( this->fDebug ) 
 			{    
@@ -630,7 +630,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
 			break;  
 
-	  case  nTypeTermChar :
+	  case  nTypeTermChar : // .............................................................................. nTypeTermChar
 
 			if ( this->fDebug ) 
 			{
@@ -640,7 +640,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 			
 			break;
 			
-	  case  nTypeTermString :
+	  case  nTypeTermString : // .............................................................................. nTypeTermString
 
 			if ( this->fDebug ) 
 			{
@@ -650,7 +650,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 			
 			break;
 			
-	  case  nTypeTermID :
+	  case  nTypeTermID : // .............................................................................. nTypeTermID
 
 			if ( this->fDebug ) 
 			{
@@ -680,7 +680,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 			
 			break;
 	*/           
-		case  nTypeBinOp :
+		case  nTypeBinOp : // .............................................................................. nTypeBinOp
 
 			astNodeDebug( this,n->binOp.right ) ;
 			astNodeDebug( this,n->binOp.left  ) ;
@@ -699,7 +699,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
 			break;             
 
-		case  nTypePrefix :
+		case  nTypePrefix : // .............................................................................. nTypePrefix
 
 			astNodeDebug( this,n->prefix.right ) ;
 
@@ -712,7 +712,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
 			break;  
 
-		case  nTypePostfix :
+		case  nTypePostfix : // .............................................................................. nTypePostfix
 
 			if ( this->fDebug ) 
 			{
@@ -724,16 +724,15 @@ node_t* astNodeDebug( past_t this , node_t* n)
 						astNodeDebug( this,n->postfix.left ) ;
 						printTab;					
 						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d]",(void*)n,L"postfix" ,n->postfix.sym );
-		
 					break ;
 					
 					case sym_pq0 :
 					
 						astNodeDebug( this,n->postfix.left ) ;					
 						astNodeDebug( this,n->postfix.array) ;
+						printTab;
 						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d] dim[%03d]"
 							,(void*)n,L"postfix" ,n->postfix.sym,n->postfix.array->block.next.size );
-						
 					break ;
 
 					case sym_p0 :
@@ -743,9 +742,17 @@ node_t* astNodeDebug( past_t this , node_t* n)
 						printTab;
 						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d] dim[%03d]"
 							,(void*)n,L"postfix" ,n->postfix.sym,n->postfix.param->block.next.size );
-						
 					break ;
-										
+					
+					case sym_dot :
+					
+						astNodeDebug( this,n->postfix.left ) ;					
+						astNodeDebug( this,n->postfix.vStruct) ;
+						printTab;
+						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d] dim[%03d]"
+							,(void*)n,L"postfix" ,n->postfix.sym,n->postfix.param->block.next.size );
+					break ;			
+											
 					default:
 						fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%03d]",(void*)n,L"postfix" ,n->postfix.sym );
 						fwprintf ( this->pFileOutputNode , L"\n!! not implemented yet\n" ,n->postfix.sym );						
@@ -757,7 +764,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
 			break; 
 			
-		case  nTypeBlock :
+		case  nTypeBlock : // .............................................................................. nTypeBlock
 		
 
 			if ( this->fDebug ) 
@@ -791,7 +798,6 @@ node_t* astNodeDebug( past_t this , node_t* n)
 				{
 					astNodeDebug( this,n->block.next.data[i] ) ; 
 				}
-				//fwprintf ( this->pFileOutputNode , L"\n"); // \n per meglio visualizzare i blocchi
 			}
 			
 			if ( this->fDebug ) 
@@ -803,7 +809,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
 			break; 
 
-		case nTypeAssign :
+		case nTypeAssign : // .............................................................................. nTypeAssign
 
 			astNodeDebug( this,n->assign.lhs ) ;
 			
@@ -861,24 +867,6 @@ node_t* astNodeDebug( past_t this , node_t* n)
 			}
 		
 		break ; 
-
-		case nTypeArrayDim :
-		
-			for (size_t i = 0 ; i< vectorSize ( n->arrayDim.ndx ) ; i++)
-			{
-				astNodeDebug(  this , n->arrayDim.ndx.data[i] ) ;
-			}
-			if ( this->fDebug )
-			{ 
-				fwprintf 
-					( this->pFileOutputNode , L"node [%018p] %-16ls :: dim[%d]\n"
-						,(void*)n
-						,L"ArrayDim"
-						,(int)vectorSize ( n->arrayDim.ndx )
-					);
-			}
-
-		break ;
 
 		case nTypeDeclArray :
 		
@@ -981,7 +969,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 					
 			break ;
 	*/ 
-	  default :
+	  default : // .............................................................................. default
 
 			$nodeInternal ( debug , errUnknown , L"ast.c" , L"node_t* astDebug(node_t* n) -> switch ( n->type )") ;
 			return NULL ;

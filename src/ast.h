@@ -107,8 +107,12 @@ typedef struct nodePostfix_s
 {
     sym_t   sym    ;
     pnode_t left   ;   // ! 1 il nodo che c'è a sinistra
-    pnode_t array  ;   // [ ... [1][2][3]
-    pnode_t param  ;   // ( ... ( 1,2,3 )    
+	union 
+	{
+		pnode_t array  	;   // [ 		... arr [1][2][3]
+		pnode_t param  	;   // ( 		... sub ( 1,2,3 )   
+		pnode_t vStruct ;   // . / -> 	... ___  a.b.c  , a->b.c    
+	} ;
 } 
 nodePostfix_t ;
 
