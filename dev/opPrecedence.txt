@@ -4,10 +4,10 @@ Precedence	Operator	    Description	                                            
 1			-------------------------------------------------------------------------------------
 	        
 .           ++ --	        Suffix/postfix increment and decrement	                Left-to-right
-            ()	            Function call
-            []	            Array subscripting
-            .	            Structure and union member access
-            ->	            Structure and union member access through pointer
+.           ()	            Function call
+.           []	            Array subscripting
+.           .	            Structure and union member access
+x           ->	            Structure and union member access through pointer
             (type){list}	Compound literal(C99) 
             
 2			-------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ Precedence	Operator	    Description	                                            
 .           *	            Indirection (dereference)
 .           &	            Address-of
 .           sizeof	        Size-of[note 2]
-            _Alignof	    Alignment requirement(C11)
+x           _Alignof	    Alignment requirement(C11)
             
 3			-------------------------------------------------------------------------------------	 
        
@@ -48,11 +48,11 @@ Precedence	Operator	    Description	                                            
             
 9			-------------------------------------------------------------------------------------	
 
-            ^	            Bitwise XOR (exclusive or)
+            b^	            Bitwise XOR (exclusive or)
             
 10			-------------------------------------------------------------------------------------	
 
-            |	            Bitwise OR (inclusive or)
+            b|	            Bitwise OR (inclusive or)
             
 11			-------------------------------------------------------------------------------------
 

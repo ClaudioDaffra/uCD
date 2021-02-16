@@ -817,6 +817,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
 			if ( this->fDebug ) 
 			{
+				printTab;
 				fwprintf 
 					( 
 						this->pFileOutputNode , L"node [%018p] %-16ls :: lhs [%018p] rhs [%018p]"

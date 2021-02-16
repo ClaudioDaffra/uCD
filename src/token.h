@@ -48,22 +48,22 @@ typedef enum e_sym
  
     //              operator 3
      
-    sym_shiftLeftEq		,	// <<=
-    sym_shiftRightEq	,	// >>=
+    sym_shiftLeftEq		,	// 1	<<=
+    sym_shiftRightEq	,	// 2	>>=
         
     //              operator 2
         
-    sym_assign		,    // :=	assign
-    sym_eq			,    // ?=	is equal
-    sym_scope		,    // ::	scope resolution
-	sym_inc			,    // ++	increment (next)
-	sym_dec      	,    // --  decrement (prev)
-	sym_ptr      	,    // ->  pointer access
-	sym_shiftLeft	,    // <<  shift left
-	sym_shiftRight	,    // >>  shift right
-	sym_le			,    // <=  less equal
-	sym_ge			,    // >=  greater equal
-	sym_ne			,    // !=  not equal
+    sym_assign		,    // 3	:=	assign
+    sym_eq			,    // 	?=	is equal
+    sym_scope		,    // 	::	scope resolution
+	sym_inc			,    // 	++	increment (next)
+	sym_dec      	,    // 	--  decrement (prev)
+	sym_ptr      	,    // 	->  pointer access
+	sym_shiftLeft	,    // 9	<<  shift left
+	sym_shiftRight	,    // 10	>>  shift right
+	sym_le			,    // 	<=  less equal
+	sym_ge			,    // 	>=  greater equal
+	sym_ne			,    // 	!=  not equal
     
 	sym_and			,    // &&	and
 	sym_or			,    // ||	or

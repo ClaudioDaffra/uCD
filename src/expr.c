@@ -64,10 +64,7 @@ node_t* parserPostFixDot( pparser_t this , node_t* left )
 
 	} while ( 
 			(this->lexer->sym == sym_dot	)	//	.
-	   ||	(this->lexer->sym == sym_ptr	)	//	->
 	) ;
-	
-	//$MATCH(  sym_p1 , L')');
 
 	if ( vStruct->block.next.size ) // è presente vettore array
 	{
@@ -75,7 +72,7 @@ node_t* parserPostFixDot( pparser_t this , node_t* left )
 		
 		node_t* node = astMakeNodePostfix( this->ast , this->lexer , left ) ;
 		
-		node->postfix.sym  	 	= sym_dot ; 			// operatore post fisso /
+		node->postfix.sym  	 	= sym_dot ; 			// operatore post fisso .
 		node->token 		 	= gcWcsDup(L".");  
 		node->postfix.vStruct   = vStruct ;
 		node->row		 	 	= rowSave ;
@@ -219,15 +216,16 @@ node_t* parserTerm( pparser_t this )
 		stack_sPrefixOp_t	sPrefixOp ;
 		stackAlloc(sPrefixOp,16) ;
 
-        while (	this->lexer->sym == sym_add		//	+
-            ||	this->lexer->sym == sym_sub		//	-
-            ||	this->lexer->sym == sym_not		//	!
-            ||	this->lexer->sym == sym_bitAnd  //	&  
-            ||	this->lexer->sym == sym_neg  	//	~  
-            ||	this->lexer->sym == sym_mul  	//	*
-            ||	this->lexer->sym == sym_inc  	//	++
-            ||	this->lexer->sym == sym_dec  	//	--
-            ||	this->lexer->sym == sym_sizeof  //	sizeof $                                                                       
+        while 
+        (		this->lexer->sym == sym_add		//	+
+			||	this->lexer->sym == sym_sub		//	-
+			||	this->lexer->sym == sym_not		//	!
+			||	this->lexer->sym == sym_bitAnd  //	&  
+			||	this->lexer->sym == sym_neg  	//	~  
+			||	this->lexer->sym == sym_mul  	//	*
+			||	this->lexer->sym == sym_inc  	//	++
+			||	this->lexer->sym == sym_dec  	//	--
+			||	this->lexer->sym == sym_sizeof  //	sizeof $                                                                       
         )
         {
             if ( this->lexer->sym != sym_add ) // prefix -> skip '+'
@@ -265,11 +263,7 @@ node_t* parserTerm( pparser_t this )
 
         case sym_integer :
 
-            #ifdef _MSC_VER
-                fwprintf ( this->pFileOutputParser , L"%-30ls :: [%lld].\n",L"sym_integer",this->lexer->value.integer );
-            #else
-                fwprintf ( this->pFileOutputParser , L"%-30ls :: [%ld].\n" ,L"sym_integer",this->lexer->value.integer );
-            #endif
+            fwprintf ( this->pFileOutputParser , L"%-30ls :: [%lld].\n" ,L"sym_integer",this->lexer->value.integer );
 
             n = astMakeNodeTermInteger( this->ast,this->lexer,this->lexer->value.integer ) ;
 
@@ -444,6 +438,43 @@ node_t* parserAddSub( pparser_t this )
  return left ;
 }
 
+
+// ................................................... EXPR[5]	 shift left shift right
+
+node_t* parserShiftLR( pparser_t this )
+{
+    node_t *left=NULL;
+
+    if ( this->fDebug ) fwprintf ( this->pFileOutputParser , L"parserShiftLR\n" );
+
+    left=parserAddSub(this);
+
+    while (	this->lexer->sym == sym_shiftLeft
+        ||	this->lexer->sym == sym_shiftRight
+    )
+    {
+        sym_t   	symSave 	= this->lexer->sym ;
+        wchar_t*    tokenSave	= gcWcsDup(this->lexer->token);
+        uint32_t    rowSave     = this->lexer->row_start ;
+        uint32_t    colSave     = this->lexer->col_start ;
+        
+        node_t *right=NULL;
+
+        parserGetToken(this);
+
+        right=parserAddSub(this);
+
+        left = astMakeNodeBinOP( this->ast,this->lexer,symSave , right,left ) ;
+        
+        left->token  =    tokenSave   ; 
+        left->row    =    rowSave     ;
+        left->col    =    colSave     ;
+    } ;
+
+ return left ;
+}
+
+
 // ................................................... EXPR[14]	Assign :=
 
 node_t* parserAssign( pparser_t this )
@@ -452,17 +483,26 @@ node_t* parserAssign( pparser_t this )
 
     if ( this->fDebug ) fwprintf ( this->pFileOutputParser , L"parserAssign\n" );
 
-    left=parserAddSub(this);
+    left=parserShiftLR(this);
 
     while ( this->lexer->sym == sym_assign )
     {
+        //sym_t   	symSave 	= this->lexer->sym ;
+        wchar_t*    tokenSave	= gcWcsDup(this->lexer->token);
+        uint32_t    rowSave     = this->lexer->row_start ;
+        uint32_t    colSave     = this->lexer->col_start ;
+        
         node_t *right=NULL;
 
         parserGetToken(this);
 
-        right=parserAddSub(this);
+        right=parserShiftLR(this);
 
         left = astMakeNodeAssign( this->ast,this->lexer,left,right ) ; // invertiti
+        
+        left->token  =    tokenSave   ; 
+        left->row    =    rowSave     ;
+        left->col    =    colSave     ;
     } ;
 
  return left ;
