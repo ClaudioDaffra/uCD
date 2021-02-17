@@ -8,14 +8,14 @@ Precedence	Operator	    Description	                                            
 .           []	            Array subscripting
 .           .	            Structure and union member access
 x           ->	            Structure and union member access through pointer
-            (type){list}	Compound literal(C99) 
+x           (type){list}	Compound literal(C99) 
             
 2			-------------------------------------------------------------------------------------
 	
 .           ++ --	        Prefix increment and decrement[note 1]	                Right-to-left
 .           + -	            Unary plus and minus
 .           ! ~	            Logical NOT and bitwise NOT
-            (type)	        Cast
+x            (type)	        Cast
 .           *	            Indirection (dereference)
 .           &	            Address-of
 .           sizeof	        Size-of[note 2]
@@ -31,12 +31,12 @@ x           _Alignof	    Alignment requirement(C11)
             
 5			-------------------------------------------------------------------------------------
 	
-            << >>	        Bitwise left shift and right shift
+.            << >>	        Bitwise left shift and right shift
             
 6			-------------------------------------------------------------------------------------
 	          
-            < <=	        For relational operators < and ≤ respectively
-            > >=	        For relational operators > and ≥ respectively
+.           < <=	        For relational operators < and ≤ respectively
+.           > >=	        For relational operators > and ≥ respectively
             
 7			-------------------------------------------------------------------------------------	
 
@@ -44,7 +44,7 @@ x           _Alignof	    Alignment requirement(C11)
             
 8			-------------------------------------------------------------------------------------	
 
-            &	            Bitwise AND
+            b&	            Bitwise AND
             
 9			-------------------------------------------------------------------------------------	
 

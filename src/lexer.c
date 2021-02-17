@@ -642,7 +642,6 @@ int lexerCPP( plexer_t this )
   return 0 ;
 }
 
-
 // ............................................................ <<= >>=
 
 int lexerCheckOp3( plexer_t this , const wchar_t* op3,sym_t sym )
@@ -655,7 +654,8 @@ int lexerCheckOp3( plexer_t this , const wchar_t* op3,sym_t sym )
 			$pushToken(op3[0]) ;  
 			$pushToken(op3[1]) ;  
 			$pushToken(op3[2]) ;
-			lexerMakeToken( this, sym ) ;  
+			lexerMakeToken( this, sym ) ;
+			$next;  
 			return 1 ;				
 		}
 		ungetwc ( this->c0 , this->pfileInput ) ;			
@@ -1012,8 +1012,8 @@ int lexerScan( plexer_t this )
       
         // ## ....................................... OPERATOR3
  
-		if ( lexerCheckOp3( this, L"<<=",sym_shiftLeftEq  ) ) return 1 ;
-		if ( lexerCheckOp3( this, L">>=",sym_shiftRightEq ) ) return 1 ;
+		if ( lexerCheckOp3( this, L"<<=",sym_shiftLeftEq  ) ) return 1 ; 
+		if ( lexerCheckOp3( this, L">>=",sym_shiftRightEq ) ) return 1 ; 
 
         // ## ....................................... digraphs
         
