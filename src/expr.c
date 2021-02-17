@@ -448,7 +448,6 @@ node_t* parserAddSub( pparser_t this )
  return left ;
 }
 
-
 // ................................................... EXPR[5]	 << >>
 
 node_t* parserShiftLR( pparser_t this )
@@ -482,11 +481,11 @@ node_t* parserShiftLR( pparser_t this )
 
 // ................................................... EXPR[6]	 < <= > >=
 
-node_t* parserOpRelationals( pparser_t this )
+node_t* parserOpRelLG( pparser_t this )
 {
     node_t *left=NULL;
 
-    if ( this->fDebug ) fwprintf ( this->pFileOutputParser , L"parserOpRelationals\n" );
+    if ( this->fDebug ) fwprintf ( this->pFileOutputParser , L"parserOpRelLG\n" );
 
     left=parserShiftLR(this);
 
@@ -513,6 +512,39 @@ node_t* parserOpRelationals( pparser_t this )
  return left ;
 }
 
+// ................................................... EXPR[7]	 ==/?= !=/^^
+
+node_t* parserOpRelEqNe( pparser_t this )
+{
+    node_t *left=NULL;
+
+    if ( this->fDebug ) fwprintf ( this->pFileOutputParser , L"parserOpRelLG\n" );
+
+    left=parserOpRelLG(this);
+
+    while (	this->lexer->sym == sym_eq
+		||	this->lexer->sym == sym_ne
+		||	this->lexer->sym == sym_xor
+    )
+    {
+        token_t tSave ;
+        parserSaveToken( &tSave , this ) ;
+   
+        node_t *right=NULL;
+
+        parserGetToken(this);
+
+        right=parserOpRelLG(this);
+
+        left = astMakeNodeBinOP( this->ast,this->lexer,tSave.sym , right,left ) ;
+
+        parserRestoreToken( left , tSave ) ;
+    } ;
+
+ return left ;
+}
+
+
 // ................................................... EXPR[14]	Assign := += -= *= /= %= <<= >>= &= |= ^=
 
 node_t* parserAssign( pparser_t this )
@@ -521,7 +553,7 @@ node_t* parserAssign( pparser_t this )
 
     if ( this->fDebug ) fwprintf ( this->pFileOutputParser , L"parserAssign\n" );
 
-    left=parserOpRelationals(this);
+    left=parserOpRelEqNe(this);
 
     while ( this->lexer->sym == sym_assign 
 		||	this->lexer->sym == sym_addEq
@@ -542,7 +574,7 @@ node_t* parserAssign( pparser_t this )
 
         parserGetToken(this);
 
-        right=parserOpRelationals(this);
+        right=parserOpRelEqNe(this);
 
         left = astMakeNodeAssign( this->ast,this->lexer,left,right ) ; // invertiti
 

@@ -67,7 +67,7 @@ typedef enum e_sym
     
 	sym_and			,    // &&	and
 	sym_or			,    // ||	or
-	sym_xor			,    // ^^	xor
+	sym_xor			,    // ^^	xor		!=
 
 	sym_addEq		,    // +=
 	sym_subEq		,    // -=
