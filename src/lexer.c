@@ -1284,19 +1284,29 @@ void lexerDtor( plexer_t this )
     if (this->fDebug)     if ( this->pFileOutputLexer ) fclose(this->pFileOutputLexer);
 }
 
-/*
+
 // ......................................................... lexer token new
 
+//	fileINputName
+//	row
+//	col
+//	sym
+//	token
+
+/*
 ptoken_t lexerTokenNew( plexer_t this ) 
 {
-	ptoken_t pt = gcMalloc( sizeof( ptoken_t) ) ;
-	if ( pt==NULL ) { $lexerInternal( malloc , outOfMemory , NULL , NULL ) ; return NULL; } ;
+	ptoken_t pt = gcMalloc( sizeof( ptoken_t ) + 1) ;
 
+	if ( pt==NULL ) { $lexerInternal( malloc , outOfMemory , NULL , NULL ) ; return NULL; } ;
+ 
 	pt->fileInputName 	= 	gcWcsDup( (wchar_t*)this->fileInputName ) ; // TODO fare vector senza ripetizioni file
+ 
 	pt->row				=	this->row_start ;
 	pt->col				=	this->col_start ;
 	pt->sym				=	this->sym ;
-	pt->token			=	gcWcsDup(this->token);
+	pt->token 			=  gcWcsDup( this->token ) ;
+
 	switch ( sym )
 	{
 		case sym_integer	:	pt->value.integer 	= this->value.integer 			; break ;
@@ -1304,11 +1314,12 @@ ptoken_t lexerTokenNew( plexer_t this )
 		case sym_id			:	pt->value.id 		= gcWcsDup(this->value.id) 		; break ;
 		case sym_char		:	pt->value.wchar 	= this->value.wchar 			; break ;
 		case sym_string		:	pt->value.wstring	= gcWcsDup(this->value.wstring)	; break ;
-		default: fwprintf (stderr,L"!! internal error : [ lexer.c ] : lexerTokenNew -> switch ( sym )") ;exit(-1); break ;
+		//default: fwprintf (stderr,L"!! internal error : [ lexer.c ] : lexerTokenNew -> switch ( sym )") ;exit(-1); break ;
+		default: break;
 	}
+	
 	return pt ;
 }
-
 */
 
 /**/

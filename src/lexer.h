@@ -114,7 +114,7 @@ struct token_s
     uint32_t        row         		;    // posizione attuale di scansione, in genere ove si genera errore
     uint32_t        col         		;
     sym_t           sym 				;
-    wchar_t*        token				;
+    wchar_t*		token				;	// kludge GC double free
   
     union // value token
     {
@@ -149,7 +149,7 @@ plexer_t    lexerAlloc           ( void ) ;
 void        lexerDealloc         ( plexer_t this ) ;
 void        lexerCtor            ( plexer_t this ) ;
 void        lexerDtor            ( plexer_t this ) ;
-ptoken_t 	lexerTokenNew		 ( plexer_t this ) ;
+//ptoken_t 	lexerTokenNew		 ( plexer_t this ) ;
 
 //
 

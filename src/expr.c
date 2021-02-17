@@ -10,6 +10,24 @@
 #pragma GCC diagnostic ignored "-Wrestrict"
 #endif
 
+// ................................................... save token info
+
+static
+void parserSaveToken( ptoken_t tSave , pparser_t this )
+{
+	tSave->sym 	= this->lexer->sym 				;
+	tSave->row 	= this->lexer->row_start 		;
+	tSave->col 	= this->lexer->col_start 		;
+	tSave->token = gcWcsDup(this->lexer->token) ;
+}
+static
+void parserRestoreToken( node_t* tRestore , token_t tSave)
+{
+	tRestore->row 	= tSave.row  				;
+	tRestore->col 	= tSave.col-1 				;
+	tRestore->token = tSave.token 				;
+}
+
 // ................................................... private prefix in expr
 
 static
@@ -370,34 +388,30 @@ node_t* parserMulDivMod( pparser_t this )
         ||    	this->lexer->sym == sym_mod
     )
     {
-        sym_t       symSave   	= this->lexer->sym ;
-        wchar_t*    tokenSave   = gcWcsDup(this->lexer->token);
-        uint32_t    rowSave     = this->lexer->row_start ;
-        uint32_t    colSave     = this->lexer->col_start ;
-        
+        token_t tSave ;
+        parserSaveToken( &tSave , this ) ;
+
         node_t *right=NULL;
 
         parserGetToken(this);
 
         right=parserTerm(this);
         
-        if ( ( symSave == sym_div ) || ( symSave == sym_mod ) )
+        if ( ( tSave.sym  == sym_div ) || ( tSave.sym  == sym_mod ) )
         {
             if ( right->type == nTypeTermInteger) 
                 if ( right->term.integer == 0 )
                     $parserError( parseExpr , division_by_zero );
 
-            if ( right->type == nTypeTermReal) 
+            if ( right->type == nTypeTermReal ) 
                 if ( right->term.real == 0.0 )
                     $parserError( parseExpr , division_by_zero );
 
         } ;
         
-        left = astMakeNodeBinOP( this->ast,this->lexer,symSave , right,left ) ;
+        left = astMakeNodeBinOP( this->ast,this->lexer,tSave.sym  , right,left ) ;
         
-        left->token 	=  	tokenSave	; 
-        left->row    	= 	rowSave     ;
-        left->col    	= 	colSave     ;
+        parserRestoreToken( left , tSave ) ;
     } 
 
  return left ;
@@ -417,22 +431,18 @@ node_t* parserAddSub( pparser_t this )
         ||	this->lexer->sym == sym_sub
     )
     {
-        sym_t   	symSave 	= this->lexer->sym ;
-        wchar_t*    tokenSave	= gcWcsDup(this->lexer->token);
-        uint32_t    rowSave     = this->lexer->row_start ;
-        uint32_t    colSave     = this->lexer->col_start ;
-        
+        token_t tSave ;
+        parserSaveToken( &tSave , this ) ;
+     
         node_t *right=NULL;
 
         parserGetToken(this);
 
         right=parserMulDivMod(this);
 
-        left = astMakeNodeBinOP( this->ast,this->lexer,symSave , right,left ) ;
+        left = astMakeNodeBinOP( this->ast,this->lexer,tSave.sym  , right,left ) ;
         
-        left->token =     tokenSave     ; 
-        left->row    =    rowSave     ;
-        left->col    =    colSave     ;
+        parserRestoreToken( left , tSave ) ;
     } ;
 
  return left ;
@@ -453,22 +463,18 @@ node_t* parserShiftLR( pparser_t this )
         ||	this->lexer->sym == sym_shiftRight
     )
     {
-        sym_t   	symSave 	= this->lexer->sym ;
-        wchar_t*    tokenSave	= gcWcsDup(this->lexer->token);
-        uint32_t    rowSave     = this->lexer->row_start ;
-        uint32_t    colSave     = this->lexer->col_start ;
-        
+        token_t tSave ;
+        parserSaveToken( &tSave , this ) ;
+  
         node_t *right=NULL;
 
         parserGetToken(this);
 
         right=parserAddSub(this);
 
-        left = astMakeNodeBinOP( this->ast,this->lexer,symSave , right,left ) ;
+        left = astMakeNodeBinOP( this->ast,this->lexer,tSave.sym  , right,left ) ;
         
-        left->token  =    tokenSave   ; 
-        left->row    =    rowSave     ;
-        left->col    =    colSave     ;
+        parserRestoreToken( left , tSave ) ;
     } ;
 
  return left ;
@@ -490,22 +496,18 @@ node_t* parserOpRelationals( pparser_t this )
 		||	this->lexer->sym == sym_ge
     )
     {
-        sym_t   	symSave 	= this->lexer->sym ;
-        wchar_t*    tokenSave	= gcWcsDup(this->lexer->token);
-        uint32_t    rowSave     = this->lexer->row_start ;
-        uint32_t    colSave     = this->lexer->col_start ;
-        
+        token_t tSave ;
+        parserSaveToken( &tSave , this ) ;
+   
         node_t *right=NULL;
 
         parserGetToken(this);
 
         right=parserShiftLR(this);
 
-        left = astMakeNodeBinOP( this->ast,this->lexer,symSave , right,left ) ;
-        
-        left->token  =    tokenSave   ; 
-        left->row    =    rowSave     ;
-        left->col    =    colSave     ;
+        left = astMakeNodeBinOP( this->ast,this->lexer,tSave.sym , right,left ) ;
+
+        parserRestoreToken( left , tSave ) ;
     } ;
 
  return left ;
@@ -533,11 +535,9 @@ node_t* parserAssign( pparser_t this )
 		||	this->lexer->sym == sym_bitXorEq				 
 	)
     {
-        sym_t   	symSave 	= this->lexer->sym ;
-        wchar_t*    tokenSave	= gcWcsDup(this->lexer->token);
-        uint32_t    rowSave     = this->lexer->row_start ;
-        uint32_t    colSave     = this->lexer->col_start ;
-        
+        token_t tSave ;
+        parserSaveToken( &tSave , this ) ;
+           
         node_t *right=NULL;
 
         parserGetToken(this);
@@ -545,10 +545,8 @@ node_t* parserAssign( pparser_t this )
         right=parserOpRelationals(this);
 
         left = astMakeNodeAssign( this->ast,this->lexer,left,right ) ; // invertiti
-        
-        left->token  =    tokenSave   ; 
-        left->row    =    rowSave     ;
-        left->col    =    colSave     ;
+
+        parserRestoreToken( left , tSave ) ;
     } ;
 
  return left ;
