@@ -717,6 +717,41 @@ node_t* parserXor( pparser_t this )
  return left ;
 }
 
+// ................................................... EXPR[13]	? : 
+
+node_t* parserTerOp( pparser_t this )
+{
+    node_t *cond=NULL;
+
+    if ( this->fDebug ) fwprintf ( this->pFileOutputParser , L"parserTerOp\n" );
+
+    cond=parserXor(this);
+
+    while (	this->lexer->sym == sym_qm )
+    {
+		node_t* left  = NULL ;
+		node_t* right = NULL ;
+		
+        token_t tSave ;
+        parserSaveToken( &tSave , this ) ;
+   
+        parserGetToken(this);
+
+        left=parserExpr(this);
+        
+		$MATCH( sym_dp, L':' ) ;
+
+        right=parserExpr(this);
+                		
+        cond = astMakeNodeTerOP( this->ast,this->lexer,tSave.sym , cond, left,right ) ;
+
+        parserRestoreToken( cond , tSave ) ;
+    } ;
+ 
+ return cond ;
+}
+
+
 // ................................................... EXPR[14]	Assign := += -= *= /= %= <<= >>= &= |= ^=
 
 node_t* parserAssign( pparser_t this )
@@ -725,7 +760,7 @@ node_t* parserAssign( pparser_t this )
 
     if ( this->fDebug ) fwprintf ( this->pFileOutputParser , L"parserAssign\n" );
 
-    left=parserXor(this);
+    left=parserTerOp(this);
 
     while ( this->lexer->sym == sym_assign 
 		||	this->lexer->sym == sym_addEq
@@ -746,7 +781,7 @@ node_t* parserAssign( pparser_t this )
 
         parserGetToken(this);
 
-        right=parserXor(this);
+        right=parserTerOp(this);
 
         left = astMakeNodeAssign( this->ast,this->lexer,left,right ) ; // invertiti
 

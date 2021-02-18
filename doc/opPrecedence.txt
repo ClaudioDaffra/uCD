@@ -69,7 +69,7 @@ x           _Alignof	    Alignment requirement(C11)
             
 13			-------------------------------------------------------------------------------------	
 
-            ?:	            Ternary conditional[note 3]	                            Right-to-left
+.           ?:	            Ternary conditional[note 3]	                            Right-to-left
             
 14			-------------------------------------------------------------------------------------
 

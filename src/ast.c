@@ -331,6 +331,35 @@ node_t* astMakeNodePostfix(  past_t this , plexer_t lexer , node_t* left )
     return nNew ;
 }
 
+// TEROP
+
+node_t* astMakeNodeTerOP( past_t this , plexer_t lexer , sym_t sym , node_t* cond , node_t* left , node_t* right  )
+{
+    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: sym [%d]\n",L"astMakeNodeTerOP",sym );
+ 
+    if ( cond==NULL || left==NULL || right==NULL ) // se uno dei tre operandi è nullo 
+    {
+        $pushErrLog( parser,error,parseExpr,expectedPrimaryExprBefore,lexer->row,lexer->col,lexer->fileInputName,lexer->token ) ;
+    }
+
+    node_t* nNew   = NULL ; // new node
+    
+    nNew = gcMalloc ( sizeof(node_t) ) ;
+    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeTerOP") ;
+
+    nNew->type          = nTypeTerOp;
+    nNew->terOp.sym     = sym		;     
+    nNew->terOp.cond    = cond      ;      
+    nNew->terOp.left    = left      ;
+    nNew->terOp.right   = right     ;
+
+    nNew->row    =    lexer->row_start ;
+    nNew->col    =    lexer->col_start - 1;
+    nNew->token  =    gcWcsDup(lexer->token)  ;  
+    
+    return nNew ;
+}
+
 // BLOCK
 
 node_t* astMakeNodeBlock( past_t this ) 
@@ -763,7 +792,30 @@ node_t* astNodeDebug( past_t this , node_t* n)
 			}
 
 			break; 
-			
+
+		case  nTypeTerOp : // .............................................................................. nTypeTerOp
+
+			astNodeDebug( this,n->terOp.right ) ;
+			astNodeDebug( this,n->terOp.left  ) ;
+			astNodeDebug( this,n->terOp.cond ) ;
+					
+			 if ( this->fDebug ) 
+			 {
+				 printTab;
+				 fwprintf ( 
+					this->pFileOutputNode ,L"node [%018p] %-16ls :: cond[%018p] Left[%018p] Right[%018p] :: sym [%d]"
+					,(void*)n
+					,L"BinOp" 
+					,(void*)n->terOp.cond 					
+					,(void*)n->terOp.left 
+					,(void*)n->terOp.right
+					,n->terOp.sym 
+				);
+				$astDebugRowColToken(fDebug);
+			}
+
+			break;   
+						
 		case  nTypeBlock : // .............................................................................. nTypeBlock
 		
 

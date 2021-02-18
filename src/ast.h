@@ -44,9 +44,11 @@ enum enodeType
 */
     nTypeBinOp          ,   // 10
     nTypePrefix         ,   // 11
-    nTypePostfix        ,   // 12       
-    nTypeBlock          ,   // 13
-    nTypeStruct         ,   // 14    
+    nTypePostfix        ,   // 12 
+    nTypeTerOp          ,   // 13       
+    nTypeBlock          ,   // 14
+    nTypeStruct         ,   // 15  
+      
 /*    
     nTypeDeclConst      ,    // decl const global local 
     nTypeDeclVar        ,    // decl var     global local    
@@ -116,6 +118,18 @@ typedef struct nodePostfix_s
 	} ;
 } 
 nodePostfix_t ;
+
+// .................................... nodo operatore ternario
+
+typedef struct nodeTerOp_s
+{
+    sym_t       sym     ;
+    pnode_t     cond    ;    
+    pnode_t     left    ;
+    pnode_t     right   ;
+}
+nodeTerOp_t ;
+
 
 /*
 // .................................... nodo    costanti globali / locali
@@ -260,12 +274,13 @@ struct node_s
         //nodeArray_t         	array     		; 
         //nodeTermFunction_t      termFunction  ;
         //nodeTermVar_t           termVar       ;
-        //nodeTermField_t         termField     ;	// 1 campo    
+        //nodeTermField_t         termField     ; // 1 campo    
         //nodeTermStruct_t        termStruct    ; // + campi             
         nodeBinOp_t             binOp         ;
         nodePrefix_t            prefix        ;
         nodePostfix_t           postfix       ;        
         nodeBlock_t             block         ;
+        nodeTerOp_t             terOp         ;        
         //nodeDeclConst_t         declConst     ; 
         //nodeDeclVar_t           declVar       ; 
         nodeAssign_t            assign        ;
@@ -334,6 +349,7 @@ node_t* 	astMakeNodeTermID		  ( past_t this , plexer_t lexer , wchar_t* 	_id 		)
 //node_t* 	astMakeNodeTermStruct	  ( past_t this ) ;
 
 node_t*     astMakeNodeBinOP          ( past_t this , plexer_t lexer , sym_t sym , node_t* left , node_t* right ) ;
+node_t*		astMakeNodeTerOP		  ( past_t this , plexer_t lexer , sym_t sym , node_t* cond , node_t* left , node_t* right  ) ;
 node_t*     astMakeNodePrefix         ( past_t this , psPrefixOp_t prefix , node_t* left ) ;
 node_t* 	astMakeNodePostfix		  ( past_t this , plexer_t lexer , node_t* left ) ;
 node_t*     astMakeNodeBlock          ( past_t this ) ;
