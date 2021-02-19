@@ -70,15 +70,16 @@ x           _Alignof	    Alignment requirement(C11)
 13			-------------------------------------------------------------------------------------	
 
 .           ?:	            Ternary conditional[note 3]	                            Right-to-left
+			
             
 14			-------------------------------------------------------------------------------------
 
             [note 4]	
 .           = :=	        Simple assignment
-            += -=	        Assignment by sum and difference
-            *= /= %=	    Assignment by product, quotient, and remainder
-            <<= >>=	        Assignment by bitwise left shift and right shift
-            &= ^= |=	    Assignment by bitwise AND, XOR, and OR
+.           += -=	        Assignment by sum and difference
+.           *= /= %=	    Assignment by product, quotient, and remainder
+.           <<= >>=	        Assignment by bitwise left shift and right shift
+.           &= ^= |=	    Assignment by bitwise AND, XOR, and OR
             
 15			-------------------------------------------------------------------------------------	
         
