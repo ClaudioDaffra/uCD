@@ -220,18 +220,36 @@ pnode_t parserStatement( pparser_t this , node_t* nBlock )
 
     pnode = NULL ;
 
+	// parse declaration 
+	
     do {
         
         if  ( this->lexer->sym==sym_pv)  parserGetToken(this);
 
         if ( kError ) break ;
         
+        pnode=parserDecl(this);
+
+        if ( pnode!=NULL ) astPushNodeBlock( this->ast , nBlock , pnode );
+
+    } while (       pnode!=NULL 
+                &&  this->lexer->sym != sym_end 
+                &&  this->lexer->sym == sym_pv
+                &&  !kError 
+            ) ;
+
+	// parse statement 
+	            
+    do {
+        
+        if  ( this->lexer->sym==sym_pv)  parserGetToken(this);
+                
+        if ( kError ) break ;
+        
         pnode=parserExpr(this);
         
         if ( pnode!=NULL ) astPushNodeBlock( this->ast , nBlock , pnode );
-        
-        //if  ( this->lexer->sym==sym_pv) $MATCH( sym_pv , L';' ) else break ;
-        
+
     } while (       pnode!=NULL 
                 &&  this->lexer->sym != sym_end 
                 &&  this->lexer->sym == sym_pv

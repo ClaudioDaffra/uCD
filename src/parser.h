@@ -57,8 +57,23 @@ pnode_t     parserScan         	( pparser_t this ) ;
 node_t*     parserTerm    		( pparser_t this ) ;
 node_t*     parserMulDivMod		( pparser_t this ) ;
 node_t*     parserAddSub		( pparser_t this ) ;
-node_t*     parserAssign 		( pparser_t this ) ;
-node_t*     parserExpr   		( pparser_t this ) ;
+node_t*		parserShiftLR		( pparser_t this ) ;
+node_t*		parserOpRelLG		( pparser_t this ) ;
+node_t*		parserOpRelEqNe		( pparser_t this ) ;
+node_t* 	parserBitAnd		( pparser_t this ) ;
+node_t* 	parserBitOr			( pparser_t this ) ;
+node_t* 	parserBitXor		( pparser_t this ) ;
+node_t* 	parserAnd			( pparser_t this ) ;
+node_t* 	parserOr			( pparser_t this ) ;
+node_t* 	parserXor			( pparser_t this ) ;
+node_t* 	parserTerOp			( pparser_t this ) ;
+node_t* 	parserAssign		( pparser_t this ) ;
+node_t* 	parserExpr			( pparser_t this ) ;
+
+// decl.c
+
+node_t* 	parserDeclT1		( pparser_t this ) ;
+node_t* 	parserDecl			( pparser_t this ) ;
 
 #endif
 

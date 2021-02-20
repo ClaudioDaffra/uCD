@@ -47,8 +47,9 @@ enum enodeType
     nTypePostfix        ,   // 12 
     nTypeTerOp          ,   // 13       
     nTypeBlock          ,   // 14
-    nTypeStruct         ,   // 15  
-      
+    //nTypeStruct         ,   // 15  
+    
+    nTypeAssign         ,    // 19        
 /*    
     nTypeDeclConst      ,    // decl const global local 
     nTypeDeclVar        ,    // decl var     global local    
@@ -57,7 +58,7 @@ enum enodeType
     nTypeDeclType       ,    // type declaration 
     nTypeDeclFunction   ,    // dichiarazione di funzione   
 */   
-    nTypeAssign         ,    // 19 := 
+    nTypeDeclT1         ,   // 15 
         
 } ;
 
@@ -130,6 +131,19 @@ typedef struct nodeTerOp_s
 }
 nodeTerOp_t ;
 
+
+// declaration
+
+
+// .................................... decl t1
+
+typedef struct nodeDeclT1_s
+{
+    
+    wchar_t*    id          ;        //  integer real char byte TYPE ?  
+    sym_t       sym         ;        //  sym_id sym_qm 
+
+} nodeDeclT1_t ;
 
 /*
 // .................................... nodo    costanti globali / locali
@@ -288,7 +302,7 @@ struct node_s
         //nodeArrayDim_t          arrayDim      ; 
         //nodeDeclType_t          declType      ;
         //nodeDeclFunction_t      declFunction  ;   
-                  
+        nodeDeclT1_t            	declT1       ;                  
     } ;
     
 } ;
@@ -336,6 +350,8 @@ void        astDtor                   ( past_t this ) ;
 pnode_t     astNodeDebug              ( past_t this , pnode_t n ) ;
 void        astDebug                  ( past_t this , pnode_t n ) ;
 
+// ast.c expr.c
+
 node_t*     astMakeNodeTermInteger    ( past_t this , plexer_t lexer , int64_t		_integer	) ;
 node_t*     astMakeNodeTermReal       ( past_t this , plexer_t lexer , double		_real		) ;
 node_t*     astMakeNodeTermChar       ( past_t this , plexer_t lexer , wchar_t		_wchar		) ;
@@ -368,6 +384,9 @@ size_t      astPushNodeBlock          ( past_t this , node_t * nBlock     , node
 
 node_t*     astMakeNodeAssign         ( past_t this , plexer_t lexer ,  node_t * lhs , node_t * rhs ) ;
 
+// ast.c decl.c
+
+node_t* 	astMakeDeclT1			  ( past_t this , plexer_t lexer , wchar_t* _id ) ;
 
 
 #endif

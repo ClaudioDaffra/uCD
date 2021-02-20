@@ -606,6 +606,30 @@ node_t* astMakeNodeTermStruct( past_t this )
 }
 */
 
+
+// decl t1
+
+node_t* astMakeDeclT1( past_t this , plexer_t lexer , wchar_t* _id )
+{
+    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: [%ls]\n",L"astMakeDeclT1",_id );
+
+    node_t* nNew   = NULL ; // new node
+    
+    nNew = gcMalloc ( sizeof(node_t) ) ;
+    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeDeclT1") ;
+
+    nNew->type			= nTypeDeclT1 ;
+    nNew->declT1.id 	= gcWcsDup(_id);
+    nNew->declT1.sym 	= lexer->sym;
+    
+    nNew->row    =    lexer->row_start ;
+    nNew->col    =    lexer->col_start - 1;
+    nNew->token  =    gcWcsDup(lexer->token)  ;    
+
+    return nNew ;
+}
+
+
 // ***********
 // astDebug
 // ***********
@@ -688,27 +712,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 			}             
 			
 			break;	
-	/*
-	  case  nTypeTermVar :
-
-			if ( this->fDebug ) 
-			{
-				fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%ls]",(void*)n,L"term var"  ,n->termVar.id );
-				$astDebugRowColToken(fDebug);
-			}             
-			
-			break;
-
-	  case  nTypeTermField :
-
-			if ( this->fDebug ) 
-			{
-				fwprintf ( this->pFileOutputNode , L"node [%018p] %-16ls :: [%ls]",(void*)n,L"ter field"  ,n->termField.id );
-				$astDebugRowColToken(fDebug);
-			}             
-			
-			break;
-	*/           
+       
 		case  nTypeBinOp : // .............................................................................. nTypeBinOp
 
 			astNodeDebug( this,n->binOp.right ) ;
@@ -824,8 +828,6 @@ node_t* astNodeDebug( past_t this , node_t* n)
 				size_t size = n->block.next.size ;
 				if (size>0) size--;
 
-				//++nodeLevel;
-
 				fwprintf ( this->pFileOutputNode , L"\n" ) ;
 				printTab ;
 
@@ -882,146 +884,25 @@ node_t* astNodeDebug( past_t this , node_t* n)
 			}
 		
 		break ;  
-	/*   
-		case nTypeDeclConst :
-		
-			astNodeDebug( this , n->declConst.term ) ;
-			
-			if ( this->fDebug )
-			{ 
-				fwprintf 
-					( this->pFileOutputNode , L"node [%018p] %-16ls :: id[%ls] sym[%d] term[%018p] scope[%03d]\n"
-						,(void*)n
-						,L"DeclConst" 
-						,n->declConst.id
-						,n->declConst.sym
-						,n->declConst.term
-						,n->declConst.scope  
-					);
-			}
-		
-		break ; 
 
-		case nTypeDeclVar :
-		
-			astNodeDebug( this , n->declVar.expr ) ;
-			
-			if ( this->fDebug )
-			{ 
-				fwprintf 
-					( this->pFileOutputNode , L"node [%018p] %-16ls :: id[%ls] sym[%d] expr[%018p] scope[%03d]\n"
-						,(void*)n
-						,L"DeclVar" 
-						,n->declVar.id
-						,n->declVar.sym
-						,n->declVar.expr
-						,n->declVar.scope  
-					);
-			}
-		
-		break ; 
+		case nTypeDeclT1 : // .............................................................................. decl t1
 
-		case nTypeDeclArray :
-		
-			astNodeDebug( this , n->declArray.dim ) ;
-
-			astNodeDebug( this , n->declArray.il ) ;
-						
-			if ( this->fDebug )
-			{ 
-				fwprintf 
-					( this->pFileOutputNode , L"node [%018p] %-16ls :: id[%ls]  : dim[%018p] sym[%d] il[%018p] scope[%03d]\n"
-						,(void*)n
-						,L"DeclArray" 
-						,n->declArray.id
-						,n->declArray.dim
-						,n->declArray.sym
-						,n->declArray.il
-						,n->declArray.scope  
-					);
-			}
-		
-		break ; 
-
-		case nTypeDeclType :
-		
-			if ( this->fDebug )
-			{ 
-				fwprintf 
-					( this->pFileOutputNode , L"node [%018p] %-16ls :: id[%ls]  : scope[%03d]\n"
-						,(void*)n
-						,L"DeclType" 
-						,n->declArray.id
-						,n->declArray.scope  
-					);
-			} 
-			   
-			fwprintf ( this->pFileOutputNode , L"{\n" )  ;   
-			   
-			for ( uint32_t i = 0 ; i < vectorSize ( n->declType.field ) ; i++ )
+			if ( this->fDebug ) 
 			{
-				astNodeDebug( this , n->declType.field.data[i]  )  ;
-			}
-			
-			fwprintf ( this->pFileOutputNode , L"}\n" )  ;
-		
-		break ; 
-
-		case nTypeDeclFunction :
-
-			if ( this->fDebug )
-			{ 
+				printTab;
 				fwprintf 
-					( this->pFileOutputNode , L"node [%018p] %-16ls :: id[%ls]  ( %018p ) -> [%03d] { %018p } "
+					( 
+						this->pFileOutputNode , L"node [%018p] %-16ls :: sym [%03d] id [%ls]"
 						,(void*)n
-						,L"DeclFunction" 
-						,n->declFunction.id
-						,&n->declFunction.param
-						,n->declFunction.retType
-						,n->declFunction.blockCode
+						,L"nDeclT1" 
+						,(void*)n->declT1.sym
+						,(void*)n->declT1.id 
 					);
-			} 
-
-			fwprintf ( this->pFileOutputNode , L"\n(\n" )  ;   
-			   
-			for ( uint32_t i = 0 ; i < vectorSize ( n->declFunction.param ) ; i++ )
-			{
-				astNodeDebug( this , n->declFunction.param.data[i]  )  ;
+				$astDebugRowColToken(fDebug);
 			}
-			
-			fwprintf ( this->pFileOutputNode , L")\n" )  ;
-			
-			fwprintf ( this->pFileOutputNode , L"{\n" )  ;   
-			   
-			astNodeDebug( this , n->declFunction.blockCode  )  ;
-
-			fwprintf ( this->pFileOutputNode , L"}\n"   );   
-			
-		break ;  
-
-		case nTypeTermArray :
 		
-			astNodeDebug( this , n->termArray.dim  )  ;
-			
-			if ( this->fDebug )
-			{ 
-				fwprintf 
-					( this->pFileOutputNode , L"node [%018p] %-16ls :: id[%ls]  : dim[%03d]\n"
-						,(void*)n
-						,L"nTypeTermArray" 
-						,n->termArray.id
-						,vectorSize ( n->termArray.dim->arrayDim.ndx  )   
-					);
-			} 
+		break ;
 		
-			break ;
-
-
-			 
-			fwprintf ( this->pFileOutputNode , L"}\n");  
-					
-			break ;
-	*/ 
 	  default : // .............................................................................. default
 
 			$nodeInternal ( debug , errUnknown , L"ast.c" , L"node_t* astDebug(node_t* n) -> switch ( n->type )") ;
