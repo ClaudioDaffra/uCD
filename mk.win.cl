@@ -11,6 +11,7 @@ SOURCES = \
 	src\error.c		\
 	src\parser.c	\
 	src\expr.c		\
+	src\decl.c		\
 	src\ast.c		\
 	src\main.c	
 	

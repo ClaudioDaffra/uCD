@@ -14,7 +14,7 @@ LDIR=lib
 
 LIBS =  argParse.o	\
 		gc.o 		\
-		hmap.o	\
+		hmap.o		\
 		stdio.o		\
 		string.o
 				
@@ -23,6 +23,7 @@ OBJS =  main.o		\
 		lexer.o		\
 		parser.o	\
 		expr.o		\
+		decl.o		\
 		ast.o
 		
 OBJ = $(patsubst %,$(ODIR)/%,$(OBJS))
