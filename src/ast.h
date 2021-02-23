@@ -17,8 +17,7 @@ typedef struct node_s *   pnode_t ;
 enum stScope_e
 {
     stScopeGlobal    ,
-    stScopeLocal    ,
-    //stScopeFuncParam
+    stScopeLocal     ,
 } ;
 
 typedef enum stScope_e stScope_t ;
@@ -34,32 +33,18 @@ enum enodeType
     nTypeTermChar       ,   // 3
     nTypeTermString     ,   // 4 
     nTypeTermID      	,   // 5 
-/* 
-	nTypeTermStruct		,	// 6	+ campi della struttura
-    nTypeTermVar        ,   // 7
-*/
-//    nTypeArray      	,   // 8
-/*
-    nTypeTermFunction   ,   // 9
-*/
+
     nTypeBinOp          ,   // 10
     nTypePrefix         ,   // 11
     nTypePostfix        ,   // 12 
     nTypeTerOp          ,   // 13       
     nTypeBlock          ,   // 14
-    //nTypeStruct         ,   // 15  
-    
+
     nTypeAssign         ,    // 19        
-/*    
-    nTypeDeclConst      ,    // decl const global local 
-    nTypeDeclVar        ,    // decl var     global local    
-    nTypeDeclArray      ,    // decl array global local   
-    nTypeArrayDim       ,    // array dim [][][] ...   
-    nTypeDeclType       ,    // type declaration 
-    nTypeDeclFunction   ,    // dichiarazione di funzione   
-*/   
+
     nTypeDeclT1         ,   // 15 
     nTypeDeclT2         ,   // 16 
+    nTypeDeclT3         ,   // 17     
             
 } ;
 
@@ -155,43 +140,15 @@ typedef struct nodeDeclT2_s
 
 } nodeDeclT2_t ;
 
+// .................................... decl t3
 
-/*
-// .................................... nodo    costanti globali / locali
-
-typedef struct nodeDeclConst_s
+typedef struct nodeDeclT3_s
 {
-    
-    wchar_t*    id          ;        //    c
-    sym_t       sym         ;        //    sym_integer
-    pnode_t     term        ;        //    makeNodeInteger ( 1 ) ;
-    stScope_t   scope       ;        //    local global
+    wchar_t*    id          ;        //  name 
+    node_t*		type        ;        //  return type integer real char byte or * type /function /array
 
-} nodeDeclConst_t ;
+} nodeDeclT3_t ;
 
-// .................................... nodo    Var globali / locali
-
-typedef struct nodeDeclVar_s
-{
-    wchar_t*    id          ;        //    v
-    sym_t       sym         ;        //    sym_kw_integer , sym_kw_real , sym_kw_char , sym_kw_byte  , sym_id
-    stScope_t   scope       ;        //    local global    
-    pnode_t     expr        ;        //    expr
-    int         size        ;        //    sizeof
-} nodeDeclVar_t ;
-
-
-// .................................... nodo    Var globali / locali
-
-typedef struct nodeDeclType_s
-{
-    wchar_t*     id           ;        //    struct name
-    stScope_t    scope        ;        //    local global
-    vectorStruct( pnode_t , field ) ;
-    //    initializer list    : var p1 : point := { }
-} nodeDeclType_t ;
-
-*/
 // .................................... term : array dim [][][]
 
 typedef struct nodePostFixArray_s
@@ -224,22 +181,18 @@ struct node_s
     union 
     {
         nodeTerm_t              term          	;	// integer real wchar wstring id
-        //nodeArray_t         	array     		; 
-        //nodeTermFunction_t      termFunction  ;
-        //nodeTermVar_t           termVar       ;
-        //nodeTermField_t         termField     ; // 1 campo    
-        //nodeTermStruct_t        termStruct    ; // + campi             
+            
         nodeBinOp_t             binOp         ;
         nodePrefix_t            prefix        ;
         nodePostfix_t           postfix       ;        
         nodeBlock_t             block         ;
         nodeTerOp_t             terOp         ;        
         nodeAssign_t            assign        ;
-        //nodeArrayDim_t          arrayDim      ; 
-        //nodeDeclType_t          declType      ;
-        //nodeDeclFunction_t      declFunction  ;   
-        nodeDeclT1_t            	declT1       ; 
-        nodeDeclT2_t            	declT2       ;                         
+ 
+        nodeDeclT1_t			declT1        ; 
+        nodeDeclT2_t   			declT2        ;
+        nodeDeclT3_t     		declT3        ;
+                                         
     } ;
     
 } ;
@@ -295,11 +248,6 @@ node_t*     astMakeNodeTermChar       ( past_t this , plexer_t lexer , wchar_t		
 node_t*     astMakeNodeTermString     ( past_t this , plexer_t lexer , wchar_t*		_wstring    ) ;
 node_t* 	astMakeNodeTermID		  ( past_t this , plexer_t lexer , wchar_t* 	_id 		) ;
 
-
-//pnode_t     astMakeNodeTermFunction   ( past_t this , wchar_t* id  , pnode_t pArrayParam ) ;
-//node_t*     astMakeNodeTermField      ( past_t this , plexer_t lexer , wchar_t* id ) ;
-//node_t* 	astMakeNodeTermStruct	  ( past_t this ) ;
-
 node_t*     astMakeNodeBinOP          ( past_t this , plexer_t lexer , sym_t sym , node_t* left , node_t* right ) ;
 node_t*		astMakeNodeTerOP		  ( past_t this , plexer_t lexer , sym_t sym , node_t* cond , node_t* left , node_t* right  ) ;
 node_t*     astMakeNodePrefix         ( past_t this , psPrefixOp_t prefix , node_t* left ) ;
@@ -307,18 +255,13 @@ node_t* 	astMakeNodePostfix		  ( past_t this , plexer_t lexer , node_t* left ) ;
 node_t*     astMakeNodeBlock          ( past_t this ) ;
 size_t      astPushNodeBlock          ( past_t this , node_t * nBlock     , node_t * next );
 
-//size_t      astPushAllNodeBlock       ( past_t this , node_t * nBlockDest , node_t * nBlockSource ) ;
-
-
-//pnode_t     astMakeNodeDeclType       ( past_t this , wchar_t* id , stScope_t    scope )  ;
-//pnode_t     astMakeNodeDeclFunction   ( past_t this , wchar_t* id , sym_t retType , pnode_t pParamList , pnode_t pBlockCode ) ;
-
 node_t*     astMakeNodeAssign         ( past_t this , plexer_t lexer ,  node_t * lhs , node_t * rhs ) ;
 
 // ast.c decl.c
 
 node_t* 	astMakeDeclT1			  ( past_t this , plexer_t lexer , wchar_t* _id  , wchar_t* _type ) ;
 node_t* 	astMakeDeclT2			  ( past_t this , plexer_t lexer , node_t* array , node_t*   type ) ;
+node_t* 	astMakeDeclT3			  ( past_t this , plexer_t lexer , node_t* type ) ;
 
 #endif
 

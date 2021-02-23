@@ -41,9 +41,32 @@ node_t* parserDeclT2( pparser_t this , wchar_t* id )
 
 	// make [] type node
 	n = astMakeDeclT2( this->ast , this->lexer , t2_array, t2_type ) ;
+	n->declT2.id = gcWcsDup(id);
 	
 	return n;
 }
+
+// id : () type ;
+
+node_t* parserDeclT3( pparser_t this , wchar_t* id )
+{
+	node_t *n=NULL;
+	
+	// param
+	$MATCH(sym_p0,L'(');  
+	$MATCH(sym_p1,L')'); 
+	
+	// id
+	// type	
+	node_t* t3_type=parserDeclT1(this,id);
+
+	// make [] type node
+	n = astMakeDeclT3( this->ast , this->lexer , t3_type ) ;
+	n->declT3.id = gcWcsDup(id);
+		
+	return n;
+}
+
 
 /*
 
@@ -69,7 +92,7 @@ declType :
 	declTypeT3
 				
 		t3	=
-				( declType,* )	ret	t1
+				()				ret	t1
 
 	declTypeT4
 
@@ -82,7 +105,7 @@ declType :
 
 		t5	=
 				[ expr ]*		of	t4
-				( declType,* )	ret	t4
+				()				ret	t4
 				*	            to	t4
 
 	declStructUnion:
@@ -140,12 +163,12 @@ node_t* parserDecl( pparser_t this )
 					n=parserDeclT1(this,idSave);
 				break;
 
-				case sym_pq0 :	// declTypet2	id : [] type
+				case sym_pq0 :	// declTypeT2	id : [] type
 					n=parserDeclT2(this,idSave)	;		
 				break;
 
-				case sym_p0 :	// declTypet3	() type
-					fwprintf(stderr,L" ( "); exit(-1);
+				case sym_p0 :	// declTypeT3	() type
+					n=parserDeclT3(this,idSave)	;
 				break;
 
 				case sym_mul :	// declTypet4	 *

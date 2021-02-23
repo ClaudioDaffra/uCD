@@ -75,6 +75,7 @@ node_t* 	parserExpr			( pparser_t this ) ;
 node_t* 	parserPostFixArray	( pparser_t this , node_t* left ) ;
 node_t* 	parserDeclT1		( pparser_t this , wchar_t* id ) ;
 node_t* 	parserDeclT2		( pparser_t this , wchar_t* id ) ;
+node_t* 	parserDeclT3		( pparser_t this , wchar_t* id ) ;
 node_t* 	parserDecl			( pparser_t this ) ;
 
 #endif
