@@ -609,7 +609,7 @@ node_t* astMakeNodeTermStruct( past_t this )
 
 // decl t1
 
-node_t* astMakeDeclT1( past_t this , plexer_t lexer , wchar_t* _id )
+node_t* astMakeDeclT1( past_t this , plexer_t lexer , wchar_t* _id , wchar_t* _type )
 {
     if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: [%ls]\n",L"astMakeDeclT1",_id );
 
@@ -620,11 +620,11 @@ node_t* astMakeDeclT1( past_t this , plexer_t lexer , wchar_t* _id )
 
     nNew->type			= nTypeDeclT1 ;
     nNew->declT1.id 	= gcWcsDup(_id);
-    nNew->declT1.sym 	= lexer->sym;
+    nNew->declT1.type 	= gcWcsDup(_type);
     
     nNew->row    =    lexer->row_start ;
     nNew->col    =    lexer->col_start - 1;
-    nNew->token  =    gcWcsDup(lexer->token)  ;    
+    nNew->token  =    gcWcsDup(_id)  ;    
 
     return nNew ;
 }
@@ -892,10 +892,10 @@ node_t* astNodeDebug( past_t this , node_t* n)
 				printTab;
 				fwprintf 
 					( 
-						this->pFileOutputNode , L"node [%018p] %-16ls :: sym [%03d] id [%ls]"
+						this->pFileOutputNode , L"node [%018p] %-16ls :: type [%ls] id [%ls]"
 						,(void*)n
 						,L"nDeclT1" 
-						,(void*)n->declT1.sym
+						,(void*)n->declT1.type
 						,(void*)n->declT1.id 
 					);
 				$astDebugRowColToken(fDebug);

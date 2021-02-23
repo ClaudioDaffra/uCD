@@ -139,9 +139,8 @@ nodeTerOp_t ;
 
 typedef struct nodeDeclT1_s
 {
-    
-    wchar_t*    id          ;        //  integer real char byte TYPE ?  
-    sym_t       sym         ;        //  sym_id sym_qm 
+    wchar_t*    id          ;        //  name 
+    wchar_t*    type        ;        //  integer real char byte TYPE ?
 
 } nodeDeclT1_t ;
 
@@ -386,7 +385,7 @@ node_t*     astMakeNodeAssign         ( past_t this , plexer_t lexer ,  node_t *
 
 // ast.c decl.c
 
-node_t* 	astMakeDeclT1			  ( past_t this , plexer_t lexer , wchar_t* _id ) ;
+node_t* 	astMakeDeclT1			  ( past_t this , plexer_t lexer , wchar_t* _id , wchar_t* _type ) ;
 
 
 #endif

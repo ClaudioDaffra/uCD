@@ -49,7 +49,7 @@ void		parserDtor        	( pparser_t this ) ;
 int         parserPrintToken	( pparser_t this ) ;
 sym_t       parserGetToken     	( pparser_t this ) ;
 
-pnode_t     parserStatement     ( pparser_t this , node_t* nBlock ) ;
+pnode_t     parserProgram     	( pparser_t this , node_t* nBlock ) ;
 pnode_t     parserScan         	( pparser_t this ) ;
 
 // expr.c

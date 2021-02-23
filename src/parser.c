@@ -210,13 +210,9 @@ void parserDtor( pparser_t this )
 }
 // ......................................................... parser statement
 
-pnode_t parserStatement( pparser_t this , node_t* nBlock ) 
+pnode_t parserProgram( pparser_t this , node_t* nBlock ) 
 {
     pnode_t     pnode 	= 	NULL ;
-
-    // -----------
-    // EXPR
-    // -----------
 
     pnode = NULL ;
 
@@ -281,7 +277,7 @@ pnode_t parserScan( pparser_t this )
 
 		node_t* 	nBlock	=	astMakeNodeBlock(this->ast);   
 		 
-		pnode=parserStatement(this,nBlock);
+		pnode=parserProgram(this,nBlock);
 
 		// pnode = parserMainBlock( this ) ; // decl(global); Function; statement[expr];
 
