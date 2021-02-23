@@ -142,7 +142,7 @@ node_t* parserPostFixParamSub( pparser_t this , node_t* left )
 	return left ;
 }
 
-static 
+//static 
 node_t* parserPostFixArray( pparser_t this , node_t* left )
 {
 	node_t* vArray = astMakeNodeBlock( this->ast ) ;

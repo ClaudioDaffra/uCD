@@ -28,56 +28,22 @@ node_t* parserDeclT1( pparser_t this , wchar_t* id )
 
 // id : [] type ;
 
-static 
-node_t* parserDeclT2Array( pparser_t this , node_t* left )
-{
-	node_t* vArray = astMakeNodeBlock( this->ast ) ;
-	node_t* exprNode  = NULL ;
-
-	size_t rowSave = this->lexer->row_start;
-	size_t colSave = this->lexer->col_start;
-
-	while ( this->lexer->sym == sym_pq0 )
-	{
-		parserGetToken(this);
-		
-		exprNode = parserExpr(this);
-		
-		astPushNodeBlock( this->ast , vArray , exprNode ) ;
-		
-		$MATCH(  sym_pq1 , L']' ) ;
-	}
-
-	if ( vArray->block.next.size ) // è presente vettore array
-	{
-		// crea un nodo post fisso ed inserisce operatore post fisso [ con riferimento al blocco array
-		node_t* node = astMakeNodePostfix( this->ast , this->lexer , left ) ;
-		
-		node->postfix.sym  	 = sym_pq0 ; 			// operatore post fisso [
-		node->token 		 = gcWcsDup(L"[");  
-		node->postfix.array  = vArray ;
-		node->row		 	 = rowSave ;
-		node->col			 = colSave -1 ;
-
-		return node ;
-	}
-	return left ;
-}
-
 node_t* parserDeclT2( pparser_t this , wchar_t* id )
 {
 	node_t *n=NULL;
 	
-	node_t *t2_array=parserDeclT2Array(this,n) ;
 	// array
-	node_t* t2_type=parserDeclT1(this,id);
+	node_t *t2_array=parserPostFixArray(this,n) ;  
+
 	// id
-	// type
+	// type	
+	node_t* t2_type=parserDeclT1(this,id);
+
+	// make [] type node
 	n = astMakeDeclT2( this->ast , this->lexer , t2_array, t2_type ) ;
 	
 	return n;
 }
-
 
 /*
 
@@ -157,7 +123,6 @@ node_t* parserDecl( pparser_t this )
 
     if ( this->fDebug ) fwprintf ( this->pFileOutputParser , L"parserDecl\n" );
 
-
 	if ( this->lexer->sym == sym_id )	//	id
 	{
 		wchar_t* idSave = gcWcsDup(this->lexer->token);
@@ -166,7 +131,6 @@ node_t* parserDecl( pparser_t this )
 
 		if ( this->lexer->sym == sym_scope )	//	parser decl
 		{		
-
 			parserGetToken(this);			//	=
 			
 			switch (  this->lexer->sym )
