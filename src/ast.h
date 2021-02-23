@@ -59,7 +59,8 @@ enum enodeType
     nTypeDeclFunction   ,    // dichiarazione di funzione   
 */   
     nTypeDeclT1         ,   // 15 
-        
+    nTypeDeclT2         ,   // 16 
+            
 } ;
 
 typedef enum enodeType     enodeType_t;
@@ -144,6 +145,17 @@ typedef struct nodeDeclT1_s
 
 } nodeDeclT1_t ;
 
+// .................................... decl t2
+
+typedef struct nodeDeclT2_s
+{
+    wchar_t*    id          ;        //  name 
+    node_t*		array		;	     //  []
+    node_t*		type        ;        //  integer real char byte TYPE ?
+
+} nodeDeclT2_t ;
+
+
 /*
 // .................................... nodo    costanti globali / locali
 
@@ -168,26 +180,6 @@ typedef struct nodeDeclVar_s
     int         size        ;        //    sizeof
 } nodeDeclVar_t ;
 
-// .................................... array dim [][][]
-
-typedef struct nodeArrayDim_s
-{
-    
-    vectorStruct(pnode_t,ndx);        // vettore di indici
-    
-} nodeArrayDim_t ;
-
-// .................................... nodo    Var globali / locali
-
-typedef struct nodeDeclArray_s
-{
-    wchar_t*     id            ;        //    v
-    sym_t        sym           ;        //    sym_kw_integer , sym_kw_real , sym_kw_char , sym_kw_byte , sym_id
-    stScope_t    scope         ;        //    local global    
-    pnode_t      dim           ;        //  vettore dimensioni
-    pnode_t      il            ;        //    initializer list
-    int          size          ;        //  sizeof
-} nodeDeclArray_t ;
 
 // .................................... nodo    Var globali / locali
 
@@ -208,45 +200,7 @@ typedef struct nodePostFixArray_s
     node_t*			left	;
     
 } nodePostFixArray_t ;
-/*
-// .................................... term : function f1(,,)
 
-typedef struct nodeTermFunction_s
-{
-    wchar_t*        id        ;
-    pnode_t         param     ;
-    
-} nodeTermFunction_t ;
-
-
-// .................................... nodo variabili semplici    :    var
-
-typedef struct nodeTermVar_s
-{
-    wchar_t*    id            ;
-    
-} nodeTermVar_t ;
-
-// .................................... nodo campo della stuttura :    var or array of type of not : a[10] ; x ; ( single ) 
-
-typedef struct nodeTermField_s
-{
-    wchar_t*    id            ;
-    
-} nodeTermField_t ;
-
-
-// .................................... nodo campo della stuttura :    var or array of type of not : a[10].x ; ( multi ) 
-
-typedef struct nodeTermStruct_s
-{
-    wchar_t*    	id           		;	// struct name		utile per recuperare gli offset
-    void*			pvst				;	// void pointer to sym table
-    vectorStruct( pnode_t , vField )    ;	// vettore campi
-    
-} nodeTermStruct_t ;
-
-*/
 // .................................... nodo  lhs := rhs
 
 typedef struct nodeAssign_s
@@ -255,20 +209,6 @@ typedef struct nodeAssign_s
     pnode_t        rhs        ;
     
 } nodeAssign_t ;
-
-/*
-// .................................... nodo  decl function
-
-typedef struct nodeDeclFunction_s
-{
-    wchar_t*     id                    ;    // name
-    sym_t        retType               ;    // parameter return    
-    vectorStruct( pnode_t , param )    ;    // parameter list
-    //node_t*        paramList         ;    // param List
-    node_t*        blockCode           ;    // block code
-    
-} nodeDeclFunction_t ;
-*/
 
 // *****************
 //	NODO PRINCIPE
@@ -294,14 +234,12 @@ struct node_s
         nodePostfix_t           postfix       ;        
         nodeBlock_t             block         ;
         nodeTerOp_t             terOp         ;        
-        //nodeDeclConst_t         declConst     ; 
-        //nodeDeclVar_t           declVar       ; 
         nodeAssign_t            assign        ;
-        //nodeDeclArray_t         declArray     ;
         //nodeArrayDim_t          arrayDim      ; 
         //nodeDeclType_t          declType      ;
         //nodeDeclFunction_t      declFunction  ;   
-        nodeDeclT1_t            	declT1       ;                  
+        nodeDeclT1_t            	declT1       ; 
+        nodeDeclT2_t            	declT2       ;                         
     } ;
     
 } ;
@@ -357,8 +295,7 @@ node_t*     astMakeNodeTermChar       ( past_t this , plexer_t lexer , wchar_t		
 node_t*     astMakeNodeTermString     ( past_t this , plexer_t lexer , wchar_t*		_wstring    ) ;
 node_t* 	astMakeNodeTermID		  ( past_t this , plexer_t lexer , wchar_t* 	_id 		) ;
 
-//node_t*     astMakeNodeTermVar        ( past_t this , wchar_t* _name , uint32_t row , uint32_t col ) ;
-//pnode_t     astMakeNodeTermArray      ( past_t this , wchar_t* id  , pnode_t pArrayDim )     ;
+
 //pnode_t     astMakeNodeTermFunction   ( past_t this , wchar_t* id  , pnode_t pArrayParam ) ;
 //node_t*     astMakeNodeTermField      ( past_t this , plexer_t lexer , wchar_t* id ) ;
 //node_t* 	astMakeNodeTermStruct	  ( past_t this ) ;
@@ -372,11 +309,6 @@ size_t      astPushNodeBlock          ( past_t this , node_t * nBlock     , node
 
 //size_t      astPushAllNodeBlock       ( past_t this , node_t * nBlockDest , node_t * nBlockSource ) ;
 
-//pnode_t     astMakeNodeDeclConst      ( past_t this , wchar_t* id ,  sym_t sym , pnode_t _term     , stScope_t    scope ) ;
-//pnode_t     astMakeNodeDeclVar        ( past_t this , wchar_t* id ,  sym_t sym , pnode_t _expr     , stScope_t    scope ) ;
-
-//pnode_t     astMakeNodeDeclArray      ( past_t this , wchar_t* id ,  pnode_t _dim  , sym_t sym , pnode_t _il , stScope_t    scope ) ;
-//pnode_t     astMakeNodeArrayDim       ( past_t this ) ;
 
 //pnode_t     astMakeNodeDeclType       ( past_t this , wchar_t* id , stScope_t    scope )  ;
 //pnode_t     astMakeNodeDeclFunction   ( past_t this , wchar_t* id , sym_t retType , pnode_t pParamList , pnode_t pBlockCode ) ;
@@ -385,8 +317,8 @@ node_t*     astMakeNodeAssign         ( past_t this , plexer_t lexer ,  node_t *
 
 // ast.c decl.c
 
-node_t* 	astMakeDeclT1			  ( past_t this , plexer_t lexer , wchar_t* _id , wchar_t* _type ) ;
-
+node_t* 	astMakeDeclT1			  ( past_t this , plexer_t lexer , wchar_t* _id  , wchar_t* _type ) ;
+node_t* 	astMakeDeclT2			  ( past_t this , plexer_t lexer , node_t* array , node_t*   type ) ;
 
 #endif
 

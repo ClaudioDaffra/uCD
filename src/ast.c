@@ -409,81 +409,7 @@ size_t     astPushAllNodeBlock    ( past_t this , node_t * nBlockDest ,  node_t 
     }
     return kBlockSize ;
 } 
- 
-// DECL CONST
 
-pnode_t     astMakeNodeDeclConst    ( past_t this , wchar_t* id ,  sym_t sym , pnode_t _term , stScope_t    scope ) 
-{
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls \n",L"astmakeNodeDeclConst" );
-    node_t* nNew   = NULL ; // new node
-    
-    nNew = gcMalloc ( sizeof(node_t) ) ;
-    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astmakeNodeDeclConst") ;
-
-    nNew->type                    =    nTypeDeclConst     ;
-    nNew->declConst.id            =    gcWcsDup( id )     ;
-    nNew->declConst.sym           =    sym                ;
-    nNew->declConst.term          =    _term              ;
-    nNew->declConst.scope         =    scope              ;
-
-    return nNew ;
-}
-
-// DECL VAR
-
-pnode_t     astMakeNodeDeclVar    ( past_t this , wchar_t* id ,  sym_t sym , pnode_t _expr , stScope_t    scope ) 
-{
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls \n",L"astMakeNodeDeclVar" );
-    node_t* nNew   = NULL ; // new node
-    
-    nNew = gcMalloc ( sizeof(node_t) ) ;
-    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeDeclVar") ;
-
-    nNew->type              =    nTypeDeclVar    ;
-    nNew->declVar.id        =    gcWcsDup( id )  ;
-    nNew->declVar.sym       =    sym             ;
-    nNew->declVar.expr      =    _expr           ;
-    nNew->declVar.scope     =    scope           ;
-    
-    return nNew ;
-}
-
-// DECL ARRAY
-
-pnode_t     astMakeNodeDeclArray    ( past_t this , wchar_t* id ,  pnode_t _dim  , sym_t sym , pnode_t _il , stScope_t    scope ) 
-{
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls \n",L"astMakeNodeDeclArray" );
-    node_t* nNew   = NULL ; // new node
-    
-    nNew = gcMalloc ( sizeof(node_t) ) ;
-    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeDeclArray") ;
-
-    nNew->type                    =    nTypeDeclArray     ;
-    nNew->declArray.id            =    gcWcsDup( id )     ;
-    nNew->declArray.dim           =    _dim               ;
-    nNew->declArray.sym           =    sym                ;
-    nNew->declArray.il            =    _il                ;
-    nNew->declArray.scope         =    scope              ;
-
-    return nNew ;
-}
-
-// ARRAY DIM
-
-pnode_t     astMakeNodeArrayDim    ( past_t this ) 
-{
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls \n",L"astMakeNodeArrayDim" );
-    node_t* nNew   = NULL ; // new node
-    
-    nNew = gcMalloc ( sizeof(node_t) ) ;
-    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeArrayDim") ;
-
-    nNew->type     =     nTypeArrayDim    ;
-
-    vectorNew ( nNew->arrayDim.ndx , 12 ) ;    // alloca un massimo di dodici indici
-
-    return nNew ;
-}
 */
 // node terminale variabile semplice
 
@@ -548,40 +474,8 @@ pnode_t     astMakeNodeDeclFunction    ( past_t this , wchar_t* id , sym_t retTy
     return nNew ;
 }
 */
-// ARRAY
+
 /*
-pnode_t     astMakeNodePostFixArray    ( past_t this , node_t* left , pnode_t dim ) 
-{
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls \n",L"astMakeNodeArray" );
-    node_t* nNew   = NULL ; // new node
-    
-    nNew = gcMalloc ( sizeof(node_t) ) ;
-    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeArray") ;
-
-    nNew->type        	=    nTypePostFixArray	;
-    nNew->array.dim 	=    dim         		;
-    nNew->postfix.left  =    left     			;
-    
-    return nNew ;
-}
-*/
-/*
-// TERM FUNCTION
-
-pnode_t     astMakeNodeTermFunction    ( past_t this , wchar_t* id  , pnode_t pArrayParam ) 
-{
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls \n",L"astMakeNodeTermFunction" );
-    node_t* nNew   = NULL ; // new node
-    
-    nNew = gcMalloc ( sizeof(node_t) ) ;
-    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeTermFunction") ;
-
-    nNew->type                  =     nTypeTermFunction     ;
-    nNew->termFunction.id       =     gcWcsDup( id )        ;
-    nNew->termFunction.param    =     pArrayParam           ;
-
-    return nNew ;
-}
 
 // TERM STRUCT
 
@@ -629,6 +523,28 @@ node_t* astMakeDeclT1( past_t this , plexer_t lexer , wchar_t* _id , wchar_t* _t
     return nNew ;
 }
 
+// decl t2
+
+node_t* astMakeDeclT2( past_t this , plexer_t lexer , node_t* array , node_t* type )
+{
+    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: [%ls]\n",L"astMakeDeclT2",type->declT1.id );
+
+    node_t* nNew   = NULL ; // new node
+    
+    nNew = gcMalloc ( sizeof(node_t) ) ;
+    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeDeclT2") ;
+
+    nNew->type			= nTypeDeclT2 ;
+    nNew->declT2.array	= array ;
+    nNew->declT2.type	= type ;
+    
+    nNew->row    =    lexer->row_start ;
+    nNew->col    =    lexer->col_start - 1;
+    nNew->token  =    gcWcsDup( type->declT1.id )  ;    
+
+    return nNew ;
+}
+
 
 // ***********
 // astDebug
@@ -657,7 +573,6 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
 			if ( this->fDebug ) 
 			{
-				
 				fwprintf ( this->pFileOutputNode , L"node [%018p] undefined  :: \n",(void*)n );
 			}
 			
@@ -821,7 +736,6 @@ node_t* astNodeDebug( past_t this , node_t* n)
 			break;   
 						
 		case  nTypeBlock : // .............................................................................. nTypeBlock
-		
 
 			if ( this->fDebug ) 
 			{
@@ -845,7 +759,8 @@ node_t* astNodeDebug( past_t this , node_t* n)
 					{
 						fwprintf ( this->pFileOutputNode , L"\n" ) ;
 						printTab ;
-						fwprintf ( this->pFileOutputNode , L"node [%018p] -> [%03d/%03d]::[%018p] :: \n\n",n,(int)i,(int)n->block.next.size-1,n->block.next.data[i] );
+						fwprintf ( this->pFileOutputNode , L"node [%018p] -> [%03d/%03d]::[%018p] :: \n\n"
+							,n,(int)i,(int)n->block.next.size-1,n->block.next.data[i] );
 					}
 				}
 				if ( n->block.next.data[i] != NULL ) 
@@ -902,7 +817,28 @@ node_t* astNodeDebug( past_t this , node_t* n)
 			}
 		
 		break ;
+
+		case nTypeDeclT2 : // .............................................................................. decl t2
+
+			astNodeDebug( this , n->declT2.array ) ;
+			
+			if ( this->fDebug ) 
+			{
+				printTab;
+				fwprintf 
+					( 
+						this->pFileOutputNode , L"node [%018p] %-16ls :: array[%p] type [%ls] id [%ls]"
+						,(void*)n
+						,L"nDeclT2" 
+						,(void*)n->declT2.array
+						,(void*)n->declT2.type->declT1.type
+						,(void*)n->declT2.type->declT1.id 
+					);
+				$astDebugRowColToken(fDebug);
+			}
 		
+		break ;
+				
 	  default : // .............................................................................. default
 
 			$nodeInternal ( debug , errUnknown , L"ast.c" , L"node_t* astDebug(node_t* n) -> switch ( n->type )") ;

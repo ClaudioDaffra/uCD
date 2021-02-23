@@ -72,7 +72,8 @@ node_t* 	parserExpr			( pparser_t this ) ;
 
 // decl.c
 
-node_t* 	parserDeclT1		( pparser_t this ) ;
+node_t* 	parserDeclT1		( pparser_t this , wchar_t* id ) ;
+node_t* 	parserDeclT2		( pparser_t this , wchar_t* id ) ;
 node_t* 	parserDecl			( pparser_t this ) ;
 
 #endif
