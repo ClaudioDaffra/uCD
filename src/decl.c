@@ -39,6 +39,8 @@ node_t* parserDeclT2( pparser_t this , wchar_t* id )
 	// id
 	// type	
 	node_t* t2_type=parserDeclT1(this,id);
+	if ( t2_type == NULL )	return NULL ; // se errore da t1
+
 
 	// make [] type node
 	n = astMakeDeclT2( this->ast , this->lexer , t2_array, t2_type ) ;
@@ -61,7 +63,8 @@ node_t* parserDeclT3( pparser_t this , wchar_t* id )
 	// id
 	// type	
 	node_t* t3_type=parserDeclT1(this,id);
-
+	if ( t3_type == NULL )	return NULL ; // se errore da t1
+	
 	// make [] type node
 	n = astMakeDeclT3( this->ast , this->lexer , t3_type ) ;
 	n->declT3.id = gcWcsDup(id);
@@ -87,21 +90,23 @@ node_t* parserDeclT4( pparser_t this , wchar_t* id )
 		{
 			t4_type=parserDeclT3(this,gcWcsDup(L"*")); 
 			t4->declT4.sym = sym_p0;
-			//t4->declT4.id = gcWcsDup(id);			
+			if ( t4_type == NULL ) return NULL ; // error from t3			
 		}
 		if ( this->lexer->sym == sym_pq0 ) // * [] T
 		{
 			t4_type=parserDeclT2(this,gcWcsDup(L"*")); 
 			t4->declT4.sym = sym_pq0;
-			//t4->declT4.id = gcWcsDup(id);
+			if ( t4_type == NULL ) return NULL ; // error from t3
 		}
 		if ( t4_type == NULL )  // * T
 		{
 			t4_type=parserDeclT1(this,gcWcsDup(L"*"));
 			t4->declT4.sym = sym_ptr ;
-			//t4->declT4.id = gcWcsDup(id);
+			if ( t4_type == NULL ) return NULL ; // error from t3
 		}
 	
+		if ( t4_type == NULL ) $syntaxError ;
+		
 		t4->declT4.type = t4_type; 
 		
 		return t4 ;
@@ -131,12 +136,12 @@ declType :
 		t2	::
 				[ expr ]*	    of	t1
 
-	declTypeT3
+	declTypeT3 :
 				
 		t3	::
 				()				ret	t1
 
-	declTypeT4
+	declTypeT4 :
 
 		t4	=
 				*	to	t1

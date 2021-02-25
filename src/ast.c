@@ -908,14 +908,20 @@ node_t* astNodeDebug( past_t this , node_t* n)
 				if ( this->fDebug ) 
 				{
 					printTab;
-					fwprintf 
-						( 
-							this->pFileOutputNode , L"node [%018p] %-16ls :: type [%018p] id [%ls]"
+					fwprintf (	this->pFileOutputNode , L"node [%018p] %-16ls :: type [%018p] id [%ls]"
 							,(void*)n
 							,L"nDeclT4" 
 							,(void*)n->declT4.type
 							,(void*)n->declT4.id 
-						);
+					);
+					switch ( n->declT4.sym )
+					{
+						case sym_ptr : fwprintf (	this->pFileOutputNode ,L" ptr to type"		); break ;
+						case sym_pq0 : fwprintf (	this->pFileOutputNode ,L" ptr to array"		); break ;
+						case sym_p0  : fwprintf (	this->pFileOutputNode ,L" ptr to function"	); break ;
+						default      : fwprintf (	this->pFileOutputNode ,L" ptr to ??"		); break ;																								
+					} 
+											
 				} 
 
 				$astDebugRowColToken(fDebug);	
