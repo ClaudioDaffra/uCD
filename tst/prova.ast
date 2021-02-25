@@ -1,0 +1,31 @@
+
+file ast             : [0x00005612760e9780] -> [tst/prova.ast       ]
+astMakeNodeBlock               
+astMakeDeclT1                  :: [a]
+astPushNodeBlock               :: [block]:[0x00005612760fe4b0] -> [next]:[0x00005612760fea10]
+astMakeNodeBlock               
+astMakeNodeTermInteger         :: [1]
+astPushNodeBlock               :: [block]:[0x00005612760fec20] -> [next]:[0x00005612760ff1a0]
+astMakeNodeTermInteger         :: [2]
+astPushNodeBlock               :: [block]:[0x00005612760fec20] -> [next]:[0x00005612760ff330]
+astMakeNodeTermInteger         :: [3]
+astPushNodeBlock               :: [block]:[0x00005612760fec20] -> [next]:[0x00005612760ff4c0]
+astMakeNodePostfix             :: [4]
+astMakeDeclT1                  :: [b]
+astMakeDeclT2                 
+astPushNodeBlock               :: [block]:[0x00005612760fe4b0] -> [next]:[0x00005612760ff870]
+astMakeDeclT1                  :: [c]
+astMakeDeclT3                 
+astPushNodeBlock               :: [block]:[0x00005612760fe4b0] -> [next]:[0x00005612760ffbf0]
+astMakeDeclT4                  :: [d]
+astMakeDeclT1                  :: [*]
+astPushNodeBlock               :: [block]:[0x00005612760fe4b0] -> [next]:[0x00005612760ffdb0]
+astMakeDeclT4                  :: [e]
+astMakeNodeBlock               
+astMakeDeclT1                  :: [*]
+astMakeDeclT2                 
+astPushNodeBlock               :: [block]:[0x00005612760fe4b0] -> [next]:[0x0000561276100180]
+astMakeDeclT4                  :: [f]
+astMakeDeclT1                  :: [*]
+astMakeDeclT3                 
+astPushNodeBlock               :: [block]:[0x00005612760fe4b0] -> [next]:[0x0000561276100bf0]

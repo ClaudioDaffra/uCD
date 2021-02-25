@@ -31,7 +31,8 @@ node_t* parserDeclT1( pparser_t this , wchar_t* id )
 node_t* parserDeclT2( pparser_t this , wchar_t* id )
 {
 	node_t *n=NULL;
-	
+
+	//$MATCH(sym_pq0,L'[');
 	// array
 	node_t *t2_array=parserPostFixArray(this,n) ;  
 
@@ -42,6 +43,7 @@ node_t* parserDeclT2( pparser_t this , wchar_t* id )
 	// make [] type node
 	n = astMakeDeclT2( this->ast , this->lexer , t2_array, t2_type ) ;
 	n->declT2.id = gcWcsDup(id);
+	n->token = gcWcsDup(id);
 	
 	return n;
 }
@@ -63,7 +65,8 @@ node_t* parserDeclT3( pparser_t this , wchar_t* id )
 	// make [] type node
 	n = astMakeDeclT3( this->ast , this->lexer , t3_type ) ;
 	n->declT3.id = gcWcsDup(id);
-		
+	n->token = gcWcsDup(id);
+			
 	return n;
 }
 
@@ -78,7 +81,27 @@ node_t* parserDeclT4( pparser_t this , wchar_t* id )
 		node_t* t4 = astMakeDeclT4( this->ast , this->lexer , id , NULL ) ;
 		parserGetToken(this);
 
-		node_t* t4_type=parserDeclT1(this,gcWcsDup(L"*"));
+		node_t* t4_type=NULL;
+
+		if ( this->lexer->sym == sym_p0 ) // * () T
+		{
+			t4_type=parserDeclT3(this,gcWcsDup(L"*")); 
+			t4->declT4.sym = sym_p0;
+			//t4->declT4.id = gcWcsDup(id);			
+		}
+		if ( this->lexer->sym == sym_pq0 ) // * [] T
+		{
+			t4_type=parserDeclT2(this,gcWcsDup(L"*")); 
+			t4->declT4.sym = sym_pq0;
+			//t4->declT4.id = gcWcsDup(id);
+		}
+		if ( t4_type == NULL )  // * T
+		{
+			t4_type=parserDeclT1(this,gcWcsDup(L"*"));
+			t4->declT4.sym = sym_ptr ;
+			//t4->declT4.id = gcWcsDup(id);
+		}
+	
 		t4->declT4.type = t4_type; 
 		
 		return t4 ;

@@ -527,7 +527,7 @@ node_t* astMakeDeclT1( past_t this , plexer_t lexer , wchar_t* _id , wchar_t* _t
 
 node_t* astMakeDeclT2( past_t this , plexer_t lexer , node_t* array , node_t* type )
 {
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: [%ls]\n",L"astMakeDeclT2",type->declT1.id );
+    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls\n",L"astMakeDeclT2");
 
     node_t* nNew   = NULL ; // new node
     
@@ -541,7 +541,7 @@ node_t* astMakeDeclT2( past_t this , plexer_t lexer , node_t* array , node_t* ty
         
     nNew->row    =    lexer->row_start ;
     nNew->col    =    lexer->col_start - 1;
-    nNew->token  =    gcWcsDup( type->declT1.id )  ;    
+    nNew->token  =    NULL;   
 
     return nNew ;
 }
@@ -550,7 +550,7 @@ node_t* astMakeDeclT2( past_t this , plexer_t lexer , node_t* array , node_t* ty
 
 node_t* astMakeDeclT3( past_t this , plexer_t lexer , node_t* type )
 {
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: [%ls]\n",L"astMakeDeclT3",type->declT1.id );
+    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls\n",L"astMakeDeclT3" );
 
     node_t* nNew   = NULL ; // new node
     
@@ -562,7 +562,7 @@ node_t* astMakeDeclT3( past_t this , plexer_t lexer , node_t* type )
         
     nNew->row    =    lexer->row_start ;
     nNew->col    =    lexer->col_start - 1;
-    nNew->token  =    gcWcsDup( type->declT1.id )  ;    
+    nNew->token  =    NULL;    
 
     return nNew ;
 }
@@ -885,14 +885,12 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
 		case nTypeDeclT3 : // .............................................................................. decl t3
 
-			//astNodeDebug( this , n->declT2.array ) ;
-			
 			if ( this->fDebug ) 
 			{
 				printTab;
 				fwprintf 
 					( 
-						this->pFileOutputNode , L"node [%018p] %-16ls :: type [%ls] id [%ls]"
+						this->pFileOutputNode , L"node [%018p] %-16ls :: type [%ls] id (%ls)"
 						,(void*)n
 						,L"nDeclT3" 
 						,(void*)n->declT3.type->declT1.type
@@ -905,22 +903,23 @@ node_t* astNodeDebug( past_t this , node_t* n)
 
 		case nTypeDeclT4 : // .............................................................................. decl t4
 
-		   astNodeDebug( this , n->declT4.type ) ;
+				astNodeDebug( this , n->declT4.type ) ;
 
-			if ( this->fDebug ) 
-			{
-				printTab;
-				fwprintf 
-					( 
-						this->pFileOutputNode , L"node [%018p] %-16ls :: type [%018p] id [%ls]"
-						,(void*)n
-						,L"nDeclT4" 
-						,(void*)n->declT4.type
-						,(void*)n->declT4.id 
-					);
-				$astDebugRowColToken(fDebug);
-			}
-		
+				if ( this->fDebug ) 
+				{
+					printTab;
+					fwprintf 
+						( 
+							this->pFileOutputNode , L"node [%018p] %-16ls :: type [%018p] id [%ls]"
+							,(void*)n
+							,L"nDeclT4" 
+							,(void*)n->declT4.type
+							,(void*)n->declT4.id 
+						);
+				} 
+
+				$astDebugRowColToken(fDebug);	
+					
 		break ;
 								
 	  default : // .............................................................................. default

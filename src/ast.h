@@ -153,6 +153,7 @@ typedef struct nodeDeclT3_s
 
 typedef struct nodeDeclT4_s
 {
+	sym_t		sym			;		 // variabile array o funzione
     wchar_t*    id          ;        //  pointer name 
     node_t*		type        ;        //  return type integer real char byte or * type /function /array
 

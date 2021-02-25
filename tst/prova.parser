@@ -1,0 +1,116 @@
+
+file parser          : [0x00005612760df2e0] -> [tst/prova.parser    ]
+
+# Parser  -> scanning ...
+
+-[tst/prova.txt       ][006,004] len(01) sym(004) [                   a] -> [[a]]
+parserDecl
+-[tst/prova.txt       ][006,006] len(02) sym(205) [                  ::]
+-[tst/prova.txt       ][006,009] len(05) sym(004) [               point] -> [[point]]
+-[tst/prova.txt       ][006,015] len(01) sym(153) [                   ;]
+-[tst/prova.txt       ][007,004] len(01) sym(004) [                   b] -> [[b]]
+parserDecl
+-[tst/prova.txt       ][007,006] len(02) sym(205) [                  ::]
+-[tst/prova.txt       ][007,009] len(01) sym(156) [                   []
+-[tst/prova.txt       ][007,010] len(01) sym(005) [                   1] -> [[1]]
+parserExpr
+parserAssign
+parserTerOp
+parserXor
+parserOr
+parserAnd
+parserBitXor
+parserBitOr
+parserBitAnd
+parserOpRelEqNe
+parserOpRelLG
+parserShiftLR
+parserAddSub
+parserMulDivMod
+parserTerm
+sym_integer                    :: [1].
+-[tst/prova.txt       ][007,011] len(01) sym(157) [                   ]]
+-[tst/prova.txt       ][007,012] len(01) sym(156) [                   []
+-[tst/prova.txt       ][007,013] len(01) sym(005) [                   2] -> [[2]]
+parserExpr
+parserAssign
+parserTerOp
+parserXor
+parserOr
+parserAnd
+parserBitXor
+parserBitOr
+parserBitAnd
+parserOpRelEqNe
+parserOpRelLG
+parserShiftLR
+parserAddSub
+parserMulDivMod
+parserTerm
+sym_integer                    :: [2].
+-[tst/prova.txt       ][007,014] len(01) sym(157) [                   ]]
+-[tst/prova.txt       ][007,015] len(01) sym(156) [                   []
+-[tst/prova.txt       ][007,016] len(01) sym(005) [                   3] -> [[3]]
+parserExpr
+parserAssign
+parserTerOp
+parserXor
+parserOr
+parserAnd
+parserBitXor
+parserBitOr
+parserBitAnd
+parserOpRelEqNe
+parserOpRelLG
+parserShiftLR
+parserAddSub
+parserMulDivMod
+parserTerm
+sym_integer                    :: [3].
+-[tst/prova.txt       ][007,017] len(01) sym(157) [                   ]]
+-[tst/prova.txt       ][007,019] len(03) sym(004) [                 i32] -> [[i32]]
+-[tst/prova.txt       ][007,023] len(01) sym(153) [                   ;]
+-[tst/prova.txt       ][008,004] len(01) sym(004) [                   c] -> [[c]]
+parserDecl
+-[tst/prova.txt       ][008,006] len(02) sym(205) [                  ::]
+-[tst/prova.txt       ][008,009] len(01) sym(151) [                   (]
+-[tst/prova.txt       ][008,010] len(01) sym(152) [                   )]
+-[tst/prova.txt       ][008,012] len(03) sym(004) [                 r32] -> [[r32]]
+-[tst/prova.txt       ][008,016] len(01) sym(153) [                   ;]
+-[tst/prova.txt       ][009,004] len(01) sym(004) [                   d] -> [[d]]
+parserDecl
+-[tst/prova.txt       ][009,006] len(02) sym(205) [                  ::]
+-[tst/prova.txt       ][009,009] len(01) sym(254) [                   *]
+-[tst/prova.txt       ][009,011] len(03) sym(004) [                 i32] -> [[i32]]
+-[tst/prova.txt       ][009,015] len(01) sym(153) [                   ;]
+-[tst/prova.txt       ][010,004] len(01) sym(004) [                   e] -> [[e]]
+parserDecl
+-[tst/prova.txt       ][010,006] len(02) sym(205) [                  ::]
+-[tst/prova.txt       ][010,009] len(01) sym(254) [                   *]
+-[tst/prova.txt       ][010,011] len(01) sym(156) [                   []
+-[tst/prova.txt       ][010,012] len(01) sym(157) [                   ]]
+parserExpr
+parserAssign
+parserTerOp
+parserXor
+parserOr
+parserAnd
+parserBitXor
+parserBitOr
+parserBitAnd
+parserOpRelEqNe
+parserOpRelLG
+parserShiftLR
+parserAddSub
+parserMulDivMod
+parserTerm
+-[tst/prova.txt       ][010,014] len(03) sym(004) [                 i32] -> [[i32]]
+-[tst/prova.txt       ][010,018] len(01) sym(153) [                   ;]
+-[tst/prova.txt       ][011,004] len(01) sym(004) [                   f] -> [[f]]
+parserDecl
+-[tst/prova.txt       ][011,006] len(02) sym(205) [                  ::]
+-[tst/prova.txt       ][011,009] len(01) sym(254) [                   *]
+-[tst/prova.txt       ][011,011] len(01) sym(151) [                   (]
+-[tst/prova.txt       ][011,012] len(01) sym(152) [                   )]
+-[tst/prova.txt       ][011,014] len(03) sym(004) [                 i32] -> [[i32]]
+-[tst/prova.txt       ][011,018] len(01) sym(153) [                   ;]
