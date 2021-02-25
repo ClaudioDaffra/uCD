@@ -67,6 +67,25 @@ node_t* parserDeclT3( pparser_t this , wchar_t* id )
 	return n;
 }
 
+// id : * type ;
+
+node_t* parserDeclT4( pparser_t this , wchar_t* id )
+{
+	node_t *n=NULL;
+
+	if ( this->lexer->sym == sym_mul )
+	{
+		node_t* t4 = astMakeDeclT4( this->ast , this->lexer , id , NULL ) ;
+		parserGetToken(this);
+
+		node_t* t4_type=parserDeclT1(this,gcWcsDup(L"*"));
+		t4->declT4.type = t4_type; 
+		
+		return t4 ;
+	}
+	
+	return n;
+}
 
 /*
 
@@ -76,7 +95,7 @@ declType :
 
 	declTypeT1 :
 
-		t1	=
+		t1	::
 				integer
 				real
 				char
@@ -84,14 +103,14 @@ declType :
 				?
 				id
 
-	declTypeT2
+	declTypeT2 :
 				
-		t2	=
+		t2	::
 				[ expr ]*	    of	t1
 
 	declTypeT3
 				
-		t3	=
+		t3	::
 				()				ret	t1
 
 	declTypeT4
@@ -154,25 +173,25 @@ node_t* parserDecl( pparser_t this )
 
 		if ( this->lexer->sym == sym_scope )	//	parser decl
 		{		
-			parserGetToken(this);			//	=
+			parserGetToken(this);			//	type [ ( *
 			
 			switch (  this->lexer->sym )
 			{
-				case sym_qm :	// declTypeT1	id : type				
+				case sym_qm :	// declTypeT1	 id :: type				
 				case sym_id :
 					n=parserDeclT1(this,idSave);
 				break;
 
-				case sym_pq0 :	// declTypeT2	id : [] type
+				case sym_pq0 :	// declTypeT2	 id :: [] type
 					n=parserDeclT2(this,idSave)	;		
 				break;
 
-				case sym_p0 :	// declTypeT3	() type
+				case sym_p0 :	// declTypeT3	 id :: () type
 					n=parserDeclT3(this,idSave)	;
 				break;
 
-				case sym_mul :	// declTypet4	 *
-					fwprintf(stderr,L" * "); exit(-1);
+				case sym_mul :	// declTypeT4	 id :: * type
+					n=parserDeclT4(this,idSave)	;
 				break;
 																
 				default:

@@ -24,10 +24,10 @@ mapKW_t mapArrayKW[] =
     {   L"const"    , sym_kw_const      }    ,    //    +3 
     {   L"var"      , sym_kw_var        }    ,    //    +4
     
-    {   L"integer"  , sym_kw_integer    }    ,    //    +5 
-    {   L"real"     , sym_kw_real       }    ,    //    +6  
-    {   L"char"     , sym_kw_char       }    ,    //    +7  
-    {   L"byte"     , sym_kw_byte       }    ,    //    +8  
+//    {   L"integer"  , sym_kw_integer    }    ,    //    +5 TODO insert as type in symbol table
+//    {   L"real"     , sym_kw_real       }    ,    //    +6  
+//    {   L"char"     , sym_kw_char       }    ,    //    +7  
+//    {   L"byte"     , sym_kw_byte       }    ,    //    +8  
     
     {   L"array"    , sym_kw_array      }    ,    //    +9   
     {   L"type"     , sym_kw_type       }    ,    //    +10   

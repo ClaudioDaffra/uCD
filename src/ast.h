@@ -34,18 +34,18 @@ enum enodeType
     nTypeTermString     ,   // 4 
     nTypeTermID      	,   // 5 
 
-    nTypeBinOp          ,   // 10
+    nTypeBinOp=10       ,   // 10
     nTypePrefix         ,   // 11
     nTypePostfix        ,   // 12 
     nTypeTerOp          ,   // 13       
     nTypeBlock          ,   // 14
+    nTypeAssign         ,   // 15        
 
-    nTypeAssign         ,    // 19        
-
-    nTypeDeclT1         ,   // 15 
-    nTypeDeclT2         ,   // 16 
-    nTypeDeclT3         ,   // 17     
-            
+    nTypeDeclT1=20 		,   // 20 
+    nTypeDeclT2         ,   // 21 
+    nTypeDeclT3         ,   // 22     
+    nTypeDeclT4         ,   // 23    
+                
 } ;
 
 typedef enum enodeType     enodeType_t;
@@ -149,6 +149,16 @@ typedef struct nodeDeclT3_s
 
 } nodeDeclT3_t ;
 
+// .................................... decl t4
+
+typedef struct nodeDeclT4_s
+{
+    wchar_t*    id          ;        //  pointer name 
+    node_t*		type        ;        //  return type integer real char byte or * type /function /array
+
+} nodeDeclT4_t ;
+
+
 // .................................... term : array dim [][][]
 
 typedef struct nodePostFixArray_s
@@ -192,7 +202,8 @@ struct node_s
         nodeDeclT1_t			declT1        ; 
         nodeDeclT2_t   			declT2        ;
         nodeDeclT3_t     		declT3        ;
-                                         
+        nodeDeclT4_t     		declT4        ;
+                                                 
     } ;
     
 } ;
@@ -262,6 +273,8 @@ node_t*     astMakeNodeAssign         ( past_t this , plexer_t lexer ,  node_t *
 node_t* 	astMakeDeclT1			  ( past_t this , plexer_t lexer , wchar_t* _id  , wchar_t* _type ) ;
 node_t* 	astMakeDeclT2			  ( past_t this , plexer_t lexer , node_t* array , node_t*   type ) ;
 node_t* 	astMakeDeclT3			  ( past_t this , plexer_t lexer , node_t* type ) ;
+node_t* 	astMakeDeclT4			  ( past_t this , plexer_t lexer , wchar_t* _id, node_t* _type ) ;
+
 
 #endif
 

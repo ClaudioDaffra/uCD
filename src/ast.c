@@ -567,6 +567,28 @@ node_t* astMakeDeclT3( past_t this , plexer_t lexer , node_t* type )
     return nNew ;
 }
 
+// decl t4
+
+node_t* astMakeDeclT4( past_t this , plexer_t lexer , wchar_t* _id, node_t* _type )
+{
+    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: [%ls]\n",L"astMakeDeclT4",_id );
+
+    node_t* nNew   = NULL ; // new node
+    
+    nNew = gcMalloc ( sizeof(node_t) ) ;
+    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeDeclT4") ;
+
+    nNew->type			= nTypeDeclT4 ;
+    nNew->declT4.id		= gcWcsDup(_id) ;
+    nNew->declT4.type	= _type ;
+            
+    nNew->row    =    lexer->row_start ;
+    nNew->col    =    lexer->col_start - 1;
+    nNew->token  =    gcWcsDup( _id )  ;    
+
+    return nNew ;
+}
+
 
 // ***********
 // astDebug
@@ -861,7 +883,7 @@ node_t* astNodeDebug( past_t this , node_t* n)
 		
 		break ;
 
-		case nTypeDeclT3 : // .............................................................................. decl t2
+		case nTypeDeclT3 : // .............................................................................. decl t3
 
 			//astNodeDebug( this , n->declT2.array ) ;
 			
@@ -880,7 +902,27 @@ node_t* astNodeDebug( past_t this , node_t* n)
 			}
 		
 		break ;
-						
+
+		case nTypeDeclT4 : // .............................................................................. decl t4
+
+		   astNodeDebug( this , n->declT4.type ) ;
+
+			if ( this->fDebug ) 
+			{
+				printTab;
+				fwprintf 
+					( 
+						this->pFileOutputNode , L"node [%018p] %-16ls :: type [%018p] id [%ls]"
+						,(void*)n
+						,L"nDeclT4" 
+						,(void*)n->declT4.type
+						,(void*)n->declT4.id 
+					);
+				$astDebugRowColToken(fDebug);
+			}
+		
+		break ;
+								
 	  default : // .............................................................................. default
 
 			$nodeInternal ( debug , errUnknown , L"ast.c" , L"node_t* astDebug(node_t* n) -> switch ( n->type )") ;
