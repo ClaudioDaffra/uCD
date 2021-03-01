@@ -17,7 +17,6 @@ node_t* parserDeclT1( pparser_t this , wchar_t* id )
 		n = astMakeDeclT1( this->ast , this->lexer , id , this->lexer->token ) ;
 		
 		parserGetToken(this);
-		
 	}
 	else
 	{
@@ -32,7 +31,6 @@ node_t* parserDeclT2( pparser_t this , wchar_t* id )
 {
 	node_t *n=NULL;
 
-	//$MATCH(sym_pq0,L'[');
 	// array
 	node_t *t2_array=parserPostFixArray(this,n) ;  
 
@@ -115,6 +113,40 @@ node_t* parserDeclT4( pparser_t this , wchar_t* id )
 	return n;
 }
 
+// id :: { ... } ;
+
+node_t* parserDeclType( pparser_t this , wchar_t* id )
+{
+	node_t *n=NULL;
+	node_t *decl=NULL;	
+	node_t *fields=astMakeNodeBlock(this->ast);
+	
+	if ( this->lexer->sym == sym_pg0 )
+	{
+		$MATCH(sym_pg0,L'{');
+
+		do {
+			
+			decl=parserDecl(this);
+			
+			if ( decl!=NULL ) astPushNodeBlock( this->ast , fields , decl ) ;
+			
+			if ( this->lexer->sym == sym_pv ) parserGetToken(this); // skip
+		
+		} while ( this->lexer->sym 	!= sym_pg1
+			 &&   decl 				!= NULL
+			 &&	  !kError
+		) ;
+		
+		$MATCH(sym_pg1,L'}');
+		
+		n=astMakeDeclType( this->ast , this->lexer , id , fields ) ;		
+	}
+	
+	return n;
+}
+
+
 /*
 
 // declarations
@@ -148,13 +180,6 @@ declType :
 				*	to	t2
 				*	to	t3
 
-	declTypeT5
-
-		t5	=
-				[ expr ]*		of	t4
-				()				ret	t4
-				*	            to	t4
-
 	declStructUnion:
 
 		t6	=
@@ -163,8 +188,8 @@ declType :
 		}]		
 				
 				
-	declType  :   
-						id  =   declTypeT1
+	declVarType  :   
+						id  ::   declTypeT1
 
 	declArrayType   :   
 						id  =   [] declTypeT1
@@ -180,9 +205,9 @@ declType :
 	declPointerToSub     : 
 						id  =   *  declTypeT3
 	declPointerToPointer                    
-						id  =   *  declTypeT4
+						id  =   *  typedef
 						
-
+	declType			id :: { } 
 */
 
 node_t* parserDecl( pparser_t this )
@@ -201,7 +226,7 @@ node_t* parserDecl( pparser_t this )
 
 		if ( this->lexer->sym == sym_scope )	//	parser decl
 		{		
-			parserGetToken(this);			//	type [ ( *
+			parserGetToken(this);			//	type [ ( * {
 			
 			switch (  this->lexer->sym )
 			{
@@ -210,8 +235,8 @@ node_t* parserDecl( pparser_t this )
 					n=parserDeclT1(this,idSave);
 				break;
 
-				case sym_pq0 :	// declTypeT2	 id :: [] type
-					n=parserDeclT2(this,idSave)	;		
+				case sym_pq0 :	// declTypeT2		id :: [] type
+					n=parserDeclT2(this,idSave)	;
 				break;
 
 				case sym_p0 :	// declTypeT3	 id :: () type
@@ -221,7 +246,12 @@ node_t* parserDecl( pparser_t this )
 				case sym_mul :	// declTypeT4	 id :: * type
 					n=parserDeclT4(this,idSave)	;
 				break;
-																
+
+				case sym_pg0 :	// declType	 	id :: { ... }
+
+					n=parserDeclType(this,idSave)	;
+				break;
+																				
 				default:
 				
 					$syntaxError;

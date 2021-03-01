@@ -45,7 +45,8 @@ enum enodeType
     nTypeDeclT2         ,   // 21 
     nTypeDeclT3         ,   // 22     
     nTypeDeclT4         ,   // 23    
-                
+    nTypeDeclType		,   // 24
+                        
 } ;
 
 typedef enum enodeType     enodeType_t;
@@ -117,9 +118,9 @@ typedef struct nodeTerOp_s
 }
 nodeTerOp_t ;
 
-
+// ***********
 // declaration
-
+// ***********
 
 // .................................... decl t1
 
@@ -154,11 +155,19 @@ typedef struct nodeDeclT3_s
 typedef struct nodeDeclT4_s
 {
 	sym_t		sym			;		 // variabile array o funzione
-    wchar_t*    id          ;        //  pointer name 
-    node_t*		type        ;        //  return type integer real char byte or * type /function /array
+    wchar_t*    id          ;        // pointer name 
+    node_t*		type        ;        // return type integer real char byte or * type /function /array
 
 } nodeDeclT4_t ;
 
+// .................................... decl type
+
+typedef struct nodeDeclType_s
+{
+    wchar_t*    id          ;        // type name
+    node_t*		fields      ;        // campi della struttura
+
+} nodeDeclType_t ;
 
 // .................................... term : array dim [][][]
 
@@ -204,7 +213,7 @@ struct node_s
         nodeDeclT2_t   			declT2        ;
         nodeDeclT3_t     		declT3        ;
         nodeDeclT4_t     		declT4        ;
-                                                 
+        nodeDeclType_t     		declType	  ;                                                         
     } ;
     
 } ;
@@ -275,6 +284,8 @@ node_t* 	astMakeDeclT1			  ( past_t this , plexer_t lexer , wchar_t* _id  , wcha
 node_t* 	astMakeDeclT2			  ( past_t this , plexer_t lexer , node_t* array , node_t*   type ) ;
 node_t* 	astMakeDeclT3			  ( past_t this , plexer_t lexer , node_t* type ) ;
 node_t* 	astMakeDeclT4			  ( past_t this , plexer_t lexer , wchar_t* _id, node_t* _type ) ;
+node_t* 	astMakeDeclType			  ( past_t this , plexer_t lexer , wchar_t* _id, node_t* _fields ) ;
+
 
 
 #endif

@@ -251,8 +251,10 @@ pnode_t parserProgram( pparser_t this , node_t* nBlock )
                 &&  this->lexer->sym == sym_pv
                 &&  !kError 
             ) ;
-            
-    //if ( this->lexer->sym==sym_pv) $MATCH( sym_pv , L';' ) ;
+    
+    // un minimo di controllo        
+    if ( this->lexer->sym != sym_pv	) $syntaxError;
+
 
     return nBlock ;
 }
@@ -278,9 +280,7 @@ pnode_t parserScan( pparser_t this )
 		node_t* 	nBlock	=	astMakeNodeBlock(this->ast);   
 		 
 		pnode=parserProgram(this,nBlock);
-
-		// pnode = parserMainBlock( this ) ; // decl(global); Function; statement[expr];
-
+		
     // parser end
 
     // ritorna il nodo principale ( GC for deallocation )

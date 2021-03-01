@@ -29,7 +29,7 @@ void gcPrint_(struct gcNode_s *root)
     {
         gcPrint_(root->left); 
 
-        printf ( "\n%10p[%10p]\n----LEFT/%10p ... RIGHT/%10p type(%03d)."
+        fprintf ( stderr,"\n%p[%p]---LEFT/%p ... RIGHT/%p type(%03d)."
             ,(void*)root
             ,(void*)root->pointer
             ,(void*)root->left
@@ -49,7 +49,7 @@ void gcWPrint_(struct gcNode_s *root)
     {
         gcWPrint_(root->left); 
 
-        wprintf ( L"\n%10p[%10p]\n----LEFT/%10p ... RIGHT/%10p type(%03d)."
+        fwprintf ( stderr,L"\n%p[%p]---LEFT/%p ... RIGHT/%p type(%03d)."
             ,(void*)root
             ,(void*)root->pointer
             ,(void*)root->left

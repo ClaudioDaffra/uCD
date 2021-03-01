@@ -210,50 +210,6 @@ node_t* astMakeNodeTermID( past_t this , plexer_t lexer , wchar_t* _id )
     return nNew ;
 }
 
-/*
-// TERM : VAR
-
-node_t* astMakeNodeTermVar( past_t this , wchar_t* _name , uint32_t row , uint32_t col )
-{
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: [%ls]\n",L"astMakeNodeTermVar",_name );
-
-    node_t* nNew   = NULL ; // new node
-    
-    nNew = gcMalloc ( sizeof(node_t) ) ;
-    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeTermVar") ;
-
-    nNew->type           = nTypeTermVar ;
-    nNew->termVar.id     = gcWcsDup(_name);
-    
-    nNew->row    =    row ;
-    nNew->col    =    col - 1;
-    nNew->token  =    gcWcsDup(_name) ;    
-
-    return nNew ;
-}
-
-// TERM : ID
-
-node_t* astMakeNodeTermField( past_t this , plexer_t lexer , wchar_t* _name )
-{
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: [%ls]\n",L"astMakeNodeTermField",_name );
-
-    node_t* nNew   = NULL ; // new node
-    
-    nNew = gcMalloc ( sizeof(node_t) ) ;
-    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeTermField") ;
-
-    nNew->type           = nTypeTermField ;
-    nNew->termField.id     = gcWcsDup(_name);
-    
-    nNew->row    =    lexer->row_start ;
-    nNew->col    =    lexer->col_start - 1;
-    nNew->token  =    gcWcsDup(lexer->token)  ;    
-
-    return nNew ;
-}
-*/
-
 // BINOP
 
 node_t* astMakeNodeBinOP(  past_t this , plexer_t lexer , sym_t sym , node_t* left , node_t* right  )
@@ -451,55 +407,7 @@ pnode_t     astMakeNodeDeclType    ( past_t this , wchar_t* id , stScope_t    sc
     return nNew ;
 }
 
-// DECL FUNCTION
-
-pnode_t     astMakeNodeDeclFunction    ( past_t this , wchar_t* id , sym_t retType , pnode_t pParamList , pnode_t pBlockCode ) 
-{
-	(void)pParamList ;
-	
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls \n",L"astMakeNodeDeclFunction" );
-    node_t* nNew   = NULL ; // new node
-    
-    nNew = gcMalloc ( sizeof(node_t) ) ;
-    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeDeclFunction") ;
-
-    nNew->type                     =     nTypeDeclFunction    ;
-    nNew->declFunction.id          =    gcWcsDup( id )        ;
-    nNew->declFunction.retType     =    retType               ;
-    //nNew->declFunction.paramList =    pParamList            ;
-    nNew->declFunction.blockCode   =    pBlockCode            ;
-
-    vectorNew(     nNew->declFunction.param , 12 ) ; // struttura iniziale con 12 membri
-
-    return nNew ;
-}
 */
-
-/*
-
-// TERM STRUCT
-
-node_t* astMakeNodeTermStruct( past_t this ) 
-{
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls \n",L"astMakeNodeTermStruct" );
-    node_t* nNew   = NULL ; // new node
-    
-    nNew = gcMalloc ( sizeof(node_t) ) ;
-    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeTermStruct") ;
-
-    nNew->type	= 	nTypeTermStruct  ;
-    
-	nNew->termStruct.id	=	 NULL ;
-    nNew->row			=    0;
-    nNew->col			=    0;
-    nNew->token			=    NULL ;
-
-    vectorNew(nNew->termStruct.vField,128);
-
-    return nNew ;
-}
-*/
-
 
 // decl t1
 
@@ -589,6 +497,27 @@ node_t* astMakeDeclT4( past_t this , plexer_t lexer , wchar_t* _id, node_t* _typ
     return nNew ;
 }
 
+// decl type
+
+node_t* astMakeDeclType( past_t this , plexer_t lexer , wchar_t* _id, node_t* _fields )
+{
+    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: [%ls]\n",L"astMakeDeclType",_id );
+
+    node_t* nNew   = NULL ; // new node
+    
+    nNew = gcMalloc ( sizeof(node_t) ) ;
+    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeDeclType") ;
+
+    nNew->type				= nTypeDeclType ;
+    nNew->declType.id		= gcWcsDup(_id) ;
+    nNew->declType.fields	= _fields ; 
+            
+    nNew->row    =    lexer->row_start ;
+    nNew->col    =    lexer->col_start - 1;
+    nNew->token  =    gcWcsDup( _id )  ;    
+
+    return nNew ;
+}
 
 // ***********
 // astDebug
@@ -927,7 +856,26 @@ node_t* astNodeDebug( past_t this , node_t* n)
 				$astDebugRowColToken(fDebug);	
 					
 		break ;
-								
+
+		case nTypeDeclType : // .............................................................................. decl type
+
+				astNodeDebug( this , n->declType.fields ) ;
+
+				if ( this->fDebug ) 
+				{
+					printTab;
+					fwprintf (	this->pFileOutputNode , L"node [%018p] %-16ls :: fields [%018p] id [%ls]"
+							,(void*)n
+							,L"nDeclType" 
+							,(void*)n->declType.fields
+							,(void*)n->declType.id 
+					);						
+				} 
+
+				$astDebugRowColToken(fDebug);	
+					
+		break ;
+										
 	  default : // .............................................................................. default
 
 			$nodeInternal ( debug , errUnknown , L"ast.c" , L"node_t* astDebug(node_t* n) -> switch ( n->type )") ;
