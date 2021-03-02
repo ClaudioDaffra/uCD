@@ -1,7 +1,0 @@
-
-file lexer           : [0xa99d8e80] -> [tst/prova.lexer     ]
-
-# Lexer  -> scanning ...
-
--[tst/prova.txt       ][020,004] len(05) sym(004) [               point]
--[tst/prova.txt       ][020,010] len(01) sym(158) [                   {]
