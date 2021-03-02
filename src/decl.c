@@ -230,25 +230,24 @@ node_t* parserDecl( pparser_t this )
 			
 			switch (  this->lexer->sym )
 			{
-				case sym_qm :	// declTypeT1	 id :: type				
+				case sym_qm :	// declTypeT1	 	id :: type			simple typle				
 				case sym_id :
 					n=parserDeclT1(this,idSave);
 				break;
-
-				case sym_pq0 :	// declTypeT2		id :: [] type
+	
+				case sym_pq0 :	// declTypeT2		id :: [] type		array type
 					n=parserDeclT2(this,idSave)	;
 				break;
 
-				case sym_p0 :	// declTypeT3	 id :: () type
+				case sym_p0 :	// declTypeT3	 	id :: () type		function type
 					n=parserDeclT3(this,idSave)	;
 				break;
 
-				case sym_mul :	// declTypeT4	 id :: * type
+				case sym_mul :	// declTypeT4	 	id :: * type		pointer type
 					n=parserDeclT4(this,idSave)	;
 				break;
 
-				case sym_pg0 :	// declType	 	id :: { ... }
-
+				case sym_pg0 :	// declType	 		id :: { ... }		struct type
 					n=parserDeclType(this,idSave)	;
 				break;
 																				
@@ -261,13 +260,11 @@ node_t* parserDecl( pparser_t this )
 		}		
 	}
 
- 
-
  return n ;
 }
 
 
-/**/
 
+/**/
 
 

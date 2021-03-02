@@ -1,0 +1,20 @@
+
+file ast             : [0x0000555860873a10] -> [tst/prova.ast       ]
+astMakeNodeBlock               
+astMakeNodeBlock               
+astMakeDeclT1                  :: [x]
+astPushNodeBlock               :: [block]:[0x0000555860888c50] -> [next]:[0x0000555860889200]
+astMakeDeclT1                  :: [y]
+astPushNodeBlock               :: [block]:[0x0000555860888c50] -> [next]:[0x0000555860889460]
+astMakeDeclType                :: [point]
+astPushNodeBlock               :: [block]:[0x0000555860888740] -> [next]:[0x00005558608895d0]
+astMakeNodeBlock               
+astMakeDeclT1                  :: [a]
+astPushNodeBlock               :: [block]:[0x00005558608897b0] -> [next]:[0x0000555860889e00]
+astMakeNodeTermInteger         :: [10]
+astMakeNodeAssign              
+astPushNodeBlock               :: [block]:[0x00005558608897b0] -> [next]:[0x000055586088a2b0]
+astMakeNodeBlock               
+astMakeStatSub                 :: [fn]
+astPushNodeBlock               :: [block]:[0x0000555860888740] -> [next]:[0x000055586088a840]
+astMakeNodeBlock               

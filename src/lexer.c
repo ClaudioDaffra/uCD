@@ -18,20 +18,20 @@ sym_t       sym ;
 
 mapKW_t mapArrayKW[] = 
 {
-    {   L"while"    , sym_kw_while      }    ,    //    +1
-    {   L"for"      , sym_kw_for        }    ,    //    +2
+//    {   L"while"    , sym_kw_while      }    ,    //    +1
+//    {   L"for"      , sym_kw_for        }    ,    //    +2
     
-    {   L"const"    , sym_kw_const      }    ,    //    +3 
-    {   L"var"      , sym_kw_var        }    ,    //    +4
+//    {   L"const"    , sym_kw_const      }    ,    //    +3 
+//    {   L"var"      , sym_kw_var        }    ,    //    +4
     
 //    {   L"integer"  , sym_kw_integer    }    ,    //    +5 TODO insert as type in symbol table
 //    {   L"real"     , sym_kw_real       }    ,    //    +6  
 //    {   L"char"     , sym_kw_char       }    ,    //    +7  
 //    {   L"byte"     , sym_kw_byte       }    ,    //    +8  
     
-    {   L"array"    , sym_kw_array      }    ,    //    +9   
-    {   L"type"     , sym_kw_type       }    ,    //    +10   
-    {   L"fn"       , sym_kw_function   }    ,    //    +11 
+//    {   L"array"    , sym_kw_array      }    ,    //    +9   
+//    {   L"type"     , sym_kw_type       }    ,    //    +10   
+//    {   L"fn"       , sym_kw_function   }    ,    //    +11 
     
     // operator
     
@@ -53,8 +53,7 @@ mapKW_t mapArrayKW[] =
     {   L"bitAndEq"	, sym_bitAndEq		}    ,	
     {   L"bitOrEq"	, sym_bitOrEq		}    ,	
     {   L"bitXorEq"	, sym_bitXorEq 	    }    ,	
-
-                                                                       
+                                                                
     {   NULL        , 0                 }    ,
 } ;
 

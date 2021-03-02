@@ -13,8 +13,9 @@ SOURCES = \
 	src\expr.c		\
 	src\decl.c		\
 	src\ast.c		\
-	src\main.c	
-	
+	src\main.c		\	
+	src\statement.c	
+		
 all: $(TARGET)
 
 $(TARGET):$(SOURCES)

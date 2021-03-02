@@ -46,7 +46,8 @@ enum enodeType
     nTypeDeclT3         ,   // 22     
     nTypeDeclT4         ,   // 23    
     nTypeDeclType		,   // 24
-                        
+
+    nTypeStatSub		,   // 25                        
 } ;
 
 typedef enum enodeType     enodeType_t;
@@ -178,6 +179,13 @@ typedef struct nodePostFixArray_s
     
 } nodePostFixArray_t ;
 
+typedef struct nodeStatSub_s
+{
+    wchar_t*    id          ;        //  name 
+    node_t*		body        ;        //  body block
+
+} nodeStatSub_t ;
+
 // .................................... nodo  lhs := rhs
 
 typedef struct nodeAssign_s
@@ -213,7 +221,9 @@ struct node_s
         nodeDeclT2_t   			declT2        ;
         nodeDeclT3_t     		declT3        ;
         nodeDeclT4_t     		declT4        ;
-        nodeDeclType_t     		declType	  ;                                                         
+        nodeDeclType_t     		declType	  ;     
+        
+        nodeStatSub_t     		sub	  		  ;                                                                 
     } ;
     
 } ;
@@ -286,7 +296,7 @@ node_t* 	astMakeDeclT3			  ( past_t this , plexer_t lexer , node_t* type ) ;
 node_t* 	astMakeDeclT4			  ( past_t this , plexer_t lexer , wchar_t* _id, node_t* _type ) ;
 node_t* 	astMakeDeclType			  ( past_t this , plexer_t lexer , wchar_t* _id, node_t* _fields ) ;
 
-
+node_t* 	astMakeStatSub			  ( past_t this , plexer_t lexer , wchar_t* _id, node_t* _body ) ;
 
 #endif
 

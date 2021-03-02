@@ -519,6 +519,28 @@ node_t* astMakeDeclType( past_t this , plexer_t lexer , wchar_t* _id, node_t* _f
     return nNew ;
 }
 
+// statement sub namespace label
+
+node_t* astMakeStatSub( past_t this , plexer_t lexer , wchar_t* _id, node_t* _body )
+{
+    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls :: [%ls]\n",L"astMakeStatSub",_id );
+
+    node_t* nNew   = NULL ; // new node
+    
+    nNew = gcMalloc ( sizeof(node_t) ) ;
+    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeStatSub") ;
+
+    nNew->type		= nTypeStatSub ;
+    nNew->sub.id	= gcWcsDup(_id) ;
+    nNew->sub.body	= _body ; 
+            
+    nNew->row    =    lexer->row_start ;
+    nNew->col    =    lexer->col_start - 1;
+    nNew->token  =    gcWcsDup( _id )  ;    
+
+    return nNew ;
+}
+
 // ***********
 // astDebug
 // ***********
@@ -875,7 +897,26 @@ node_t* astNodeDebug( past_t this , node_t* n)
 				$astDebugRowColToken(fDebug);	
 					
 		break ;
-										
+
+		case nTypeStatSub : // .............................................................................. statement sub
+
+				astNodeDebug( this , n->sub.body ) ;
+
+				if ( this->fDebug ) 
+				{
+					printTab;
+					fwprintf (	this->pFileOutputNode , L"node [%018p] %-16ls :: body [%018p] sub [%ls]"
+							,(void*)n
+							,L"nTypeStatSub" 
+							,(void*)n->sub.body
+							,(void*)n->sub.id
+					);						
+				} 
+
+				$astDebugRowColToken(fDebug);	
+					
+		break ;
+												
 	  default : // .............................................................................. default
 
 			$nodeInternal ( debug , errUnknown , L"ast.c" , L"node_t* astDebug(node_t* n) -> switch ( n->type )") ;

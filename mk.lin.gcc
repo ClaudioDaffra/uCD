@@ -24,7 +24,8 @@ OBJS =  main.o		\
 		parser.o	\
 		expr.o		\
 		decl.o		\
-		ast.o
+		ast.o		\
+		statement.o
 		
 OBJ = $(patsubst %,$(ODIR)/%,$(OBJS))
 

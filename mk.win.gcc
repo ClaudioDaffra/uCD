@@ -24,7 +24,8 @@ OBJS =  main.obj		\
 		parser.obj		\
 		expr.obj		\
 		decl.obj		\
-		ast.obj
+		ast.obj			\
+		statement.obj
 				
 OBJ = $(patsubst %,$(ODIR)/%,$(OBJS))
 

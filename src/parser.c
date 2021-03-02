@@ -240,21 +240,25 @@ pnode_t parserProgram( pparser_t this , node_t* nBlock )
         
         if  ( this->lexer->sym==sym_pv)  parserGetToken(this);
                 
-        if ( kError ) break ;
-        
+        if ( kError ) break ; // type struct
         pnode=parserExpr(this);
-        
         if ( pnode!=NULL ) astPushNodeBlock( this->ast , nBlock , pnode );
 
+        if ( kError ) break ; // sub label namespace
+        pnode=parserStatSub(this);
+        if ( pnode!=NULL ) astPushNodeBlock( this->ast , nBlock , pnode );
+       
     } while (       pnode!=NULL 
                 &&  this->lexer->sym != sym_end 
                 &&  this->lexer->sym == sym_pv
                 &&  !kError 
             ) ;
-    
+/*    
     // un minimo di controllo        
-    if ( this->lexer->sym != sym_pv	) $syntaxError;
-
+    if ( this->lexer->sym != sym_pv	
+    &&   this->lexer->sym != sym_end
+    ) $syntaxError;
+*/
 
     return nBlock ;
 }

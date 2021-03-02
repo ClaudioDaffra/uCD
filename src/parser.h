@@ -80,6 +80,10 @@ node_t* 	parserDeclT4		( pparser_t this , wchar_t* id ) ;
 node_t*		parserDeclType		( pparser_t this , wchar_t* id ) ;
 node_t* 	parserDecl			( pparser_t this ) ;
 
+// statement.c
+
+node_t*  	parserStatSub		( pparser_t this ) ;
+
 #endif
 
 
