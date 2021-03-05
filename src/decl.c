@@ -218,48 +218,68 @@ node_t* parserDecl( pparser_t this )
 
     if ( this->fDebug ) fwprintf ( this->pFileOutputParser , L"parserDecl\n" );
 
-	if ( this->lexer->sym == sym_id )	//	id
+
+	if ( this->lexer->sym == sym_kw_readOnly 
+	||	 this->lexer->sym == sym_kw_readWrite 
+	||	 this->lexer->sym == sym_kw_type 		)	
 	{
-		wchar_t* idSave = gcWcsDup(this->lexer->token);
-		
-		parserGetToken(this);			//	::
 
-		if ( this->lexer->sym == sym_scope )	//	parser decl
-		{		
-			parserGetToken(this);			//	type [ ( * {
+		eQualifier_t qual = qualNull ;
+		if ( this->lexer->sym == sym_kw_readOnly  ) qual=qualReadOnly  ;
+		if ( this->lexer->sym == sym_kw_readWrite ) qual=qualReadWrite ;
 			
-			switch (  this->lexer->sym )
-			{
-				case sym_qm :	// declTypeT1	 	id :: type			simple typle				
-				case sym_id :
-					n=parserDeclT1(this,idSave);
-				break;
-	
-				case sym_pq0 :	// declTypeT2		id :: [] type		array type
-					n=parserDeclT2(this,idSave)	;
-				break;
+		parserGetToken(this);
+		
+		if ( this->lexer->sym == sym_id )	//	id
+		{
+			wchar_t* idSave = gcWcsDup(this->lexer->token);
 
-				case sym_p0 :	// declTypeT3	 	id :: () type		function type
-					n=parserDeclT3(this,idSave)	;
-				break;
+			parserGetToken(this);			//	::
 
-				case sym_mul :	// declTypeT4	 	id :: * type		pointer type
-					n=parserDeclT4(this,idSave)	;
-				break;
-
-				case sym_pg0 :	// declType	 		id :: { ... }		struct type
-					n=parserDeclType(this,idSave)	;
-				break;
-																				
-				default:
+			if ( this->lexer->sym == sym_scope )	//	parser decl
+			{		
+				parserGetToken(this);			//	type [ ( * {
 				
-					$syntaxError;
-					
-				break;
-			}
-		}		
-	}
+				switch (  this->lexer->sym )
+				{
+					case sym_qm :	// declTypeT1	 	id :: type			simple typle				
+					case sym_id :
+						n=parserDeclT1(this,idSave);
+						n->declT1.qualifier=qual;
+					break;
+		
+					case sym_pq0 :	// declTypeT2		id :: [] type		array type
+						n=parserDeclT2(this,idSave)	;
+						n->declT2.qualifier=qual;
+					break;
 
+					case sym_p0 :	// declTypeT3	 	id :: () type		function type
+						n=parserDeclT3(this,idSave)	;
+						n->declT3.qualifier=qual;
+					break;
+
+					case sym_mul :	// declTypeT4	 	id :: * type		pointer type
+						n=parserDeclT4(this,idSave)	;
+						n->declT4.qualifier=qual;
+					break;
+
+					case sym_pg0 :	// declType	 		id :: { ... }		struct type
+						n=parserDeclType(this,idSave)	;
+					break;
+																					
+					default:
+					
+						$syntaxError;
+
+					break;
+				}
+			}
+					
+		}
+		
+		// put qualifier
+	}
+	
  return n ;
 }
 

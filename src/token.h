@@ -18,16 +18,18 @@ typedef enum e_sym
     sym_kw=100      ,
     sym_kw_while    ,   // +1
     sym_kw_for      ,   // +2
-    sym_kw_const    ,   // +3
-    sym_kw_var      ,   // +4
+//    sym_kw_const    ,   // +3
+//    sym_kw_var      ,   // +4
     sym_kw_integer  ,   // +5  
     sym_kw_real     ,   // +6      
     sym_kw_char     ,   // +7
     sym_kw_byte     ,   // +8    
     sym_kw_array    ,   // +9  
     sym_kw_type     ,   // +10      
-    sym_kw_function ,   // +11   
-                  
+    sym_kw_function ,   // +11 
+    sym_kw_readOnly 	,   // +11       
+    sym_kw_readWrite 	,   // +12 
+                        
     //              special operator  
     sym_op0=150    , 
           

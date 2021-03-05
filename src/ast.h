@@ -123,41 +123,54 @@ nodeTerOp_t ;
 // declaration
 // ***********
 
-// .................................... decl t1
+typedef enum eQualifier_e
+{
+	qualNull		,
+	qualReadOnly	,
+	qualReadWrite	
+	
+} eQualifier_t ;
+
+
+// .................................... decl t1	:	id :: type
 
 typedef struct nodeDeclT1_s
 {
-    wchar_t*    id          ;        //  name 
-    wchar_t*    type        ;        //  integer real char byte TYPE ?
+	eQualifier_t	qualifier	;		 // ro/const  or rw/var
+    wchar_t*    	id          ;        //  name 
+    wchar_t*    	type        ;        //  integer real char byte TYPE ?
 
 } nodeDeclT1_t ;
 
-// .................................... decl t2
+// .................................... decl t2		id :: [] type
 
 typedef struct nodeDeclT2_s
 {
-    wchar_t*    id          ;        //  name 
-    node_t*		array		;	     //  []
-    node_t*		type        ;        //  integer real char byte TYPE ?
+	eQualifier_t	qualifier	;		 // ro/const  or rw/var	
+    wchar_t*    	id          ;        //  name 
+    node_t*			array		;	     //  []
+    node_t*			type        ;        //  integer real char byte TYPE ?
 
 } nodeDeclT2_t ;
 
-// .................................... decl t3
+// .................................... decl t3		id :: () type
 
 typedef struct nodeDeclT3_s
 {
-    wchar_t*    id          ;        //  name 
-    node_t*		type        ;        //  return type integer real char byte or * type /function /array
+	eQualifier_t	qualifier	;		 // ro/const  or rw/var
+    wchar_t*    id          	;        //  name 
+    node_t*		type        	;        //  return type integer real char byte or * type /function /array
 
 } nodeDeclT3_t ;
 
-// .................................... decl t4
+// .................................... decl t4		id :: * type
 
 typedef struct nodeDeclT4_s
 {
-	sym_t		sym			;		 // variabile array o funzione
-    wchar_t*    id          ;        // pointer name 
-    node_t*		type        ;        // return type integer real char byte or * type /function /array
+	eQualifier_t	qualifier	;		 // ro/const  or rw/var	
+	sym_t		sym				;		 // variabile array o funzione
+    wchar_t*    id          	;        // pointer name 
+    node_t*		type        	;        // return type integer real char byte or * type /function /array
 
 } nodeDeclT4_t ;
 

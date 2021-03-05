@@ -30,7 +30,7 @@ mapKW_t mapArrayKW[] =
 //    {   L"byte"     , sym_kw_byte       }    ,    //    +8  
     
 //    {   L"array"    , sym_kw_array      }    ,    //    +9   
-//    {   L"type"     , sym_kw_type       }    ,    //    +10   
+	  {   L"type"     , sym_kw_type       }    ,    //    +10   
 //    {   L"fn"       , sym_kw_function   }    ,    //    +11 
     
     // operator
@@ -53,6 +53,9 @@ mapKW_t mapArrayKW[] =
     {   L"bitAndEq"	, sym_bitAndEq		}    ,	
     {   L"bitOrEq"	, sym_bitOrEq		}    ,	
     {   L"bitXorEq"	, sym_bitXorEq 	    }    ,	
+ 
+	{	L"ro"		, sym_kw_readOnly	}	,
+	{	L"rw"		, sym_kw_readWrite	}	,	
                                                                 
     {   NULL        , 0                 }    ,
 } ;

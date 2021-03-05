@@ -322,7 +322,7 @@ node_t* parserTerm( pparser_t this )
 
         case sym_id :
         
-            fwprintf ( this->pFileOutputParser , L"%-30ls :: [%ls].\n",L"sym_string",g.outputSpecialCharInString(this->lexer->value.id) );
+            fwprintf ( this->pFileOutputParser , L"%-30ls :: [%ls].\n",L"sym_id",g.outputSpecialCharInString(this->lexer->value.id) );
 
             n = astMakeNodeTermID( this->ast,this->lexer, this->lexer->value.id ) ;
 

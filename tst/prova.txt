@@ -3,30 +3,38 @@
 //1^^2!=3;
 //1?2:3;
 
-/* 
-	a :: point ;
+ 
+//	ro a :: point ;
+
+//	rw b :: [1][2][3] i32 ;
+
 	
-	b :: [1][2][3] i32 ;
-	c :: () r32 ;
-	d :: * i32 ;
-	e :: * [] i32 ;	
-*/	
+	ro c :: () r32 ;
+ 	ro d :: * i32 ;
+ 	rw e :: * [] i32 ;	
+	
 
 //	f_ptrToSubRetI32 :: * () i32 ;	
 	
 //	f :: [] f_ptrToSubRetI32 ;
 
 
-	point :: 
+/*
+	type point :: 
 	{ 
 		x	::	i32 ;				//	0		4
 		y	::	i32 ;				//  4		4
 	}  ;
 
 
-	:: fn
+	fn	:: f1
 	{
 		a :: point ;
 		
 		a:=10 ;
 	} ;
+
+*/
+
+	a := 10 ;
+	

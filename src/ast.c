@@ -387,27 +387,6 @@ node_t* astMakeNodeAssign  (  past_t this , plexer_t lexer ,  node_t * lhs , nod
 
     return nNew ;
 }
-/*
-// DECL TYPE
-
-pnode_t     astMakeNodeDeclType    ( past_t this , wchar_t* id , stScope_t    scope ) 
-{
-    if ( this->fDebug ) fwprintf ( this->pFileOutputAST , L"%-30ls \n",L"astMakeNodeDeclArray" );
-    node_t* nNew   = NULL ; // new node
-    
-    nNew = gcMalloc ( sizeof(node_t) ) ;
-    if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeNodeDeclArray") ;
-
-    nNew->type                  =     nTypeDeclType    ;
-    nNew->declType.id           =    gcWcsDup( id )    ;
-    nNew->declType.scope        =    scope             ;
-
-     vectorNew( nNew->declType.field , 12 ) ; // struttura iniziale con 12 membri
-
-    return nNew ;
-}
-
-*/
 
 // decl t1
 
@@ -420,9 +399,10 @@ node_t* astMakeDeclT1( past_t this , plexer_t lexer , wchar_t* _id , wchar_t* _t
     nNew = gcMalloc ( sizeof(node_t) ) ;
     if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeDeclT1") ;
 
-    nNew->type			= nTypeDeclT1 ;
-    nNew->declT1.id 	= gcWcsDup(_id);
-    nNew->declT1.type 	= gcWcsDup(_type);
+    nNew->type				= nTypeDeclT1 ;
+    nNew->declT1.id 		= gcWcsDup(_id);
+    nNew->declT1.type 		= gcWcsDup(_type);
+    nNew->declT1.qualifier	= qualNull ;
     
     nNew->row    =    lexer->row_start ;
     nNew->col    =    lexer->col_start - 1;
@@ -442,11 +422,12 @@ node_t* astMakeDeclT2( past_t this , plexer_t lexer , node_t* array , node_t* ty
     nNew = gcMalloc ( sizeof(node_t) ) ;
     if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeDeclT2") ;
 
-    nNew->type			= nTypeDeclT2 ;
-    nNew->declT2.array	= array ;
-    nNew->declT2.type	= type ;
-    nNew->declT2.id		= NULL ; 
-        
+    nNew->type				= nTypeDeclT2 ;
+    nNew->declT2.array		= array ;
+    nNew->declT2.type		= type ;
+    nNew->declT2.id			= NULL ; 
+    nNew->declT2.qualifier	= qualNull ;
+	        
     nNew->row    =    lexer->row_start ;
     nNew->col    =    lexer->col_start - 1;
     nNew->token  =    NULL;   
@@ -465,9 +446,10 @@ node_t* astMakeDeclT3( past_t this , plexer_t lexer , node_t* type )
     nNew = gcMalloc ( sizeof(node_t) ) ;
     if ( nNew==NULL ) $astInternal ( malloc , outOfMemory , L"ast.c" , L"astMakeDeclT3") ;
 
-    nNew->type			= nTypeDeclT3 ;
-    nNew->declT3.type	= type ;
-        
+    nNew->type				= nTypeDeclT3 ;
+    nNew->declT3.type		= type ;
+    nNew->declT3.qualifier	= qualNull ;
+	        
     nNew->row    =    lexer->row_start ;
     nNew->col    =    lexer->col_start - 1;
     nNew->token  =    NULL;    
@@ -489,7 +471,8 @@ node_t* astMakeDeclT4( past_t this , plexer_t lexer , wchar_t* _id, node_t* _typ
     nNew->type			= nTypeDeclT4 ;
     nNew->declT4.id		= gcWcsDup(_id) ;
     nNew->declT4.type	= _type ;
-            
+     nNew->declT4.qualifier	= qualNull ;
+                
     nNew->row    =    lexer->row_start ;
     nNew->col    =    lexer->col_start - 1;
     nNew->token  =    gcWcsDup( _id )  ;    
@@ -795,25 +778,26 @@ node_t* astNodeDebug( past_t this , node_t* n)
 		
 		break ;  
 
-		case nTypeDeclT1 : // .............................................................................. decl t1
+		case nTypeDeclT1 : // .............................................................................. decl t1	id :: type
 
 			if ( this->fDebug ) 
 			{
 				printTab;
 				fwprintf 
 					( 
-						this->pFileOutputNode , L"node [%018p] %-16ls :: type [%ls] id [%ls]"
+						this->pFileOutputNode , L"node [%018p] %-16ls :: type [%ls] id [%ls] qual(%d)"
 						,(void*)n
 						,L"nDeclT1" 
 						,(void*)n->declT1.type
-						,(void*)n->declT1.id 
+						,(void*)n->declT1.id
+						,(void*)n->declT1.qualifier 
 					);
 				$astDebugRowColToken(fDebug);
 			}
 		
 		break ;
 
-		case nTypeDeclT2 : // .............................................................................. decl t2
+		case nTypeDeclT2 : // .............................................................................. decl t2	id :: [] type
 
 			astNodeDebug( this , n->declT2.array ) ;
 			
@@ -822,48 +806,51 @@ node_t* astNodeDebug( past_t this , node_t* n)
 				printTab;
 				fwprintf 
 					( 
-						this->pFileOutputNode , L"node [%018p] %-16ls :: array[%p] type [%ls] id [%ls]"
+						this->pFileOutputNode , L"node [%018p] %-16ls :: array[%p] type [%ls] id [%ls] qual(%d)"
 						,(void*)n
 						,L"nDeclT2" 
 						,(void*)n->declT2.array
 						,(void*)n->declT2.type->declT1.type
 						,(void*)n->declT2.id 
+						,(void*)n->declT2.qualifier						
 					);
 				$astDebugRowColToken(fDebug);
 			}
 		
 		break ;
 
-		case nTypeDeclT3 : // .............................................................................. decl t3
+		case nTypeDeclT3 : // .............................................................................. decl t3	id :: () type
 
 			if ( this->fDebug ) 
 			{
 				printTab;
 				fwprintf 
 					( 
-						this->pFileOutputNode , L"node [%018p] %-16ls :: type [%ls] id (%ls)"
+						this->pFileOutputNode , L"node [%018p] %-16ls :: type [%ls] id (%ls) qual(%d)"
 						,(void*)n
 						,L"nDeclT3" 
 						,(void*)n->declT3.type->declT1.type
-						,(void*)n->declT3.id 
+						,(void*)n->declT3.id
+						,(void*)n->declT3.qualifier	
 					);
 				$astDebugRowColToken(fDebug);
 			}
 		
 		break ;
 
-		case nTypeDeclT4 : // .............................................................................. decl t4
+		case nTypeDeclT4 : // .............................................................................. decl t4 id :: * type
 
 				astNodeDebug( this , n->declT4.type ) ;
 
 				if ( this->fDebug ) 
 				{
 					printTab;
-					fwprintf (	this->pFileOutputNode , L"node [%018p] %-16ls :: type [%018p] id [%ls]"
+					fwprintf (	this->pFileOutputNode , L"node [%018p] %-16ls :: type [%018p] id [%ls] qual(%d)"
 							,(void*)n
 							,L"nDeclT4" 
 							,(void*)n->declT4.type
-							,(void*)n->declT4.id 
+							,(void*)n->declT4.id
+							,(void*)n->declT4.qualifier	
 					);
 					switch ( n->declT4.sym )
 					{
