@@ -30,8 +30,8 @@ mapKW_t mapArrayKW[] =
 //    {   L"byte"     , sym_kw_byte       }    ,    //    +8  
     
 //    {   L"array"    , sym_kw_array      }    ,    //    +9   
-	  {   L"type"     , sym_kw_type       }    ,    //    +10   
-//    {   L"fn"       , sym_kw_function   }    ,    //    +11 
+	  {   L"ty"       , sym_kw_type         }    ,    //    +10 
+//	  {   L"fn"       , sym_kw_function   }    ,    //    +11 
     
     // operator
     

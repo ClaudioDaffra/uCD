@@ -189,25 +189,25 @@ declType :
 				
 				
 	declVarType  :   
-						id  ::   declTypeT1
+						id  :   declTypeT1
 
 	declArrayType   :   
-						id  =   [] declTypeT1
-						id  =   [] declTypeT4
+						id  :   [] declTypeT1
+						id  :   [] declTypeT4
 	declSubType     :   
-						id  =   () declTypeT1
-						id  =   () declTypeT4                    
+						id  :   () declTypeT1
+						id  :   () declTypeT4                    
 
 	declPointerToType     :   
-						id  =   *  declTypeT1
+						id  :   *  declTypeT1
 	declPointerToArray    :                     
-						id  =   *  declTypeT2
+						id  :   *  declTypeT2
 	declPointerToSub     : 
-						id  =   *  declTypeT3
+						id  :   *  declTypeT3
 	declPointerToPointer                    
-						id  =   *  typedef
+						id  :   *  typedef
 						
-	declType			id :: { } 
+	declType			id :  { } 
 */
 
 node_t* parserDecl( pparser_t this )
@@ -236,7 +236,7 @@ node_t* parserDecl( pparser_t this )
 
 			parserGetToken(this);			//	::
 
-			if ( this->lexer->sym == sym_scope )	//	parser decl
+			if ( this->lexer->sym == sym_dp )	//	parser decl
 			{		
 				parserGetToken(this);			//	type [ ( * {
 				

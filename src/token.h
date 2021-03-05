@@ -25,8 +25,9 @@ typedef enum e_sym
     sym_kw_char     ,   // +7
     sym_kw_byte     ,   // +8    
     sym_kw_array    ,   // +9  
-    sym_kw_type     ,   // +10      
-    sym_kw_function ,   // +11 
+    
+    sym_kw_type     	,   // +10  
+    sym_kw_function 	,   // +11 
     sym_kw_readOnly 	,   // +11       
     sym_kw_readWrite 	,   // +12 
                         
